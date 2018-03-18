@@ -1,0 +1,56 @@
+{
+  "name": "edam",
+  "version": "0.0.0",
+  "description": "The origin of programing: setup scaffold",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest",
+    "precommit": "lint-staged",
+    "commitmsg": "commitlint -e $GIT_PARAMS",
+    "dev": "lerna run --parallel dev",
+    "bootstrap": "lerna bootstrap",
+    "publish": "lerna publish"
+  },
+  "keywords": [
+    "imcuttle",
+    "edam"
+  ],
+  "lint-staged": {
+    "packages/**/*.{js,jsx}": [
+      "eslint --fix",
+      "git add"
+    ]
+  },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ]
+  },
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@commitlint/cli": "^6.1.3",
+    "@commitlint/config-conventional": "^6.1.3",
+    "babel-eslint": "^8.2.2",
+    "babel-plugin-add-module-exports": "^0.2.1",
+    "babel-plugin-transform-class-properties": "^6.24.1",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "babel-plugin-transform-runtime": "^6.23.0",
+    "babel-preset-env": "^1.6.1",
+    "eslint": "^4.19.0",
+    "husky": "^0.14.3",
+    "jest": "^22.4.2",
+    "lerna": "^2.7.1",
+    "lerna-changelog": "^0.7.0",
+    "lint-staged": "^7.0.0"
+  },
+  "dependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/imcuttle/edam.git"
+  },
+  "bugs": {
+    "url": "https://github.com/imcuttle/edam/issues"
+  },
+  "homepage": "https://github.com/imcuttle/edam#readme"
+}

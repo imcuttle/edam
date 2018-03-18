@@ -1,0 +1,14 @@
+{
+  "lerna": "2.7.1",
+  "packages": [
+    "packages/*"
+  ],
+  "changelog": {
+    "labels": {
+      "perf": ":rocket: Enhancement",
+      "fix": ":bug: Bug Fix",
+      "feat": ":boom: New Feature"
+    }
+  },
+  "version": "0.0.0"
+}

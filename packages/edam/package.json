@@ -1,0 +1,11 @@
+{
+  "name": "edam",
+  "version": "0.0.1",
+  "scripts": {
+    "dist": "rimraf dist && babel src/ -D -d dist/",
+    "dev": "npm run dist -- -w"
+  },
+  "dependencies": {
+
+  }
+}
