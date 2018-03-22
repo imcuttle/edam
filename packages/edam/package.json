@@ -2,10 +2,12 @@
   "name": "edam",
   "version": "0.0.1",
   "scripts": {
-    "dist": "rimraf dist && babel src/ -D -d dist/",
+    "dist": "rimraf dist && tsc",
     "dev": "npm run dist -- -w"
   },
   "dependencies": {
-
+    "json5": "^1.0.1",
+    "lodash": "^4.17.5",
+    "pify": "^3.0.0"
   }
 }

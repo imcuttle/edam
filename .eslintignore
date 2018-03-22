@@ -1,4 +1,4 @@
 #*.test.*
 public/
 node_modules/
-dist/**
+**/dist/**
