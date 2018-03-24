@@ -1,0 +1,5 @@
+{
+  extends: ['./b/.edamrc'],
+
+  source: 'a.edamrc'
+}

@@ -6,7 +6,7 @@
  *  Analyzes `source`
  */
 
-module.exports = function toArray(item: any): Array<any> {
+export default function toArray(item: any): Array<any> {
   if (Array.isArray(item)) {
     return item
   }

@@ -1,0 +1,9 @@
+{
+  "extends": "./rc",
+  // config
+  alias: {
+    'react': 'b.react',
+    'b.react': 'b.react'
+  },
+  source: 'b.edamrc'
+}

@@ -1,15 +1,13 @@
 {
-  "parser": "babel-eslint",
-  "extends": [
-    "eslint:recommended"
-//    "plugin:react/recommended"
-  ],
+  "parser": "typescript-eslint-parser",
+  "plugins": ["typescript"],
+  "extends": ["eslint:recommended"],
   "rules": {
     "indent": ["error", 2],
     "quotes": ["error", "single"],
     "semi": ["error", "never"],
     "comma-dangle": ["error", "never"],
-    "no-cond-assign": ["error", "always"],
+    "no-cond-assign": "off",
     "no-console": "off",
     "eqeqeq": ["error", "smart"],
     "curly": ["error", "multi-line"],
@@ -18,15 +16,24 @@
     "no-use-before-define": ["error"],
     "no-undef": ["error"],
     "array-bracket-spacing": ["error", "never"],
-    "object-curly-spacing": ["error", "always"]
-//    "react/prop-types": [ true, { "ignore": ["children"] }]
+    "object-curly-spacing": ["error", "always"],
+    "typescript/no-use-before-define": "warn",
+    "typescript/no-unused-vars": "warn"
+    //    "react/prop-types": [ true, { "ignore": ["children"] }]
+  },
+  "overrides": {
+    "files": ["**/*.ts"],
+    "parser": "typescript-eslint-parser",
+    "rules": {
+      "no-undef": "off"
+    }
   },
   "parserOptions": {
     "ecmaVersion": 8,
     "sourceType": "module",
     "ecmaFeatures": {
       "experimentalObjectRestSpread": true
-//      "jsx": true
+      //      "jsx": true
     }
   },
   "env": {

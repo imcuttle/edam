@@ -1,0 +1,5 @@
+{
+  extends: ['./circle/.edamrc'],
+
+  source: 'a.edamrc'
+}

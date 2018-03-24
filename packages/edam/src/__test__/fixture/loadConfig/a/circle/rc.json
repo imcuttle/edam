@@ -1,0 +1,9 @@
+{
+  extends: ".edamrc",
+  alias: {
+    'react': 'b.react',
+    'b.react': 'rc.react',
+    'rc': 'rc'
+  },
+  source: 'rc'
+}

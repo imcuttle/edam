@@ -17,7 +17,7 @@ function isDirectory(filename: string): boolean {
     && fs.statSync(filename).isDirectory()
 }
 
-module.exports = {
+export default {
   ...fs,
   isFile,
   isDirectory,
