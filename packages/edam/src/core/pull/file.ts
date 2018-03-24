@@ -1,18 +1,20 @@
 import { Source } from '../../types/Options'
 import Error from '../EdamError'
 import * as nps from 'path'
-import TemplateConfig from '../../types/TemplateConfig'
-import { Edam } from '../../index'
 
-module.exports = function(source: Source) {
-  const edam = <Edam>this
+module.exports = function(source: Source, /*edam: Edam*/): string {
   if (!nps.isAbsolute(source.url)) {
-    return new Error(
+    throw new Error(
       `check the source: ${source.url} is not absolute path of file`
     )
   }
 
-  let tplConfig: TemplateConfig = require(source.url)
-  // edam.utils.
-  tplConfig.root
+  return source.url
+  // let tplConfig: TemplateConfig = edam.utils.getTemplateConfig(
+  //   require(),
+  //   [edam]
+  // )
+  // if (tplConfig.root) {
+  //
+  // }
 }

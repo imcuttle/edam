@@ -80,17 +80,19 @@ export class Edam {
     await this.normalizeConfig()
 
     source = <Source>this.config.source
-    if (source) {
-      const pullMethod = this.sourcePullMethods[source.type]
-      if (typeof pullMethod !== 'function') {
-        throw new EdamError(
-          `source pull method is not found of type: ${source.type}`
-        )
-      }
-      // eslint-disable-next-line no-unused-vars
-      const templatePath: string = await pullMethod.call(this, source, this)
+    if (!source) {
+      throw new EdamError('the `source` is required')
     }
-
+    const pullMethod = this.sourcePullMethods[source.type]
+    if (typeof pullMethod !== 'function') {
+      throw new EdamError(
+        `source pull method is not found of type: ${source.type}`
+      )
+    }
+    const templatePath: string = await pullMethod.call(this, source, this)
+    const templateConfig: TemplateConfig = require(templatePath)
+    templateConfig
+    // @todo
     return {}
   }
 }
