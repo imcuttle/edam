@@ -29,16 +29,17 @@ export type Combo = {
 
 export type Loader = Array<string | Function> | string | Function
 export default interface TemplateConfig {
-  prompts: Array<Prompt>
-  hooks: {
+  prompts?: Array<Prompt>
+  hooks?: {
     [hookName: string]: Array<Hook> | Hook
   }
-  files: Array<Glob> | Glob
-  combo: Combo
-  loaders: {
+  files?: Array<Glob> | Glob
+  combo?: Combo
+  root?: string
+  loaders?: {
     [loaderId: string]: Loader
   }
-  mapper: {
+  mapper?: {
     [glob: string]: Loader
   }
 }

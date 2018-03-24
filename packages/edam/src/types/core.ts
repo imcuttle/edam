@@ -16,6 +16,4 @@ export interface Output {
   tree: Tree
 }
 
-export interface Resource {
-
-}
+export interface Resource {}
