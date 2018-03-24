@@ -4,7 +4,7 @@
  * @date 2018/3/23
  * @description
  */
-const parseGitUrl = require('../utils/parseGitUrl').default
+const parseGitUrl = require('../lib/parseGitUrl').default
 
 describe('parseGitUrl', function () {
   it('should parseGitUrl works', function () {

@@ -4,7 +4,7 @@
  * @date 2018/3/23
  * @description
  */
-const isGitUrl = require('../utils/isGitUrl').default
+const isGitUrl = require('../lib/isGitUrl').default
 
 describe('isGitUrl', function () {
   it('should isGitUrl works', function () {

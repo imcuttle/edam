@@ -5,26 +5,26 @@
  * @description
  */
 import { Options } from './normalizeSource'
-import { EdamOptions } from '../types/Options'
-import toArray from '../utils/toArray'
-import extendsMerge from '../utils/extendsMerge'
-import { loadConfig } from '../utils/loadConfig'
+import { EdamConfig } from '../types/Options'
+import toArray from '../lib/toArray'
+import extendsMerge from '../lib/extendsMerge'
+import { loadConfig } from '../lib/loadConfig'
 import * as preduce from 'p-reduce'
 import * as nps from 'path'
 const debug = require('debug')('edam:extendsConfig')
 
-type Track = {
+export type Track = {
   [id: string]: {
     status: 'visiting' | 'visited' | 'first'
     value?: any
   }
 }
-async function innerExtendsConfig(
-  config: EdamOptions,
+export async function innerExtendsConfig(
+  config: EdamConfig,
   options: Options,
   track?: Track
-): Promise<EdamOptions> {
-  let extendConfig: EdamOptions
+): Promise<EdamConfig> {
+  let extendConfig: EdamConfig
   debug('config %O', config)
   if (config.extends) {
     const extendsArray: Array<string> = (config.extends = toArray(
@@ -66,16 +66,16 @@ async function innerExtendsConfig(
     )
   }
 
-  const result = extendsMerge(extendConfig, config)
+  const result = extendsMerge({}, extendConfig, config)
   debug('extended track %O', track)
   debug('extended result %O', result)
   return result
 }
 
 export default async function extendsConfig<T>(
-  config: EdamOptions,
+  config: EdamConfig,
   options: Options & { track?: boolean }
-): Promise<{ config: EdamOptions, track?: Track }> {
+): Promise<{ config: EdamConfig, track?: Track }> {
   options = {
     track: true,
     ...options

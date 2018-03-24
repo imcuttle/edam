@@ -4,7 +4,7 @@
  * @date 2018/3/23
  * @description
  */
-import _extends from '../utils/extendsMerge'
+import _extends from '../lib/extendsMerge'
 
 describe('extendsMerge', function() {
   let source

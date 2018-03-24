@@ -1,20 +1,17 @@
 export type AsyncOrSync<T> = Promise<T> | T
-export type PromptType = 'checkbox' | 'radio' | 'input'
+export type PromptType = 'checkbox' | 'radio' | 'input' | 'suggest'
 
 export interface Prompt {
   message: string
-  default: any
+  default?: any
+  when?: Function
   name: string
-  when: Function
   type: PromptType
   options?: Array<any>
-  transform: Function
+  transform?: Function
 }
 
 export type Hook = string | Function
-export interface HookMap {
-  [hookName: string]: Array<Hook> | Hook
-}
 
 export type Glob = string
 
@@ -29,16 +26,19 @@ export type Combo = {
   [name: string]: GetComboVariable | any
 }
 
-export interface TemplateConfig {
-  prompts: Array<Prompt>
-  hooks: HookMap
 
+export type Loader = Array<string | Function> | string | Function
+export default interface TemplateConfig {
+  prompts: Array<Prompt>
+  hooks: {
+    [hookName: string]: Array<Hook> | Hook
+  }
   files: Array<Glob> | Glob
   combo: Combo
-  // templateLoaders: {
-  //   [name: string]: string | Function
-  // }
-  templateMapper: {
-    [glob: Glob]: string | Function
+  loaders: {
+    [loaderId: string]: Loader
+  }
+  mapper: {
+    [glob: string]: Loader
   }
 }

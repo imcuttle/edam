@@ -4,7 +4,7 @@
  * @date 2018/3/24
  * @description
  */
-import EdamError from '../lib/EdamError'
+import EdamError from '../core/EdamError'
 
 describe('EdamError', function() {
   it('should error instanceof Error', () => {

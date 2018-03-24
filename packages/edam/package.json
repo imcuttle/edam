@@ -8,6 +8,8 @@
   "dependencies": {
     "cosmiconfig": "4.0.0",
     "debug": "^3.1.0",
+    "ink": "^0.4.1",
+    "ink-autocomplete": "0.0.0",
     "json5": "^1.0.1",
     "lodash": "^4.17.5",
     "p-reduce": "^1.0.0",

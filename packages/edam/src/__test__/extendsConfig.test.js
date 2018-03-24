@@ -4,7 +4,7 @@
  * @date 2018/3/24
  * @description
  */
-import extendsConfig from '../lib/extendsConfig'
+import extendsConfig from '../core/extendsConfig'
 import * as nps from 'path'
 
 describe('extendsConfig', function() {
@@ -58,19 +58,37 @@ describe('extendsConfig', function() {
   })
 
   it('should works on circle extends', async function() {
-    expect(
-      await extendsConfig(
-        {
-          extends: ['./fixture/loadConfig/a/.circlerc'],
-          alias: {
-            'react-a': 'aa',
-            'b.react': 'b.react.origin'
-          }
-        },
-        {
-          cwd: __dirname
+    const { config, track } = await extendsConfig(
+      {
+        extends: ['./fixture/loadConfig/a/.circlerc'],
+        alias: {
+          'react-a': 'aa',
+          'b.react': 'b.react.origin'
         }
-      )
+      },
+      {
+        cwd: __dirname
+      }
     )
+    expect(config).toEqual({
+      extends: [
+        './fixture/loadConfig/a/.circlerc',
+        './circle/.edamrc',
+        './rc',
+        '.edamrc'
+      ],
+      source: 'a.edamrc',
+      alias: {
+        'react-a': 'aa',
+        react: 'b.react',
+        'b.react': 'b.react.origin',
+        rc: 'rc'
+      }
+    })
+    expect(Object.keys(track)).toEqual([
+      nps.resolve(__dirname, './fixture/loadConfig/a/.circlerc'),
+      nps.resolve(__dirname, './fixture/loadConfig/a', './circle/.edamrc'),
+      nps.resolve(__dirname, './fixture/loadConfig/a', './circle/rc.json')
+    ])
   })
 })

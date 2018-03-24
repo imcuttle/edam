@@ -4,7 +4,7 @@
  * @date 2018/3/22
  * @description
  */
-import { loadConfig } from '../utils/loadConfig'
+import { loadConfig } from '../lib/loadConfig'
 
 describe('loadConfig', function () {
   it('should load json5 file', async function () {

@@ -1,0 +1,8 @@
+{
+  "name": "source",
+  "version": "0.0.1",
+  "dependencies": {
+
+  },
+  "main": "./package.json"
+}

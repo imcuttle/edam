@@ -1,0 +1,12 @@
+{
+  "extends": "./loadConfig/a/.circlerc",
+  "source": "edam.rc",
+  "alias": {
+    "edam": "edam",
+    "edam-github": {
+      type: "git",
+      url: "abc"
+    }
+  },
+  "cacheDir": false
+}

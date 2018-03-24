@@ -16,7 +16,7 @@ export interface RCOptions {
   extends?: string|Array<string>
 }
 
-export interface EdamOptions extends RCOptions {
+export interface EdamConfig extends RCOptions {
   // the template's name, be used for log
   name?: string
   userc?: boolean

@@ -6,4 +6,4 @@
  */
 import * as nps from 'path'
 
-export const DEFAULT_CACHE_DIR = nps.resolve('../../../.cache')
+export const DEFAULT_CACHE_DIR = nps.join(__dirname, '../../../.cache')

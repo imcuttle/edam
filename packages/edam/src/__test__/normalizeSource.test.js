@@ -4,7 +4,8 @@
  * @date 2018/3/23
  * @description
  */
-import normalizeSource from '../lib/normalizeSource'
+import normalizeSource from '../core/normalizeSource'
+import * as nps from 'path'
 
 describe('normalizeSource', function () {
   it('should normalizeSource works on github', function () {
@@ -97,5 +98,21 @@ describe('normalizeSource', function () {
       url: './a.git',
       branch: 'master'
     })
+  })
+
+  it('should normalizeSource works on npm', function () {
+    expect(normalizeSource('ssds'))
+      .toEqual({
+        type: 'npm',
+        url: 'ssds'
+      })
+  })
+
+  it('should normalizeSource works on file', function () {
+    expect(normalizeSource('fixture/loadConfig/file', { cwd: __dirname }))
+      .toEqual({
+        type: 'file',
+        url: nps.resolve(__dirname, 'fixture/loadConfig/file.js')
+      })
   })
 })

@@ -1,11 +1,12 @@
-import { Options } from '../lib/normalizeSource'
+import { Options } from '../core/normalizeSource'
 
 const JSON5 = require('json5')
 const cosmiconfig = require('cosmiconfig')
 const nps = require('path')
 const fileSystem = require('./fileSystem').default
-
 const explorer = cosmiconfig('edam')
+
+const debug = require('debug')('edam:loadConfig')
 
 async function parseJSONFile(filename) {
   try {
@@ -26,10 +27,12 @@ function getMatchJSONErrorFilename(err): string|null {
   }
 }
 
-export async function load(searchPath?: string): Promise<any> {
+export async function load(searchPath?: string): Promise<{ config: any, filepath: string }> {
+  debug('load searchPath: %s', searchPath)
   try {
-    const { config, filepath } = await explorer.load(searchPath)
-    return { config, filepath }
+    const obj = await explorer.load(searchPath)
+    debug('load : %o', obj)
+    return obj
   } catch (err) {
     const filename = getMatchJSONErrorFilename(err)
     if (filename) {

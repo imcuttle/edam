@@ -4,12 +4,13 @@
  * @date 2018/3/23
  * @description
  */
-import parseGitUrl from '../utils/parseGitUrl'
-import isGitUrl from '../utils/isGitUrl'
-import fs from '../utils/fileSystem'
+import parseGitUrl from '../lib/parseGitUrl'
+import isGitUrl from '../lib/isGitUrl'
+import fs from '../lib/fileSystem'
 import * as nps from 'path'
 import * as _ from 'lodash'
 import { Source } from '../types/Options'
+import safeRequireResolve from '../lib/safeRequireResolve'
 const debug = require('debug')('edam:normalizeSource')
 
 export type Options = {
@@ -44,6 +45,7 @@ export default function normalizeSource(
   }
 
   let result: Source
+  let filename
   debug('input source: %s', source)
   source = (<string>source).trim()
   if (isGitUrl(source)) {
@@ -55,15 +57,18 @@ export default function normalizeSource(
       url: <string>source,
       branch: parsed.branch
     }
-  } else if (fs.isFile(nps.resolve(cwd, source))) {
+  } else if (
+    ((filename = safeRequireResolve(nps.resolve(cwd, source))),
+    fs.isFile(filename))
+  ) {
     result = {
       type: 'file',
-      url: nps.resolve(cwd, source)
+      url: filename
     }
   } else {
     result = {
       type: 'npm',
-      url: nps.resolve(cwd, source)
+      url: source
     }
   }
 
