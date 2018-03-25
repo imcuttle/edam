@@ -13,5 +13,5 @@ export default class Output implements OutputInterface {
   public toPrettyStates(): string {
     return JSON.stringify(this.tree, null, 2)
   }
-  private tree: Tree
+  tree: Tree
 }
