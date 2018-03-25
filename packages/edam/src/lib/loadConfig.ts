@@ -1,4 +1,5 @@
 import { Options } from '../core/normalizeSource'
+import safeRequireResolve from "./safeRequireResolve";
 
 const JSON5 = require('json5')
 const cosmiconfig = require('cosmiconfig')
@@ -53,8 +54,16 @@ export async function loadConfig(
   }
 ): Promise<any> {
   const { cwd } = options
-  let filename = nps.resolve(cwd, path)
-  filename = require.resolve(filename)
+  // require npm packages directly
+  let resolved = safeRequireResolve(path)
+  let filename: string
+  if (resolved) {
+    filename = resolved
+  }
+  else {
+    filename = nps.resolve(cwd, path)
+    filename = require.resolve(filename)
+  }
   let resultConfig
   try {
     const { config, filepath } = await explorer.load(null, filename)

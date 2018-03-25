@@ -42,4 +42,6 @@ export default interface TemplateConfig {
   mapper?: {
     [glob: string]: Loader
   }
+  move?: {}
+  copy?: {}
 }

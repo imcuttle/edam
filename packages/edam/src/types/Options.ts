@@ -1,3 +1,4 @@
+import { Plugin } from '../core/plugins'
 
 export type LogLevel = 'debug' | 'warn' | 'error' | 'log'
 export type Source = {
@@ -9,11 +10,12 @@ export type Source = {
 export interface RCOptions {
   // template configuration file, or the name from `alias`, or repo string, npm package
   source: string | Source
-  cacheDir: string|boolean
+  cacheDir: string | boolean
   // alias the source
   alias?: object
   // the wanted extend edam configuration file path (relative or absolute)
-  extends?: string|Array<string>
+  extends?: string | Array<string>
+  plugins?: Array<Plugin>
 }
 
 export interface EdamConfig extends RCOptions {

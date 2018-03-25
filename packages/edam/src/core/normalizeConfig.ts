@@ -8,12 +8,14 @@ import { EdamConfig } from '../types/Options'
 import EdamError from './EdamError'
 import { default as normalizeSource, Options } from './normalizeSource'
 import { load } from '../lib/loadConfig'
-import extendsMerge from '../lib/extendsMerge'
+import extendsMerge from './extendsMerge'
 /* eslint-disable no-unused-vars */
 import extendsConfig, { innerExtendsConfig, Track } from './extendsConfig'
 import * as _ from 'lodash'
 import * as nps from 'path'
 import { DEFAULT_CACHE_DIR } from './constant'
+import toArray from '../lib/toArray'
+import safeRequireResolve from '../lib/safeRequireResolve'
 
 const debug = require('debug')('edam:normalizeConfig')
 
@@ -35,6 +37,7 @@ export default async function normalizeConfig(
       yes: false,
       silent: false,
       extends: [],
+      plugins: [],
       alias: {},
       cacheDir: true
     },
@@ -53,19 +56,23 @@ export default async function normalizeConfig(
   }
 
   // merge extends Configuration
-  let { config: mergedConfig, track } = await extendsConfig(looseConfig, { ...options, track: true })
+  let { config: mergedConfig, track } = await extendsConfig(looseConfig, {
+    ...options,
+    track: true
+  })
   let rcData
   if (coreSpecial.userc) {
     const obj = await load(options.cwd)
     debug('rc config: %o', obj)
     if (obj) {
       const { config: rcConfig, filepath } = obj
-      const mergedRcConfig = await innerExtendsConfig(rcConfig, { cwd: nps.dirname(filepath) }, track)
-      debug('rc merged config: %O', mergedRcConfig)
-      mergedConfig = extendsMerge({},
-        mergedRcConfig,
-        mergedConfig
+      const mergedRcConfig = await innerExtendsConfig(
+        rcConfig,
+        { cwd: nps.dirname(filepath) },
+        track
       )
+      debug('rc merged config: %O', mergedRcConfig)
+      mergedConfig = extendsMerge({}, mergedRcConfig, mergedConfig)
     }
   }
   // normalize source
@@ -87,6 +94,26 @@ export default async function normalizeConfig(
     )
   } else if (mergedConfig.cacheDir) {
     mergedConfig.cacheDir = nps.resolve(options.cwd, DEFAULT_CACHE_DIR)
+  }
+
+  // plugin
+  if (mergedConfig.plugins) {
+    mergedConfig.plugins = toArray(mergedConfig.plugins)
+    mergedConfig.plugins.map(p => {
+      function getPlugin(p) {
+        let path = safeRequireResolve(p)
+        if (path) {
+          return require(p)
+        }
+        return require.resolve(nps.resolve(options.cwd, p))
+      }
+
+      if (_.isString(p)) {
+        return require[getPlugin(p)]
+      } else if (_.isArray(p) && _.isString(p[0])) {
+        return [getPlugin(p[0]), p[1]]
+      }
+    })
   }
 
   const normalized = {

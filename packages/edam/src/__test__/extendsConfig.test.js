@@ -26,13 +26,22 @@ describe('extendsConfig', function() {
   })
 
   it('should works on chain extends', async function() {
+    const plugins = [
+      function () {
+
+      }
+    ]
+
     const { config, track } = await extendsConfig(
       {
         extends: ['./fixture/loadConfig/a/.edamrc'],
         alias: {
           'react-a': 'aa',
           'b.react': 'b.react.origin'
-        }
+        },
+        plugins: [
+          plugins
+        ]
       },
       {
         cwd: __dirname
@@ -48,6 +57,9 @@ describe('extendsConfig', function() {
     expect(config).toEqual({
       extends: ['./fixture/loadConfig/a/.edamrc', './b/.edamrc', './rc'],
       source: 'a.edamrc',
+      plugins: [
+        plugins
+      ],
       alias: {
         'react-a': 'aa',
         react: 'b.react',
@@ -61,6 +73,9 @@ describe('extendsConfig', function() {
     const { config, track } = await extendsConfig(
       {
         extends: ['./fixture/loadConfig/a/.circlerc'],
+        plugins: [
+          'psource'
+        ],
         alias: {
           'react-a': 'aa',
           'b.react': 'b.react.origin'
@@ -76,6 +91,9 @@ describe('extendsConfig', function() {
         './circle/.edamrc',
         './rc',
         '.edamrc'
+      ],
+      plugins: [
+        'psource'
       ],
       source: 'a.edamrc',
       alias: {

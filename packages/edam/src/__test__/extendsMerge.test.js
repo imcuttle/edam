@@ -4,7 +4,7 @@
  * @date 2018/3/23
  * @description
  */
-import _extends from '../lib/extendsMerge'
+import _extends from '../core/extendsMerge'
 
 describe('extendsMerge', function() {
   let source
@@ -65,6 +65,15 @@ describe('extendsMerge', function() {
         babel: 'babel/babel'
       },
       source: 'babel'
+    })
+  })
+
+  it('should works for concat array', function () {
+    const f = () => {}
+    expect(
+      _extends({}, { extends: [1, 2, {}, f] }, { extends: [f, 3, 2] })
+    ).toEqual({
+      extends: [f, 3, 2, 1, {}]
     })
   })
 })

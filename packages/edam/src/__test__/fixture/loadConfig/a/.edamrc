@@ -1,5 +1,7 @@
 {
   extends: ['./b/.edamrc'],
-
+  plugins: [
+    'pa'
+  ],
   source: 'a.edamrc'
 }

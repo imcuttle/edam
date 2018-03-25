@@ -7,8 +7,9 @@
 import { Options } from './normalizeSource'
 import { EdamConfig } from '../types/Options'
 import toArray from '../lib/toArray'
-import extendsMerge from '../lib/extendsMerge'
+import extendsMerge from './extendsMerge'
 import { loadConfig } from '../lib/loadConfig'
+import * as _ from 'lodash'
 import * as preduce from 'p-reduce'
 import * as nps from 'path'
 const debug = require('debug')('edam:extendsConfig')
@@ -27,9 +28,7 @@ export async function innerExtendsConfig(
   let extendConfig: EdamConfig
   debug('config %O', config)
   if (config.extends) {
-    const extendsArray: Array<string> = (config.extends = toArray(
-      config.extends
-    ))
+    const extendsArray = (config.extends = toArray(config.extends))
     const configList = await Promise.all(
       extendsArray.map(source => {
         return loadConfig(source, { ...options, filename: true })
@@ -67,6 +66,7 @@ export async function innerExtendsConfig(
   }
 
   const result = extendsMerge({}, extendConfig, config)
+  // result.plugins = config.plugins
   debug('extended track %O', track)
   debug('extended result %O', result)
   return result
@@ -75,7 +75,7 @@ export async function innerExtendsConfig(
 export default async function extendsConfig<T>(
   config: EdamConfig,
   options: Options & { track?: boolean }
-): Promise<{ config: EdamConfig, track?: Track }> {
+): Promise<{ config: EdamConfig; track?: Track }> {
   options = {
     track: true,
     ...options

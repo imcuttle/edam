@@ -9,7 +9,7 @@ import toArray from './toArray'
 
 export default async function get<T> (data, args): Promise<T> {
   if (_.isFunction(data)) {
-    return await data(toArray(args))
+    return await data.apply(this, toArray(args))
   }
   return data
 }

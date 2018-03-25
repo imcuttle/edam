@@ -15,7 +15,16 @@ import EdamError from './core/EdamError'
 import * as coreExported from './core/index'
 import * as libExported from './lib/index'
 import * as constant from './core/constant'
-import TemplateConfig, {Loader} from "./types/TemplateConfig";
+import { Hook, Loader } from './types/TemplateConfig'
+import {
+  default as normalize,
+  NormalizedTemplateConfig
+} from './core/plugins/normalize'
+import plugins, { Plugin } from './core/plugins'
+import getTemplateConfig from './lib/getTemplateConfig'
+import pReduce from 'p-reduce'
+import * as _ from 'lodash'
+import extendsMerge from './core/extendsMerge'
 
 export class Edam {
   protected static sourcePullMethods: {
@@ -34,6 +43,8 @@ export class Edam {
   } = {
     ...constant
   }
+  protected static plugins: Array<Plugin> = plugins
+  public plugins: Array<Plugin>
   public sourcePullMethods: {
     [name: string]: (source: Source, edam: Edam) => string
   }
@@ -43,9 +54,8 @@ export class Edam {
   public constants: {
     [name: string]: any
   }
-  public templateConfig: TemplateConfig = {
-    loaders: {}
-  }
+  // public templateConfig: TemplateConfig
+  public loaders: { [loaderId: string]: Loader }
   public track: Track
   constructor(public config: EdamConfig, public options: Options = {}) {
     this.setConfig(config)
@@ -54,17 +64,53 @@ export class Edam {
     this.utils = Object.assign({}, Edam.utils)
     this.sourcePullMethods = Object.assign({}, Edam.sourcePullMethods)
     this.constants = Object.assign({}, Edam.constants)
+    this.plugins = Edam.plugins.slice()
   }
 
   private async normalizeConfig(): Promise<Edam> {
     const { track, config } = await normalizeConfig(this.config, this.options)
     this.config = config
     this.track = track
+
+    if (this.config.plugins) {
+      this.config.plugins.forEach(p => {
+        this.use(p)
+      })
+    }
+
     return this
   }
 
-  public setLoader(loaderId: string, loader: Loader) {
-    this.templateConfig.loaders[loaderId] = loader
+  public addLoader(loaderId: string, loader: Loader): Edam {
+    this.loaders[loaderId] = loader
+    return this
+  }
+  public removeLoader(loaderId: string): Edam {
+    delete this.loaders[loaderId]
+    return this
+  }
+  public use(
+    plugin: Plugin | Plugin[0],
+    options = { force: false, removeExisted: true }
+  ): Edam {
+    if (!Array.isArray(plugin)) {
+      plugin = [plugin, {}]
+    }
+    const index = this.plugins.findIndex(([p]) => p === plugin[0])
+    if (options.force || index < 0) {
+      if (options.force && index >= 0 && options.removeExisted) {
+        this.plugins.splice(index, 1)
+      }
+      this.plugins.push(plugin)
+    }
+    return this
+  }
+  public unuse(pluginCore?: Plugin[0]): Edam {
+    if (!pluginCore) {
+      this.plugins = Edam.plugins.slice()
+    } else {
+      this.plugins = this.plugins.filter(([p]) => p !== pluginCore)
+    }
     return this
   }
   public setConfig(config: EdamConfig): Edam {
@@ -89,12 +135,52 @@ export class Edam {
         `source pull method is not found of type: ${source.type}`
       )
     }
-    const templatePath: string = await pullMethod.call(this, source, this)
-    const templateConfig: TemplateConfig = require(templatePath)
-    templateConfig
+    let templateConfigPath: string = await pullMethod.call(this, source, this)
+    templateConfigPath = this.templateConfigPath = require.resolve(
+      templateConfigPath
+    )
+    let templateConfig = await getTemplateConfig.apply(this, [
+      require(templateConfigPath),
+      [this]
+    ])
+    let normalizedTemplateConfig: NormalizedTemplateConfig = normalize(
+      templateConfig,
+      templateConfigPath
+    )
+
+    this.templateConfig = normalizedTemplateConfig
+    await pReduce(
+      this.plugins.concat(this.config.plugins),
+      async (config, plugin) => {
+        await plugin.apply(this, [plugin[1] || {}, this])
+      }
+    )
+    _.merge(this.templateConfig, {
+      loaders: this.loaders,
+      hooks: extendsMerge({}, normalizedTemplateConfig.hooks, this.hooks)
+    })
+
     // @todo
+
     return {}
   }
+
+  public templateConfig: NormalizedTemplateConfig = {
+    files: [],
+    loaders: {},
+    mapper: {},
+    root: ''
+  }
+  public templateConfigPath: string
+  public hooks: {
+    [hookName: string]: Array<Hook>
+  } = {}
+  public addHook(hookName: string, hook: Hook) {
+    const arr: Array<Hook> = this.hooks[hookName] || []
+    arr.push(hook)
+    return this
+  }
+  public assets: {}
 }
 
 async function edam(config: EdamConfig, options: Options) {

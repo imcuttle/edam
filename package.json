@@ -52,12 +52,15 @@
     "typescript": "^2.7.2",
     "typescript-eslint-parser": "^14.0.0"
   },
+  "engines": {
+    "node": ">=6"
+  },
   "jest": {
     "transform": {
       "^.+\\.jsx?$": "babel-jest",
       "^.+\\.tsx?$": "ts-jest"
     },
-    "testRegex": "(/__tests?__/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$",
+    "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$",
     "moduleFileExtensions": [
       "ts",
       "tsx",
