@@ -10,8 +10,15 @@ export default class Output implements OutputInterface {
   public async writeToFile(filepath: string): Promise<boolean> {
     return true
   }
+
   public toPrettyStates(): string {
     return JSON.stringify(this.tree, null, 2)
   }
   tree: Tree
+  constructor(public otree: Tree) {
+    this.tree = otree
+  }
+  toJSON() {
+    return this.tree
+  }
 }
