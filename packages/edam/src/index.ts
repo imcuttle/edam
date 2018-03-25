@@ -177,14 +177,10 @@ export class Edam {
       }
     )
 
-    // this.templateConfig
-
-    await this.compiler.run()
-    // compiler
-
-    // @todo
-    return {}
+    return await this.compiler.run()
   }
+
+
 
   public templateConfig: NormalizedTemplateConfig = {
     files: [],

@@ -11,9 +11,19 @@ export interface Tree {
   [path: string]: State
 }
 
-export interface OutputInterface {
-  writeToFile: (filepath: string) => Promise<boolean>
-  tree: Tree
+export class TreeProcessor {
+  public tree: Tree
+  constructor(tree: Tree) {
+    this.tree = tree
+  }
+
+  public toPrettyStates(): string {
+    return JSON.stringify(this.tree, null, 2)
+  }
+
+  public toJSON() {
+    return this.tree
+  }
 }
 
 // export interface Resource {}

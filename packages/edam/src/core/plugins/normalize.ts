@@ -38,6 +38,7 @@ export default function normalize(
     templateConfig.files = ['*']
   }
   templateConfig.files = toArray<string>(templateConfig.files)
+  templateConfig.files.push('!.DS_Store')
 
   _.each(templateConfig.loaders, function(val, key) {
     if (val) {
