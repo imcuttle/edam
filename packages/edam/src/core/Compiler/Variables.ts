@@ -11,12 +11,21 @@ import pReduce from 'p-reduce'
 
 export default class VariablesImpl {
   public store: Variables = {}
+  public merge(vars: Variables) {
+    _.merge(this.store, vars)
+    return this
+  }
   public assign(vars: Variables) {
     Object.assign(this.store, vars)
     return this
   }
-  public set(variables) {
+  public setStore(variables: Variables) {
     this.store = variables
+    return this
+  }
+
+  public set(key: string | string[], data: any) {
+    _.set(this.store, key, data)
     return this
   }
 
@@ -25,8 +34,8 @@ export default class VariablesImpl {
     return this
   }
 
-  private async _get(key: string): Promise<Variable> {
-    const variable = this.store[key]
+  private async _get(key: string | string[]): Promise<Variable> {
+    const variable = _.get(this.store, key)
     if (!variable) {
       throw new Error(`Variable key: ${key} is not found.`)
     }
@@ -44,17 +53,17 @@ export default class VariablesImpl {
       }
       rlt = await variable(vCenter)
       if (vCenter._type === 'once') {
-        this.store[key] = rlt
+        this.set(key, rlt)
       }
       // this.store[key] = rlt
     } else {
-      this.store[key] = rlt
+      this.set(key, rlt)
     }
 
     return rlt
   }
 
-  public async get(key?: string): Promise<Variables | Variable> {
+  public async get(key?: string | string[]): Promise<Variables | Variable> {
     if (key) {
       return await this._get(key)
     }

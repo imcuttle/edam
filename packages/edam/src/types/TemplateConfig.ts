@@ -56,4 +56,8 @@ export default interface TemplateConfig {
   mappers?: Array<Mapper>
   move?: {}
   copy?: {}
+
+  gitInit?: boolean
+  downloadDependencies?: boolean
+  downloadDevDependencies?: boolean
 }

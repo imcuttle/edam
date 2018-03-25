@@ -69,6 +69,8 @@ export default function normalizeSource(
     result = {
       type: 'npm',
       url: source
+      // @todo
+      // version: ''
     }
   }
 

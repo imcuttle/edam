@@ -5,6 +5,7 @@ export type Source = {
   type: 'file' | 'git' | 'npm'
   url: string
   branch?: string
+  version?: string
 }
 
 export interface RCOptions {

@@ -58,7 +58,7 @@ export default class FileProcessor extends TreeProcessor {
     return this
   }
 
-  public async copy(): FileProcessor {
+  public async copy(): Promise<FileProcessor> {
     return this
   }
 }

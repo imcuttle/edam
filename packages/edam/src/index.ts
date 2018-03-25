@@ -23,10 +23,9 @@ import plugins, { Plugin } from './core/plugins'
 import getTemplateConfig from './lib/getTemplateConfig'
 import pReduce from 'p-reduce'
 import * as _ from 'lodash'
-import getExtendsMerge from './lib/getExtendsMerge'
 import Compiler from './core/Compiler/index'
-import toArray from './lib/toArray'
-import { Variable, Variables } from './types/TemplateConfig'
+import { Variable } from './types/TemplateConfig'
+import prompt from './core/promptProcessor'
 
 export class Edam {
   protected static sourcePullMethods: {
@@ -113,32 +112,7 @@ export class Edam {
     return this
   }
 
-  public promptProcess(): Variable {}
-
-  async _prompt(): Promise<Variables> {
-    return await pReduce(
-      this.templateConfig.prompts,
-      async function(set, prompt) {
-        if (this.config.yes) {
-          return Object.assign(set, { [prompt.name]: prompt.default })
-        }
-
-        let allow = true
-        if (_.isFunction(prompt.when)) {
-          allow = await prompt.when(set)
-        }
-        if (allow) {
-          Object.assign(set, {
-            [prompt.name]: await this.promptProcess(prompt)
-          })
-        }
-        return set
-      },
-      {}
-    )
-  }
-
-  public async process(source?: Source): Promise<Tree> {
+  public async process(source?: Source, { promptProcess } = { promptProcess: Function }): Promise<Tree> {
     this.config.source = source || this.config.source
     await this.normalizeConfig()
 
@@ -157,7 +131,13 @@ export class Edam {
       templateConfigPath
     )
 
-    this.compiler.variables.set(await this._prompt())
+    this.compiler.variables.setStore(
+      await prompt(this.templateConfig.prompts, {
+        yes: this.config.yes,
+        context: {},
+        promptProcess
+      })
+    )
 
     let templateConfig =
       (await getTemplateConfig.apply(
@@ -179,8 +159,6 @@ export class Edam {
 
     return await this.compiler.run()
   }
-
-
 
   public templateConfig: NormalizedTemplateConfig = {
     files: [],

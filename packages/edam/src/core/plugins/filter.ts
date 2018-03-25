@@ -8,6 +8,7 @@ import EdamError from '../EdamError'
 import fileSystem from '../../lib/fileSystem'
 import { Edam } from '../../index'
 import * as nps from 'path'
+import * as _ from 'lodash'
 
 export default async function filter(/*options*/) {
   const edam = <Edam>this
@@ -22,7 +23,9 @@ export default async function filter(/*options*/) {
   }
 
   // @todo dynamic files
-  compiler.variables
+  if (_.isFunction(files)) {
+    await files(compiler.variables)
+  }
 
   files = await fileSystem.readdirDeep(root, {
     filter: [`!${edam.templateConfigPath}`].concat(files)
