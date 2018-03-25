@@ -4,7 +4,7 @@ export type PromptType = 'checkbox' | 'radio' | 'input' | 'suggest'
 export interface Prompt {
   message: string
   default?: any
-  when?: (vars: object) => boolean
+  when?: (vars: Variables) => boolean
   name: string
   type: PromptType
   options?: Array<any>
@@ -25,22 +25,35 @@ export type Variable = GetVariable | any
 export type Variables = {
   [name: string]: Variable
 }
+
 export type StrictLoader = Function & { raw?: boolean }
 export type Loader = Array<StrictLoader | string> | string | StrictLoader
+
+export type Matcher = Glob | RegExp | Function
+
+export type Mapper = {
+  test: Matcher
+  loader: Loader
+}
+
+// export type Dynamic
+export type FileMatcher = Matcher | {
+  when?: (vars: Variables) => boolean,
+  test: Matcher
+}
+
 export default interface TemplateConfig {
   prompts?: Array<Prompt>
   hooks?: {
     [hookName: string]: Array<Hook> | Hook
   }
-  files?: Array<Glob> | Glob
+  files?: Array<FileMatcher> | FileMatcher
   variables?: Variables
   root?: string
   loaders?: {
     [loaderId: string]: Array<StrictLoader>
   }
-  mapper?: {
-    [glob: string]: Loader
-  }
+  mappers?: Array<Mapper>
   move?: {}
   copy?: {}
 }

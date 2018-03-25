@@ -13,11 +13,11 @@ describe('fs', function() {
       await fs.readdirDeep(
         nps.join(__dirname, 'fixture'),
         {
-          filter: ['!(a).fs', `!${nps.join(__dirname, 'fixture', 'fs', 'b.fs')}`]
+          filter: ['*.fs', `!${nps.join(__dirname, 'fixture', 'fs', 'b.fs')}`]
         }
       )
     ).toEqual([
-      // nps.join(__dirname, 'fixture', 'fs', 'a.fs'),
+      nps.join(__dirname, 'fixture', 'fs', 'a.fs')
       // nps.join(__dirname, 'fixture', 'fs', 'b.fs')
     ])
   })

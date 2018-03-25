@@ -113,20 +113,24 @@ export class Edam {
     return this
   }
 
-  public promptProcess(): Variable {
-
-  }
+  public promptProcess(): Variable {}
 
   async _prompt(): Promise<Variables> {
     return await pReduce(
       this.templateConfig.prompts,
       async function(set, prompt) {
+        if (this.config.yes) {
+          return Object.assign(set, { [prompt.name]: prompt.default })
+        }
+
         let allow = true
         if (_.isFunction(prompt.when)) {
           allow = await prompt.when(set)
         }
         if (allow) {
-          Object.assign(set, await this.promptProcess(prompt))
+          Object.assign(set, {
+            [prompt.name]: await this.promptProcess(prompt)
+          })
         }
         return set
       },
@@ -152,6 +156,9 @@ export class Edam {
     templateConfigPath = this.templateConfigPath = require.resolve(
       templateConfigPath
     )
+
+    this.compiler.variables.set(await this._prompt())
+
     let templateConfig =
       (await getTemplateConfig.apply(
         this,
@@ -169,8 +176,6 @@ export class Edam {
         await plugin.apply(this, [plugin[1] || {}, this])
       }
     )
-
-    !this.config.yes && this._prompt()
 
     // this.templateConfig
 

@@ -21,6 +21,9 @@ export default async function filter(/*options*/) {
     throw new EdamError(`templateConfig.root "${root}" is not found`)
   }
 
+  // @todo dynamic files
+  compiler.variables
+
   files = await fileSystem.readdirDeep(root, {
     filter: [`!${edam.templateConfigPath}`].concat(files)
   })
@@ -32,7 +35,7 @@ export default async function filter(/*options*/) {
   await Promise.all(
     files.map(async function(file) {
       compiler.assets[nps.relative(root, file)] = {
-        value: await fileSystem.readFileSync(file, { encoding: 'utf8' })
+        value: await fileSystem.readFile(file, { encoding: 'utf8' })
       }
       return
     })
