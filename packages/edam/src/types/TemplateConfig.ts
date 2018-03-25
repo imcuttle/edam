@@ -25,9 +25,8 @@ type GetComboVariable = (cc: ComboCenter) => AsyncOrSync<any>
 export type Combo = {
   [name: string]: GetComboVariable | any
 }
-
-
-export type Loader = Array<string | Function> | string | Function
+export type StrictLoader = Function & { raw?: boolean }
+export type Loader = Array<StrictLoader | string> | string | StrictLoader
 export default interface TemplateConfig {
   prompts?: Array<Prompt>
   hooks?: {
@@ -37,7 +36,7 @@ export default interface TemplateConfig {
   combo?: Combo
   root?: string
   loaders?: {
-    [loaderId: string]: Loader
+    [loaderId: string]: Array<StrictLoader>
   }
   mapper?: {
     [glob: string]: Loader

@@ -15,7 +15,7 @@ import * as _ from 'lodash'
 import * as nps from 'path'
 import { DEFAULT_CACHE_DIR } from './constant'
 import toArray from '../lib/toArray'
-import safeRequireResolve from '../lib/safeRequireResolve'
+import resolve from '../lib/resolve'
 
 const debug = require('debug')('edam:normalizeConfig')
 
@@ -94,26 +94,6 @@ export default async function normalizeConfig(
     )
   } else if (mergedConfig.cacheDir) {
     mergedConfig.cacheDir = nps.resolve(options.cwd, DEFAULT_CACHE_DIR)
-  }
-
-  // plugin
-  if (mergedConfig.plugins) {
-    mergedConfig.plugins = toArray(mergedConfig.plugins)
-    mergedConfig.plugins.map(p => {
-      function getPlugin(p) {
-        let path = safeRequireResolve(p)
-        if (path) {
-          return require(p)
-        }
-        return require.resolve(nps.resolve(options.cwd, p))
-      }
-
-      if (_.isString(p)) {
-        return require[getPlugin(p)]
-      } else if (_.isArray(p) && _.isString(p[0])) {
-        return [getPlugin(p[0]), p[1]]
-      }
-    })
   }
 
   const normalized = {

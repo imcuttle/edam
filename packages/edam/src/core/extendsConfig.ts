@@ -12,6 +12,7 @@ import { loadConfig } from '../lib/loadConfig'
 import * as _ from 'lodash'
 import * as preduce from 'p-reduce'
 import * as nps from 'path'
+import resolve from "../lib/resolve";
 const debug = require('debug')('edam:extendsConfig')
 
 export type Track = {
@@ -27,6 +28,24 @@ export async function innerExtendsConfig(
 ): Promise<EdamConfig> {
   let extendConfig: EdamConfig
   debug('config %O', config)
+
+  if (config.plugins) {
+    const plugins = (config.plugins = toArray(config.plugins))
+    config.plugins = plugins.map(p => {
+      function getPlugin(p) {
+        const res = resolve(p, { ...options, safe: false })
+        debug('get Plugin: %s -> %s', p, res)
+        return require(res)
+      }
+
+      if (_.isString(p)) {
+        return [getPlugin(p), {}]
+      } else if (_.isArray(p) && _.isString(p[0])) {
+        return [getPlugin(p[0]), p[1]]
+      }
+      return p
+    })
+  }
   if (config.extends) {
     const extendsArray = (config.extends = toArray(config.extends))
     const configList = await Promise.all(
@@ -66,13 +85,12 @@ export async function innerExtendsConfig(
   }
 
   const result = extendsMerge({}, extendConfig, config)
-  // result.plugins = config.plugins
   debug('extended track %O', track)
   debug('extended result %O', result)
   return result
 }
 
-export default async function extendsConfig<T>(
+export default async function extendsConfig(
   config: EdamConfig,
   options: Options & { track?: boolean }
 ): Promise<{ config: EdamConfig; track?: Track }> {

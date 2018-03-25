@@ -24,7 +24,9 @@ import plugins, { Plugin } from './core/plugins'
 import getTemplateConfig from './lib/getTemplateConfig'
 import pReduce from 'p-reduce'
 import * as _ from 'lodash'
-import extendsMerge from './core/extendsMerge'
+import getExtendsMerge from './lib/getExtendsMerge'
+import Compiler from './core/Compiler/index'
+import toArray from './lib/toArray'
 
 export class Edam {
   protected static sourcePullMethods: {
@@ -54,8 +56,6 @@ export class Edam {
   public constants: {
     [name: string]: any
   }
-  // public templateConfig: TemplateConfig
-  public loaders: { [loaderId: string]: Loader }
   public track: Track
   constructor(public config: EdamConfig, public options: Options = {}) {
     this.setConfig(config)
@@ -78,15 +78,6 @@ export class Edam {
       })
     }
 
-    return this
-  }
-
-  public addLoader(loaderId: string, loader: Loader): Edam {
-    this.loaders[loaderId] = loader
-    return this
-  }
-  public removeLoader(loaderId: string): Edam {
-    delete this.loaders[loaderId]
     return this
   }
   public use(
@@ -142,7 +133,7 @@ export class Edam {
     let templateConfig = await getTemplateConfig.apply(this, [
       require(templateConfigPath),
       [this]
-    ])
+    ]) || {}
     let normalizedTemplateConfig: NormalizedTemplateConfig = normalize(
       templateConfig,
       templateConfigPath
@@ -155,13 +146,13 @@ export class Edam {
         await plugin.apply(this, [plugin[1] || {}, this])
       }
     )
-    _.merge(this.templateConfig, {
-      loaders: this.loaders,
-      hooks: extendsMerge({}, normalizedTemplateConfig.hooks, this.hooks)
-    })
+
+    // this.templateConfig
+
+    await this.compiler.run()
+    // compiler
 
     // @todo
-
     return {}
   }
 
@@ -172,15 +163,7 @@ export class Edam {
     root: ''
   }
   public templateConfigPath: string
-  public hooks: {
-    [hookName: string]: Array<Hook>
-  } = {}
-  public addHook(hookName: string, hook: Hook) {
-    const arr: Array<Hook> = this.hooks[hookName] || []
-    arr.push(hook)
-    return this
-  }
-  public assets: {}
+  public compiler: Compiler = new Compiler()
 }
 
 async function edam(config: EdamConfig, options: Options) {

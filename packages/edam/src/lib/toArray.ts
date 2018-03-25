@@ -1,3 +1,4 @@
+
 /**
  * @file sourceAnalysis
  * @author Cuttle Cong
@@ -6,7 +7,7 @@
  *  Analyzes `source`
  */
 
-export default function toArray(item: any): Array<any> {
+export default function toArray<T>(item: any): Array<T> {
   if (Array.isArray(item)) {
     return item
   }

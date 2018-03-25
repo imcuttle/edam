@@ -5,10 +5,9 @@
  * @description
  */
 
-import { NormalizedTemplateConfig } from './normalize'
 import filter from './filter'
+import adaptor from './adaptor'
 import { Edam } from '../../index'
-import TemplateConfig from '../../types/TemplateConfig'
 
 export type Plugin = [
   (
@@ -18,5 +17,6 @@ export type Plugin = [
   any
 ]
 export default [
-  <Plugin>([filter, {}])
+  <Plugin>[filter, {}],
+  <Plugin>[adaptor, {}]
 ]

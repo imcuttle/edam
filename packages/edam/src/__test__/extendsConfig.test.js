@@ -29,7 +29,8 @@ describe('extendsConfig', function() {
     const plugins = [
       function () {
 
-      }
+      },
+      'abc'
     ]
 
     const { config, track } = await extendsConfig(
@@ -74,7 +75,7 @@ describe('extendsConfig', function() {
       {
         extends: ['./fixture/loadConfig/a/.circlerc'],
         plugins: [
-          'psource'
+          [{}, { a: 'psource' }]
         ],
         alias: {
           'react-a': 'aa',
@@ -93,7 +94,7 @@ describe('extendsConfig', function() {
         '.edamrc'
       ],
       plugins: [
-        'psource'
+        [{}, { a: 'psource' }]
       ],
       source: 'a.edamrc',
       alias: {

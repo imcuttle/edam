@@ -10,7 +10,7 @@ import fs from '../lib/fileSystem'
 import * as nps from 'path'
 import * as _ from 'lodash'
 import { Source } from '../types/Options'
-import safeRequireResolve from '../lib/safeRequireResolve'
+import resolve from '../lib/resolve'
 const debug = require('debug')('edam:normalizeSource')
 
 export type Options = {
@@ -58,7 +58,7 @@ export default function normalizeSource(
       branch: parsed.branch
     }
   } else if (
-    ((filename = safeRequireResolve(nps.resolve(cwd, source))),
+    ((filename = resolve(source, { ...options, safe: true })),
     fs.isFile(filename))
   ) {
     result = {

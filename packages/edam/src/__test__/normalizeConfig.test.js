@@ -72,6 +72,9 @@ describe('normalizeConfig', function() {
           type: 'npm',
           url: 'b.react'
         },
+        plugins: [
+          [{}, {}]
+        ],
         alias: {
           'file': {
             type: 'file',
