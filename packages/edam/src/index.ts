@@ -15,7 +15,6 @@ import EdamError from './core/EdamError'
 import * as coreExported from './core/index'
 import * as libExported from './lib/index'
 import * as constant from './core/constant'
-import { Hook, Loader } from './types/TemplateConfig'
 import {
   default as normalize,
   NormalizedTemplateConfig
@@ -27,6 +26,7 @@ import * as _ from 'lodash'
 import getExtendsMerge from './lib/getExtendsMerge'
 import Compiler from './core/Compiler/index'
 import toArray from './lib/toArray'
+import { Variable, Variables } from './types/TemplateConfig'
 
 export class Edam {
   protected static sourcePullMethods: {
@@ -112,6 +112,28 @@ export class Edam {
     this.options = options
     return this
   }
+
+  public promptProcess(): Variable {
+
+  }
+
+  async _prompt(): Promise<Variables> {
+    return await pReduce(
+      this.templateConfig.prompts,
+      async function(set, prompt) {
+        let allow = true
+        if (_.isFunction(prompt.when)) {
+          allow = await prompt.when(set)
+        }
+        if (allow) {
+          Object.assign(set, await this.promptProcess(prompt))
+        }
+        return set
+      },
+      {}
+    )
+  }
+
   public async process(source?: Source): Promise<Tree> {
     this.config.source = source || this.config.source
     await this.normalizeConfig()
@@ -130,10 +152,11 @@ export class Edam {
     templateConfigPath = this.templateConfigPath = require.resolve(
       templateConfigPath
     )
-    let templateConfig = await getTemplateConfig.apply(this, [
-      require(templateConfigPath),
-      [this]
-    ]) || {}
+    let templateConfig =
+      (await getTemplateConfig.apply(
+        this,
+        [require(templateConfigPath), [this]]
+      )) || {}
     let normalizedTemplateConfig: NormalizedTemplateConfig = normalize(
       templateConfig,
       templateConfigPath
@@ -146,6 +169,8 @@ export class Edam {
         await plugin.apply(this, [plugin[1] || {}, this])
       }
     )
+
+    !this.config.yes && this._prompt()
 
     // this.templateConfig
 

@@ -55,9 +55,9 @@ export default class Compiler extends AwaitEventEmitter {
   public assets: {
     [path: string]: Asset
   } = {}
-  // public hooks: {
-  //   [hookName: string]: Array<Hook>
-  // } = {}
+  public variables: {
+    [hookName: string]: Array<Hook>
+  } = {}
   public loaders: {
     [loaderId: string]: Array<StrictLoader>
   } = {}

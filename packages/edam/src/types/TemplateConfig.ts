@@ -4,7 +4,7 @@ export type PromptType = 'checkbox' | 'radio' | 'input' | 'suggest'
 export interface Prompt {
   message: string
   default?: any
-  when?: Function
+  when?: (vars: object) => boolean
   name: string
   type: PromptType
   options?: Array<any>
@@ -15,15 +15,15 @@ export type Hook = string | Function
 
 export type Glob = string
 
-type ComboCenter = {
+type VarCenter = {
   once: Function
   always: Function // default
 }
 
-type GetComboVariable = (cc: ComboCenter) => AsyncOrSync<any>
-
-export type Combo = {
-  [name: string]: GetComboVariable | any
+type GetVariable = (vc: VarCenter) => AsyncOrSync<any>
+export type Variable = GetVariable | any
+export type Variables = {
+  [name: string]: Variable
 }
 export type StrictLoader = Function & { raw?: boolean }
 export type Loader = Array<StrictLoader | string> | string | StrictLoader
@@ -33,7 +33,7 @@ export default interface TemplateConfig {
     [hookName: string]: Array<Hook> | Hook
   }
   files?: Array<Glob> | Glob
-  combo?: Combo
+  variables?: Variables
   root?: string
   loaders?: {
     [loaderId: string]: Array<StrictLoader>
