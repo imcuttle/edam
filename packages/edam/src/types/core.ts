@@ -1,4 +1,4 @@
-import { Loader } from './TemplateConfig'
+import { Loader, Prompt, Variable } from './TemplateConfig'
 
 export type State = {
   input: string
@@ -6,6 +6,8 @@ export type State = {
   loaders?: Loader
   error?: Error
 }
+
+export type PromptProcess = (prompt: Prompt) => Promise<Variable> | Variable
 
 export interface Tree {
   [path: string]: State

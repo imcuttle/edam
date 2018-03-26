@@ -61,6 +61,7 @@ describe('extendsConfig', function() {
       plugins: [
         plugins
       ],
+      output: nps.resolve(__dirname, 'fixture/loadConfig/a'),
       alias: {
         'react-a': 'aa',
         react: 'b.react',

@@ -5,7 +5,31 @@
  * @description
  */
 import * as nps from 'path'
+import { Mapper, StrictLoader } from '../types/TemplateConfig'
 
-export const DEFAULT_CACHE_DIR = nps.join(__dirname, '../../../.cache')
-export const DEFAULT_TPL_MAPPER = {}
-export const DEFAULT_TPL_LOADERS = {}
+const yarnInstall = require('yarn-install')
+const parseGitConfig = require('parse-git-config')
+const gitConfigPath = require('git-config-path')
+
+function gitUserInfo() {
+  return Object.assign(
+    { name: '', email: '' },
+    parseGitConfig.sync({ path: gitConfigPath('global') }).user,
+    parseGitConfig.sync({ path: gitConfigPath() }).user
+  )
+}
+
+
+export class Constants {
+  public DEFAULT_CACHE_DIR: string = nps.join(__dirname, '../../../.cache/edam')
+  public DEFAULT_TPL_MAPPERS: Array<Mapper> = []
+  public DEFAULT_TPL_LOADERS: {
+    [loaderId: string]: Array<StrictLoader>
+  } = {}
+  public DEFAULT_CONTEXT = {
+    git: gitUserInfo(),
+    pm: yarnInstall.getPm({ respectNpm5: true })
+  }
+}
+
+export default <Constants>new Constants()

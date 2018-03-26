@@ -15,40 +15,54 @@ export default async function prompt(
   { yes = true, promptProcess = cliProcess, context = {} } = {}
 ): Promise<Variables> {
   if (!_.isFunction(promptProcess)) {
-    throw new Error('prompt missing the process')
+    throw new Error('prompt is missing the process')
   }
 
   return await pReduce(
     prompts,
     async function(set, prompt) {
       prompt = { ...prompt }
-      // @todo inject context
+      let allow = true
+      if (_.isString(prompt.when)) {
+        allow = <boolean>!!evaluate(prompt.when, set)
+      }
+      else if (_.isFunction(prompt.when)) {
+        allow = await prompt.when(set)
+      }
+      if (!allow) return set
+      // ${git.email}
+      // ${git.name}
+      // ${pm}
+      // ${dirName}
+      if (_.isString(prompt.default)) {
+        const replaceCtx = _.merge({}, set, context)
+        prompt.default = prompt.default.replace(/\${(.+?)}/g, (__, key) => {
+          if (_.hasIn(replaceCtx, key)) {
+            return _.get(replaceCtx, key).toString()
+          }
+          return __
+        })
+      }
       if (_.isFunction(prompt.default)) {
         prompt.default = await prompt.default(set, context)
       }
 
-      if (yes) {
-        return Object.assign(set, { [prompt.name]: prompt.default })
+      let value
+      const transformer = prompt.transformer
+      delete prompt.transformer
+      if (yes && prompt.yes !== false) {
+        value = prompt.default
+      }
+      else {
+        value = await promptProcess(prompt)
+      }
+      if (_.isFunction(transformer)) {
+        value = await transformer(value, set, context)
       }
 
-      let allow = true
-      if (_.isString(prompt.when)) {
-        prompt.when = evaluate(prompt.when, set)
-      }
-      if (_.isFunction(prompt.when)) {
-        allow = await prompt.when(set)
-      }
-      if (allow) {
-        const transformer = prompt.transformer
-        delete prompt.transformer
-        let value = await promptProcess(prompt)
-        if (_.isFunction(transformer)) {
-          value = await transformer(value, set, context)
-        }
-        Object.assign(set, {
-          [prompt.name]: value
-        })
-      }
+      Object.assign(set, {
+        [prompt.name]: value
+      })
       return set
     },
     {}

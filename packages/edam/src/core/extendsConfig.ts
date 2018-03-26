@@ -12,7 +12,8 @@ import { loadConfig } from '../lib/loadConfig'
 import * as _ from 'lodash'
 import * as preduce from 'p-reduce'
 import * as nps from 'path'
-import resolve from "../lib/resolve";
+import resolve from '../lib/resolve'
+
 const debug = require('debug')('edam:extendsConfig')
 
 export type Track = {
@@ -29,9 +30,13 @@ export async function innerExtendsConfig(
   let extendConfig: EdamConfig
   debug('config %O', config)
 
+  if (typeof config.output === 'string') {
+    config.output = nps.resolve(options.cwd, config.output)
+  }
+
   if (config.plugins) {
     const plugins = (config.plugins = toArray(config.plugins))
-    config.plugins = plugins.map(p => {
+    config.plugins = <[Function, any]>plugins.map(p => {
       function getPlugin(p) {
         const res = resolve(p, { ...options, safe: false })
         debug('get Plugin: %s -> %s', p, res)

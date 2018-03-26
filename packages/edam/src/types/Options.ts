@@ -4,7 +4,7 @@ export type LogLevel = 'debug' | 'warn' | 'error' | 'log'
 export type Source = {
   type: 'file' | 'git' | 'npm'
   url: string
-  branch?: string
+  checkout?: string
   version?: string
 }
 
@@ -16,7 +16,11 @@ export interface RCOptions {
   alias?: object
   // the wanted extend edam configuration file path (relative or absolute)
   extends?: string | Array<string>
+  output?: string
   plugins?: Array<Plugin>
+  pull: {
+    npmClient: 'yarn' | 'npm' // | 'cnpm' TODO
+  }
 }
 
 export interface EdamConfig extends RCOptions {

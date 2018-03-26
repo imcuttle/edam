@@ -3,5 +3,6 @@
   plugins: [
     './plugin-a'
   ],
-  source: 'a.edamrc'
+  source: 'a.edamrc',
+  output: ''
 }

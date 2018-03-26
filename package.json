@@ -70,7 +70,9 @@
       "node"
     ]
   },
-  "dependencies": {},
+  "dependencies": {
+    "tildify": "^1.2.0"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/imcuttle/edam.git"

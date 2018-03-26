@@ -14,7 +14,7 @@ describe('normalizeSource', function () {
     ).toEqual({
       type: 'git',
       url: 'https://github.com/telescopejs/telescope.git',
-      branch: 'master'
+      checkout: 'master'
     })
 
     expect(
@@ -22,7 +22,15 @@ describe('normalizeSource', function () {
     ).toEqual({
       type: 'git',
       url: 'git@github.com:telescopejs/telescope.git',
-      branch: 'master'
+      checkout: 'master'
+    })
+
+    expect(
+      normalizeSource('github:telescopejs/telescope')
+    ).toEqual({
+      type: 'git',
+      url: 'https://github.com/telescopejs/telescope.git',
+      checkout: 'master'
     })
 
     expect(
@@ -30,7 +38,7 @@ describe('normalizeSource', function () {
     ).toEqual({
       type: 'git',
       url: 'https://github.com/telescopejs/telescope.git',
-      branch: 'master'
+      checkout: 'master'
     })
 
     expect(
@@ -38,15 +46,15 @@ describe('normalizeSource', function () {
     ).toEqual({
       type: 'git',
       url: 'https://github.com/telescopejs/telescope.git',
-      branch: 'dev'
+      checkout: 'dev'
     })
 
     expect(
-      normalizeSource('github:telescopejs/telescope/dev?branch=master')
+      normalizeSource('github:telescopejs/telescope/dev?checkout=master')
     ).toEqual({
       type: 'git',
       url: 'https://github.com/telescopejs/telescope.git',
-      branch: 'master'
+      checkout: 'master'
     })
   })
 
@@ -56,15 +64,15 @@ describe('normalizeSource', function () {
     ).toEqual({
       type: 'git',
       url: 'ssh://g@gitlab.baidu.com:8022/aa/vvv.git',
-      branch: 'master'
+      checkout: 'master'
     })
 
     expect(
-      normalizeSource('ssh://g@gitlab.baidu.com:8022/aa/vvv?branch=dev')
+      normalizeSource('ssh://g@gitlab.baidu.com:8022/aa/vvv?checkout=dev')
     ).toEqual({
       type: 'git',
       url: 'ssh://g@gitlab.baidu.com:8022/aa/vvv.git',
-      branch: 'dev'
+      checkout: 'dev'
     })
 
     expect(
@@ -85,7 +93,7 @@ describe('normalizeSource', function () {
     ).toEqual({
       type: 'git',
       url: './a.git',
-      branch: 'master'
+      checkout: 'master'
     })
 
     expect(
@@ -96,7 +104,7 @@ describe('normalizeSource', function () {
     ).toEqual({
       type: 'git',
       url: './a.git',
-      branch: 'master'
+      checkout: 'master'
     })
   })
 
@@ -104,7 +112,63 @@ describe('normalizeSource', function () {
     expect(normalizeSource('ssds'))
       .toEqual({
         type: 'npm',
-        url: 'ssds'
+        url: 'ssds',
+        version: ''
+      })
+
+    expect(normalizeSource('npm:react'))
+      .toEqual({
+        type: 'npm',
+        url: 'react',
+        version: ''
+      })
+
+    expect(normalizeSource('npm:react@1.2.3'))
+      .toEqual({
+        type: 'npm',
+        url: 'react',
+        version: '1.2.3'
+      })
+
+    expect(normalizeSource('npm:@abc/cli@>=1.2.3'))
+      .toEqual({
+        type: 'npm',
+        url: '@abc/cli',
+        version: '>=1.2.3'
+      })
+
+    expect(normalizeSource('@abc/cli@>=1.2.3'))
+      .toEqual({
+        type: 'npm',
+        url: '@abc/cli',
+        version: '>=1.2.3'
+      })
+
+    expect(normalizeSource('@abc/cli@v1.2.3'))
+      .toEqual({
+        type: 'npm',
+        url: '@abc/cli',
+        version: 'v1.2.3'
+      })
+
+    expect(normalizeSource('@abc/cli/a@v1.2.3'))
+      .toEqual({
+        type: 'npm',
+        url: '@abc/cli/a',
+        version: 'v1.2.3'
+      })
+    expect(normalizeSource('@v1.2.3'))
+      .toEqual({
+        type: 'npm',
+        url: '@v1.2.3',
+        version: ''
+      })
+
+    expect(normalizeSource('react@latest'))
+      .toEqual({
+        type: 'npm',
+        url: 'react',
+        version: 'latest'
       })
   })
 

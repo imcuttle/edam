@@ -4,6 +4,7 @@ export type PromptType = 'checkbox' | 'radio' | 'input' | 'suggest'
 export interface Prompt {
   message: string
   default?: any
+  yes?: boolean
   when?: (vars: Variables) => boolean
   name: string
   type: PromptType

@@ -5,13 +5,17 @@
  * @description
  */
 import * as qs from 'querystring'
-import * as parseGithubUrl from 'parse-github-url'
+import * as cacheParseGithubUrl from 'parse-github-url'
+
+function parseGithubUrl(url: string): object {
+  return { ...cacheParseGithubUrl(url) }
+}
 
 export default function parse(url: string) {
   url = url.trim()
 
-
-  let query = {}, obj
+  let query = {},
+    obj
   let i = url.lastIndexOf('?')
   if (i >= 0) {
     query = qs.parse(url.slice(i + 1))
@@ -20,8 +24,7 @@ export default function parse(url: string) {
   if (/^github:/.test(url)) {
     obj = parseGithubUrl(url.replace(/^github:/, ''))
     url = `https://github.com/${obj.repo}.git`
-  }
-  else {
+  } else {
     obj = parseGithubUrl(url)
   }
 
@@ -38,5 +41,7 @@ export default function parse(url: string) {
     )
   }
 
+  obj.checkout = obj.branch
+  delete obj.branch
   return { ...obj, ...query, url }
 }

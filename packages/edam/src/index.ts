@@ -9,12 +9,13 @@ import normalizeConfig from './core/normalizeConfig'
 import { EdamConfig, Source } from './types/Options'
 import { Track } from './core/extendsConfig'
 import { Options } from './core/normalizeSource'
-import { Tree } from './types/core'
+import { PromptProcess, Tree, TreeProcessor } from './types/core'
 import * as presetSourcePull from './core/pull/preset'
 import EdamError from './core/EdamError'
 import * as coreExported from './core/index'
 import * as libExported from './lib/index'
-import * as constant from './core/constant'
+import constant from './core/constant'
+import * as nps from 'path'
 import {
   default as normalize,
   NormalizedTemplateConfig
@@ -22,10 +23,12 @@ import {
 import plugins, { Plugin } from './core/plugins'
 import getTemplateConfig from './lib/getTemplateConfig'
 import pReduce from 'p-reduce'
-import * as _ from 'lodash'
+// import * as _ from 'lodash'
 import Compiler from './core/Compiler/index'
-import { Variable } from './types/TemplateConfig'
+// import { Variable } from './types/TemplateConfig'
 import prompt from './core/promptProcessor'
+import FileProcessor from './core/TreeProcessor/FileProcessor'
+import { Constants } from './core/constant'
 
 export class Edam {
   protected static sourcePullMethods: {
@@ -39,9 +42,7 @@ export class Edam {
     ...coreExported,
     ...libExported
   }
-  protected static constants: {
-    [name: string]: any
-  } = {
+  protected static constants: Constants = {
     ...constant
   }
   protected static plugins: Array<Plugin> = plugins
@@ -52,9 +53,7 @@ export class Edam {
   public utils: {
     [name: string]: any
   }
-  public constants: {
-    [name: string]: any
-  }
+  public constants: Constants
   public track: Track
   constructor(public config: EdamConfig, public options: Options = {}) {
     this.setConfig(config)
@@ -112,7 +111,11 @@ export class Edam {
     return this
   }
 
-  public async process(source?: Source, { promptProcess } = { promptProcess: Function }): Promise<Tree> {
+  public async process(
+    source?: Source,
+    options?: { promptProcess?: PromptProcess }
+  ): Promise<FileProcessor> {
+    options = options || {}
     this.config.source = source || this.config.source
     await this.normalizeConfig()
 
@@ -126,7 +129,11 @@ export class Edam {
         `source pull method is not found of type: ${source.type}`
       )
     }
-    let templateConfigPath: string = await pullMethod.call(this, source, this)
+    let templateConfigPath: string = await pullMethod.apply(this, [
+      source,
+      this.config.cacheDir || this.constants.DEFAULT_CACHE_DIR,
+      this.config
+    ])
     templateConfigPath = this.templateConfigPath = require.resolve(
       templateConfigPath
     )
@@ -134,30 +141,33 @@ export class Edam {
     this.compiler.variables.setStore(
       await prompt(this.templateConfig.prompts, {
         yes: this.config.yes,
-        context: {},
-        promptProcess
+        context: {
+          ...this.constants.DEFAULT_CONTEXT,
+          absoluteDir: this.config.output,
+          dirName: nps.dirname(this.config.output)
+        },
+        promptProcess: options.promptProcess
       })
     )
 
     let templateConfig =
       (await getTemplateConfig.apply(
         this,
-        [require(templateConfigPath), [this]]
+        [require(templateConfigPath), [this, this]]
       )) || {}
-    let normalizedTemplateConfig: NormalizedTemplateConfig = normalize(
+
+    this.templateConfig = normalize(
       templateConfig,
       templateConfigPath
     )
 
-    this.templateConfig = normalizedTemplateConfig
     await pReduce(
       this.plugins.concat(this.config.plugins),
       async (config, plugin) => {
         await plugin.apply(this, [plugin[1] || {}, this])
       }
     )
-
-    return await this.compiler.run()
+    return new FileProcessor(await this.compiler.run(), this.config.output)
   }
 
   public templateConfig: NormalizedTemplateConfig = {
@@ -166,6 +176,7 @@ export class Edam {
     mapper: {},
     root: ''
   }
+
   public templateConfigPath: string
   public compiler: Compiler = new Compiler()
 }

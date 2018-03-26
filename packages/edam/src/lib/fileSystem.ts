@@ -8,6 +8,7 @@ const nps = require('path')
 const fs = require('fs')
 const pify = require('pify')
 const _ = require('lodash')
+const rimraf = require('rimraf')
 const match = require('./match').default
 
 function isFile(filename: string): boolean {
@@ -42,11 +43,19 @@ async function readdirDeep(path: string, options?: { filter: any }) {
     : files
 }
 
+async function cleanDir(path: string): Promise<undefined> {
+  return pify(rimraf)(path)
+}
+
+
+
 export default {
   ...fs,
   isFile,
   isDirectory,
   readFile: pify(fs.readFile),
+  writeFile: pify(fs.writeFile),
   readdir,
-  readdirDeep
+  readdirDeep,
+  cleanDir
 }

@@ -11,6 +11,7 @@ import * as nps from 'path'
 import * as _ from 'lodash'
 import { Source } from '../types/Options'
 import resolve from '../lib/resolve'
+const semver = require('semver')
 const debug = require('debug')('edam:normalizeSource')
 
 export type Options = {
@@ -27,8 +28,8 @@ export function normalizeSourceObject(
   }
   if (source.type === 'git') {
     source.url = source.url.replace(/(\.git)?$/, '.git')
-    if (!source.branch) {
-      source.branch = 'master'
+    if (!source.checkout) {
+      source.checkout = 'master'
     }
   }
   return source
@@ -48,6 +49,15 @@ export default function normalizeSource(
   let filename
   debug('input source: %s', source)
   source = (<string>source).trim()
+
+  let prefix = ''
+  if (/^(.+?):/.test(source)) {
+    prefix = RegExp.$1
+  }
+  if (['npm'].includes(prefix)) {
+    source = source.substring(prefix.length + 1)
+  }
+
   if (isGitUrl(source)) {
     const parsed = parseGitUrl(source)
     source = parsed.url.replace(/(\.git)?$/, '.git')
@@ -55,7 +65,7 @@ export default function normalizeSource(
     result = {
       type: 'git',
       url: <string>source,
-      branch: parsed.branch
+      checkout: parsed.checkout
     }
   } else if (
     ((filename = resolve(source, { ...options, safe: true })),
@@ -66,11 +76,26 @@ export default function normalizeSource(
       url: filename
     }
   } else {
+    let version = ''
+    if (/^(.+)@([^@]*)$/.test(source)) {
+      let matchedSource = RegExp.$1
+      version = RegExp.$2
+      // version = semver.valid(semver.coerce(RegExp.$2))
+      // if (version === null) {
+      //   throw new Error(
+      //     'The source of npm: "' +
+      //       source +
+      //       '" error happened when parsing version'
+      //   )
+      // }
+
+      source = matchedSource
+    }
+
     result = {
       type: 'npm',
-      url: source
-      // @todo
-      // version: ''
+      url: source,
+      version
     }
   }
 

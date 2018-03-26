@@ -13,8 +13,12 @@ import * as rimraf from 'rimraf'
 import * as pify from 'pify'
 
 export default class FileProcessor extends TreeProcessor {
+  constructor(public tree: Tree, public dest: string) {
+    super(tree)
+    this.dest = dest
+  }
   public async writeToFile(
-    filepath: string,
+    filepath: string = this.dest,
     option: { clean: boolean } = { clean: true }
   ): Promise<boolean> {
     await pify(mkdirp)(filepath)

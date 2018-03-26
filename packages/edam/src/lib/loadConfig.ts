@@ -1,5 +1,5 @@
 import { Options } from '../core/normalizeSource'
-import safeRequireResolve from "./safeRequireResolve";
+import safeRequireResolve from './safeRequireResolve'
 
 const JSON5 = require('json5')
 const cosmiconfig = require('cosmiconfig')
@@ -18,7 +18,7 @@ async function parseJSONFile(filename) {
   }
 }
 
-function getMatchJSONErrorFilename(err): string|null {
+function getMatchJSONErrorFilename(err): string | null {
   // Error: Failed to parse "/Users/yucong02/self/edam/packages/edam/src/__test__/fixture/loadConfig/.filerc" as JSON, JS, or YAML.
   if (/Failed to parse "(.+)" as JSON, JS, or YAML\.$/.test(err.message)) {
     return RegExp.$1
@@ -28,7 +28,9 @@ function getMatchJSONErrorFilename(err): string|null {
   }
 }
 
-export async function load(searchPath?: string): Promise<{ config: any, filepath: string }> {
+export async function load(
+  searchPath?: string
+): Promise<{ config: any; filepath: string }> {
   debug('load searchPath: %s', searchPath)
   try {
     const obj = await explorer.load(searchPath)
@@ -59,8 +61,7 @@ export async function loadConfig(
   let filename: string
   if (resolved) {
     filename = resolved
-  }
-  else {
+  } else {
     filename = nps.resolve(cwd, path)
     filename = require.resolve(filename)
   }
