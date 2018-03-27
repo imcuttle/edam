@@ -5,16 +5,16 @@
  * @description
  */
 import * as _ from 'lodash'
-import * as AwaitEventEmitter from 'await-event-emitter'
 
 import { Hook, Loader, Mapper, StrictLoader } from '../../types/TemplateConfig'
-import pReduce from 'p-reduce'
-import { Tree } from '../../types/core'
+import * as pReduce from 'p-reduce'
+import { AwaitEventEmitter, Logger, Tree } from '../../types/core'
 import toArray from '../../lib/toArray'
 import { isMatch } from '../../lib/match'
 import EdamError from '../EdamError'
 import VariablesImpl from './Variables'
 import hookify from './hookify'
+import matchMeta from './matchMeta'
 
 const debug = require('debug')('edam:Compiler')
 
@@ -24,31 +24,42 @@ export type Asset = {
 }
 
 export default class Compiler extends AwaitEventEmitter {
-  emit: Function
-  emitSync: Function
-  removeListener: Function
-
+  public logger: Logger
+  public root: string = ''
   public removeHook(hookName: string, hook?: Function) {
-    // @todo
     this.removeListener(hookName, hook)
+    return this
   }
   public addHook(
     hookName: string,
     hook: Hook,
     type: 'on' | 'off' = 'on'
   ): Function {
-    // @todo hookily
+    let cmd = typeof hook === 'string' && hook
     hook = hookify(hook)
-    this[type](hookName, hook)
-    return <Function>hook
+    const wrapped = (function wrapHook(hook, logger) {
+      return function() {
+        logger.log('Trigger hook:', hookName, cmd ? ' Cmd: ' + cmd : '')
+        return hook.apply(this, arguments)
+      }
+    })(hook, this.logger)
+    this[<string>type](hookName, wrapped)
+    return <Function>wrapped
   }
-  constructor(loaders?, mappers?) {
+  constructor({
+    loaders,
+    mappers,
+    root
+  }: { loaders?; mappers?; root?: string } = {}) {
     super()
     if (loaders) {
       this.loaders = loaders
     }
     if (mappers) {
       this.mappers = mappers
+    }
+    if (root) {
+      this.root = root
     }
   }
   public addLoader(loaderId: string, loader: Loader): Compiler {
@@ -73,14 +84,14 @@ export default class Compiler extends AwaitEventEmitter {
     _.some(this.mappers, function(mapper) {
       // @todo
       if (isMatch(path, mapper.test)) {
-        matchedLoader = mapper
+        matchedLoader = mapper.loader
         return true
       }
     })
     return matchedLoader
   }
 
-  async transform(input, loaders: Loader) {
+  async transform(input, loaders: Loader, path: string) {
     loaders = toArray(loaders)
     let data = { input, loaders }
     await this.emit('loader:each:before', data)
@@ -91,18 +102,23 @@ export default class Compiler extends AwaitEventEmitter {
           let id = loader
           loader = this.loaders[id]
           if (!loader) {
-            throw new EdamError(`loaderId: ${id} is not matched.`)
+            throw new Error(`loaderId: ${id} is not matched.`)
           }
-          return await this.transform(input, loader)
+          return await this.transform(input, loader, path)
         }
 
-        await this.emit('variables:each', this.variables)
-        const data = this.variables.get()
+        let options = {}
+        // [ loader, options ]
+        if (_.isArray(loader)) {
+          loader = loader[0]
+          options = loader[1] || {}
+        }
+
         if (loader.raw === true) {
           const buf = Buffer.isBuffer(input) ? input : new Buffer(input)
-          return await loader.apply(this, [buf, data])
+          return await loader.apply(this, [buf, options, path])
         }
-        return await loader.apply(this, [input, data])
+        return await loader.apply(this, [input, options, path])
       },
       data.input
     )
@@ -119,12 +135,19 @@ export default class Compiler extends AwaitEventEmitter {
       const loaders = asset.loaders
       const data = { input, loaders }
       if (_.isString(data.input)) {
-        // @todo match first line for use loader
-        const { content, meta } = matchMetaFromString(data.input, path)
+        const { content, meta } = matchMeta(data.input, path)
         data.input = content
-        if (meta && meta.useLoader) {
-          debug('matchMetaFromString meta: %o, path: %s', meta, path)
-          data.loaders = this.loaders[meta.useLoader]
+        if (meta && meta.loader) {
+          debug('matched meta: \n%O \npath: %s', meta, path)
+          if (!(meta.loader.name in this.loaders)) {
+            this.logger.warn(
+              'Matched loader %s from file: %s is not existed',
+              meta.loader.name,
+              path
+            )
+          } else {
+            data.loaders = this.loaders[meta.loader.name]
+          }
         }
       }
       if (!data.loaders) {
@@ -136,10 +159,15 @@ export default class Compiler extends AwaitEventEmitter {
           await this.emit('loader:before', data)
           return {
             path,
-            output: await this.transform(data.input, data.loaders),
+            output: await this.transform(data.input, data.loaders, path),
             ...data
           }
         } catch (err) {
+          this.logger.error(
+            'Error occurs when transforming content of file: ' + path + '\n',
+            err
+          )
+
           return {
             path,
             error: err,

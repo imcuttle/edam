@@ -99,10 +99,9 @@ describe('normalizeConfig', function() {
             url: 'b.react.origin',
             version: ''
           },
-          rc: {
-            type: 'npm',
-            url: 'rc',
-            version: ''
+          json5: {
+            type: 'file',
+            url: require.resolve('json5')
           },
           'github': {
             type: 'git',
@@ -166,10 +165,9 @@ describe('normalizeConfig', function() {
             url: 'b.react.origin',
             version: ''
           },
-          rc: {
-            type: 'npm',
-            url: 'rc',
-            version: ''
+          json5: {
+            type: 'file',
+            url: require.resolve('json5')
           },
           'github': {
             type: 'git',

@@ -19,5 +19,5 @@ export default function wrap(source: Source): string {
     return source.type
   }
 
-  return join(source.type, filenamify(source.url))
+  return join(source.type)
 }

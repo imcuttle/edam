@@ -5,13 +5,13 @@
  * @description
  */
 import { EdamConfig, Source } from '../../types/Options'
-import sourceFilenamily from '../sourceFilenamily'
+import sourceFilenamify from '../sourceFilenamify'
 import { join } from 'path'
 import * as mkdirp from 'mkdirp'
 import fs from '../../lib/fileSystem'
 import chalk from 'chalk'
-import tildify from 'tildify'
 
+const tildify = require('tildify')
 const updateNotifier = require('update-notifier')
 const c = require('chalk')
 const debug = require('debug')('edam:pull:npm')
@@ -25,7 +25,7 @@ module.exports = async function(
 ) {
   const { cacheDir, pull: { npmClient } } = options
 
-  const log = (this && this.logger && this.logger.log) || function() {}
+  const log = (this && this.logger && this.logger.log) || console.log
 
   let respectNpm5 = npmClient === 'npm'
   const name = source.version ? `${source.url}@${source.version}` : source.url
@@ -85,7 +85,7 @@ module.exports = async function(
     )
   }
 
-  dest = join(destDir, sourceFilenamily(source))
+  dest = join(destDir, sourceFilenamify(source))
   mkdirp.sync(dest)
   const npmPackageJson = join(dest, 'package.json')
   if (!fs.isFile(npmPackageJson)) {

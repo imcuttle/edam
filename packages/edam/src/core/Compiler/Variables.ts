@@ -1,6 +1,6 @@
 import { Variable, Variables } from '../../types/TemplateConfig'
 import * as _ from 'lodash'
-import pReduce from 'p-reduce'
+const pReduce = require('p-reduce')
 
 /**
  * @file Variables
@@ -9,14 +9,20 @@ import pReduce from 'p-reduce'
  * @description
  */
 
-export default class VariablesImpl {
+export type VariablesController = {
+  always: Function
+  once: Function
+  _type: 'once' | 'always'
+}
+
+export default class VariablesStore {
   public store: Variables = {}
   public merge(vars: Variables) {
     _.merge(this.store, vars)
     return this
   }
   public assign(vars: Variables) {
-    Object.assign(this.store, vars)
+    _.assign(this.store, vars)
     return this
   }
   public setStore(variables: Variables) {
@@ -37,12 +43,12 @@ export default class VariablesImpl {
   private async _get(key: string | string[]): Promise<Variable> {
     const variable = _.get(this.store, key)
     if (!variable) {
-      throw new Error(`Variable key: ${key} is not found.`)
+      return variable
     }
 
     let rlt: Variable = variable
     if (_.isFunction(variable)) {
-      const vCenter = {
+      const vCenter: VariablesController = {
         _type: 'once',
         once() {
           this._type = 'once'
@@ -55,7 +61,6 @@ export default class VariablesImpl {
       if (vCenter._type === 'once') {
         this.set(key, rlt)
       }
-      // this.store[key] = rlt
     } else {
       this.set(key, rlt)
     }

@@ -13,7 +13,7 @@ import toArray from '../../lib/toArray'
 import * as _ from 'lodash'
 
 export type NormalizedTemplateConfig = TemplateConfig & {
-  files: Array<string>
+  ignore?: string[]
   hooks?: {
     [hookName: string]: Array<Hook>
   }
@@ -34,11 +34,10 @@ export default function normalize(
   if (!templateConfig.root && templateConfigPath) {
     templateConfig.root = nps.dirname(templateConfigPath)
   }
-  if (!templateConfig.files) {
-    templateConfig.files = ['*']
+  if (!templateConfig.ignore) {
+    templateConfig.ignore = []
   }
-  templateConfig.files = toArray<string>(templateConfig.files)
-  templateConfig.files.push('!.DS_Store')
+  templateConfig.ignore = toArray<string>(templateConfig.ignore)
 
   _.each(templateConfig.loaders, function(val, key) {
     if (val) {

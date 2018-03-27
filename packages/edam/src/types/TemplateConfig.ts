@@ -28,7 +28,8 @@ export type Variables = {
 }
 
 export type StrictLoader = Function & { raw?: boolean }
-export type Loader = Array<StrictLoader | string> | string | StrictLoader
+export type StrictLoaderWithOption = [StrictLoader, any]
+export type Loader = Array<StrictLoader | string | StrictLoaderWithOption> | string | StrictLoader | StrictLoaderWithOption
 
 export type Matcher = Glob | RegExp | Function
 
@@ -38,17 +39,20 @@ export type Mapper = {
 }
 
 // export type Dynamic
-export type FileMatcher = Matcher | {
-  when?: (vars: Variables) => boolean,
-  test: Matcher
-}
+export type FileMatcher =
+  | Matcher
+  | {
+      when?: (vars: Variables) => boolean
+      test: Matcher
+    }
 
 export default interface TemplateConfig {
   prompts?: Array<Prompt>
   hooks?: {
     [hookName: string]: Array<Hook> | Hook
   }
-  files?: Array<FileMatcher> | FileMatcher
+  ignore?: Array<string>
+
   variables?: Variables
   root?: string
   loaders?: {
@@ -58,7 +62,9 @@ export default interface TemplateConfig {
   move?: {}
   copy?: {}
 
-  gitInit?: boolean
-  downloadDependencies?: boolean
-  downloadDevDependencies?: boolean
+  usefulHook: {
+    gitInit?: boolean
+    installDependencies?: boolean
+    installDevDependencies?: boolean
+  }
 }

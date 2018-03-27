@@ -10,7 +10,7 @@ import { default as normalizeSource, Options } from './normalizeSource'
 import { load } from '../lib/loadConfig'
 import extendsMerge from './extendsMerge'
 /* eslint-disable no-unused-vars */
-import * as qs from 'querystring'
+import parseQuery from '../lib/parseQuery'
 import extendsConfig, { innerExtendsConfig, Track } from './extendsConfig'
 import * as _ from 'lodash'
 import * as nps from 'path'
@@ -109,7 +109,7 @@ export default async function normalizeConfig(
     let query = {}
     let tmpSource = source
     if (qIndex >= 0) {
-      query = qs.parse(source.slice(qIndex + 1))
+      query = parseQuery(source.slice(qIndex + 1))
       tmpSource = source.substring(0, qIndex)
     }
     if (tmpSource in mergedConfig.alias) {

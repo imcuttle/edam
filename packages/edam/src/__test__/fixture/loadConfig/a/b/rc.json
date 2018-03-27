@@ -2,7 +2,7 @@
   alias: {
     'react': 'b.react',
     'b.react': 'rc.react',
-    'rc': 'rc'
+    'json5': 'json5'
   },
-  source: 'rc'
+  source: 'json5'
 }

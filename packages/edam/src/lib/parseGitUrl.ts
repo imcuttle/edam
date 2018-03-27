@@ -4,7 +4,7 @@
  * @date 2018/3/23
  * @description
  */
-import * as qs from 'querystring'
+import parseQuery from './parseQuery'
 import * as cacheParseGithubUrl from 'parse-github-url'
 
 function parseGithubUrl(url: string): object {
@@ -18,7 +18,7 @@ export default function parse(url: string) {
     obj
   let i = url.lastIndexOf('?')
   if (i >= 0) {
-    query = qs.parse(url.slice(i + 1))
+    query = parseQuery(url.slice(i + 1))
     url = url.substring(0, i)
   }
   if (/^github:/.test(url)) {

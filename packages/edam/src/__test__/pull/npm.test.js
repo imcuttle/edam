@@ -6,7 +6,7 @@
  */
 import npmPull from '../../core/pull/npm'
 import constant from '../../core/constant'
-import sourceFilenamily from '../../core/sourceFilenamily'
+import sourceFilenamify from '../../core/sourceFilenamify'
 import * as nps from 'path'
 import { fileSystem } from '../../lib'
 
@@ -17,7 +17,7 @@ describe('npm', function() {
     url: name
   }
   let output = nps.join(
-    nps.join(constant.DEFAULT_CACHE_DIR, sourceFilenamily(source)),
+    nps.join(constant.DEFAULT_CACHE_DIR, sourceFilenamify(source)),
     'node_modules',
     name
   )
@@ -33,8 +33,7 @@ describe('npm', function() {
   })
   it('should npm pull universal package when use `npm`', async () => {
     expect(
-      await npmPull.call(
-        { logger: { log: console.log } },
+      await npmPull(
         { ...source, version: '=1.0.0' },
         constant.DEFAULT_CACHE_DIR,
         {
@@ -51,8 +50,7 @@ describe('npm', function() {
 
   it('should npm pull universal package when use `npm` and nocache', async () => {
     expect(
-      await npmPull.call(
-        { logger: { log: console.log } },
+      await npmPull(
         source,
         constant.DEFAULT_CACHE_DIR,
         {

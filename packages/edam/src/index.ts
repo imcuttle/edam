@@ -9,7 +9,7 @@ import normalizeConfig from './core/normalizeConfig'
 import { EdamConfig, Source } from './types/Options'
 import { Track } from './core/extendsConfig'
 import { Options } from './core/normalizeSource'
-import { PromptProcess, Tree, TreeProcessor } from './types/core'
+import { AwaitEventEmitter, Logger, PromptProcess } from './types/core'
 import * as presetSourcePull from './core/pull/preset'
 import EdamError from './core/EdamError'
 import * as coreExported from './core/index'
@@ -22,15 +22,17 @@ import {
 } from './core/plugins/normalize'
 import plugins, { Plugin } from './core/plugins'
 import getTemplateConfig from './lib/getTemplateConfig'
-import pReduce from 'p-reduce'
+import * as pReduce from 'p-reduce'
 // import * as _ from 'lodash'
 import Compiler from './core/Compiler/index'
 // import { Variable } from './types/TemplateConfig'
 import prompt from './core/promptProcessor'
 import FileProcessor from './core/TreeProcessor/FileProcessor'
 import { Constants } from './core/constant'
+import DefaultLogger from './core/DefaultLogger'
 
-export class Edam {
+export class Edam extends AwaitEventEmitter {
+  public logger: Logger
   protected static sourcePullMethods: {
     [name: string]: (source: Source, edam: Edam) => string
   } = {
@@ -56,6 +58,7 @@ export class Edam {
   public constants: Constants
   public track: Track
   constructor(public config: EdamConfig, public options: Options = {}) {
+    super()
     this.setConfig(config)
     this.setOption(options)
     // fill
@@ -63,6 +66,8 @@ export class Edam {
     this.sourcePullMethods = Object.assign({}, Edam.sourcePullMethods)
     this.constants = Object.assign({}, Edam.constants)
     this.plugins = Edam.plugins.slice()
+
+    this.logger = this.compiler.logger = new DefaultLogger()
   }
 
   private async normalizeConfig(): Promise<Edam> {
@@ -111,13 +116,19 @@ export class Edam {
     return this
   }
 
-  public async process(
-    source?: Source,
-    options?: { promptProcess?: PromptProcess }
-  ): Promise<FileProcessor> {
-    options = options || {}
+  promptProcess: PromptProcess = require('./core/promptProcessor/cli/index')
+    .default
+
+  public async process(source?: Source): Promise<FileProcessor> {
     this.config.source = source || this.config.source
     await this.normalizeConfig()
+
+    await pReduce(
+      this.plugins.concat(this.config.plugins),
+      async (config, plugin) => {
+        await plugin.apply(this, [plugin[1] || {}, this])
+      }
+    )
 
     source = <Source>this.config.source
     if (!source) {
@@ -129,6 +140,8 @@ export class Edam {
         `source pull method is not found of type: ${source.type}`
       )
     }
+
+    await this.emit('pull:before')
     let templateConfigPath: string = await pullMethod.apply(this, [
       source,
       this.config.cacheDir || this.constants.DEFAULT_CACHE_DIR,
@@ -137,44 +150,49 @@ export class Edam {
     templateConfigPath = this.templateConfigPath = require.resolve(
       templateConfigPath
     )
+    await this.emit('pull:after', templateConfigPath)
 
+    const context = {
+      ...this.constants.DEFAULT_CONTEXT,
+      absoluteDir: this.config.output,
+      dirName: nps.dirname(this.config.output)
+    }
+    await this.emit('prompt:before', this.templateConfig.prompts, context)
     this.compiler.variables.setStore(
       await prompt(this.templateConfig.prompts, {
         yes: this.config.yes,
-        context: {
-          ...this.constants.DEFAULT_CONTEXT,
-          absoluteDir: this.config.output,
-          dirName: nps.dirname(this.config.output)
-        },
-        promptProcess: options.promptProcess
+        context,
+        promptProcess: this.promptProcess
       })
     )
+    this.compiler.variables.merge({ _: context })
+    await this.emit('prompt:after', this.compiler.variables)
 
     let templateConfig =
       (await getTemplateConfig.apply(
         this,
         [require(templateConfigPath), [this, this]]
       )) || {}
+    await this.emit('normalize:templateConfig:before', templateConfig)
+    this.templateConfig = normalize(templateConfig, templateConfigPath)
+    await this.emit('normalize:templateConfig:after', this.templateConfig)
 
-    this.templateConfig = normalize(
-      templateConfig,
-      templateConfigPath
-    )
-
-    await pReduce(
-      this.plugins.concat(this.config.plugins),
-      async (config, plugin) => {
-        await plugin.apply(this, [plugin[1] || {}, this])
-      }
-    )
-    return new FileProcessor(await this.compiler.run(), this.config.output)
+    await this.emit('compiler:before')
+    const tree = await this.compiler.run()
+    await this.emit('compiler:after', tree)
+    return new FileProcessor(tree, this.config.output)
   }
 
   public templateConfig: NormalizedTemplateConfig = {
-    files: [],
+    ignore: [],
     loaders: {},
     mapper: {},
-    root: ''
+    root: '',
+    usefulHook: {
+      gitInit: false,
+      installDependencies: false,
+      installDevDependencies: false
+    }
   }
 
   public templateConfigPath: string
