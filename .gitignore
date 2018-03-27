@@ -5,3 +5,4 @@ node_modules/
 coverage/
 *debug.log
 /packages/.cache/
+.DS_Store
