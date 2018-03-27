@@ -45,5 +45,7 @@ export default function normalize(
     }
   })
 
+  templateConfig
+
   return <NormalizedTemplateConfig>templateConfig
 }

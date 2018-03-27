@@ -8,9 +8,10 @@ import gitPull from '../../core/pull/git'
 import constant from '../../core/constant'
 import sourceFilenamify from '../../core/sourceFilenamify'
 import * as nps from 'path'
+import fileSystem from '../../lib/fileSystem'
 const filenamify = require('filenamify')
 
-jest.setTimeout(20000) // 20s
+jest.setTimeout(40000) // 40s
 describe('git', function() {
   let source = {
     type: 'git',
@@ -30,7 +31,7 @@ describe('git', function() {
           git: 'clone'
         }
       })
-    ).toBe(nps.join(output, 'clone', filenamify(source.url)))
+    ).toBe(nps.join(output, 'clone', filenamify(source.url), 'master'))
 
     expect(
       await gitPull(source, constant.DEFAULT_CACHE_DIR, {
@@ -40,7 +41,7 @@ describe('git', function() {
           git: 'clone'
         }
       })
-    ).toBe(nps.join(output, 'clone', filenamify(source.url)))
+    ).toBe(nps.join(output, 'clone', filenamify(source.url), 'master'))
   })
 
   it('should download works on simple case', async () => {
@@ -67,6 +68,10 @@ describe('git', function() {
         }
       )
     ).toBe(nps.join(output, 'download', filenamify(source.url), 'cheerio'))
+  })
+
+  afterAll(async function () {
+    await fileSystem.cleanDir(this.constants.DEFAULT_CACHE_DIR)
   })
 
   // it('should download deals with the gitlab', async function() {

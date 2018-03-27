@@ -20,6 +20,7 @@ export default async function filter(/*options*/) {
     const compiler = edam.compiler
     const variables = edam.compiler.variables
 
+    compiler.root = templateConfig.root
     getExtendsMerge({ concatKeys: ['mappers'] })(
       compiler,
       {

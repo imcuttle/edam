@@ -63,4 +63,8 @@ describe('npm', function() {
     ).toBe(output)
     expect(version()).toBe('1.0.1')
   })
+
+  afterAll(async function () {
+    await fileSystem.cleanDir(this.constants.DEFAULT_CACHE_DIR)
+  })
 })

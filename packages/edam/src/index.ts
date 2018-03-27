@@ -203,6 +203,7 @@ async function edam(config: EdamConfig, options: Options) {
   return await new Edam(config, options)
 }
 Object.assign(edam, Edam, {
-  Edam
+  Edam,
+  Compiler
 })
 module.exports = edam
