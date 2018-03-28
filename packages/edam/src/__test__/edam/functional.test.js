@@ -6,8 +6,13 @@
  * @description
  */
 import { mockPrompts } from '../../index'
-import { join } from 'path'
+import { join, relative } from 'path'
+import fileSystem from '../../lib/fileSystem'
 
+async function readdirDeep(dest) {
+  const files = await fileSystem.readdirDeep(dest)
+  return files.filter(x => fileSystem.isFile(x)).map(x => relative(dest, x))
+}
 describe('functional', function() {
   const tplPath = join(__dirname, '../fixture/edam')
   const outputRoot = join(__dirname, '../fixture/edam-output')
@@ -21,18 +26,44 @@ describe('functional', function() {
       join(outputRoot, 'functional')
     )
 
-    expect(Object.keys(ft.tree).length).toBe(3)
+    expect(Object.keys(ft.tree)).toEqual(
+      expect.arrayContaining([
+        '.gitignore',
+        'imignored/keep.module.js',
+        'index.js'
+      ])
+    )
     expect(ft.tree).toMatchSnapshot()
   })
 
-  it('should functional output', async function () {
-    const ft = await mockPrompts(
+  it('should functional output', async function() {
+    const fp = await mockPrompts(
       join(tplPath, 'functional'),
       {
         value: 'ojbk'
       },
       join(outputRoot, 'functional')
     )
-    expect(await ft.writeToFile()).toBeTruthy()
+
+    expect(Object.keys(fp.tree)).toEqual(
+      expect.arrayContaining([
+        '.gitignore',
+        'imignored/keep.module.js',
+        'index.js'
+      ])
+    )
+    expect(await fp.writeToFile()).toBeTruthy()
+
+    expect(
+      await readdirDeep(join(outputRoot, 'functional'))
+    ).toEqual(
+      expect.arrayContaining([
+        '.gitignore',
+        'imignored/keep.module.js',
+        'index.js'
+      ])
+    )
+
+    await fileSystem.cleanDir(join(outputRoot, 'functional'))
   })
 })

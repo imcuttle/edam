@@ -1,3 +1,4 @@
+/* eslint-disable indent */
 /**
  * @file Compiler
  * @author Cuttle Cong
@@ -35,17 +36,24 @@ export default class Compiler extends AwaitEventEmitter {
   public addHook(
     hookName: string,
     hook: Hook,
-    type: 'on' | 'once' = 'on'
+    options: { type?: 'on' | 'once'; silent?: boolean } = {}
   ): Function {
     let cmd = typeof hook === 'string' && hook
+    options = Object.assign({ type: 'on', silent: false }, options)
     hook = hookify(hook, this.hookCwd)
-    const wrapped = (function wrapHook(hook, logger) {
-      return function() {
-        logger.log('Trigger hook:', hookName, cmd ? JSON.stringify(cmd) : '')
-        return hook.apply(this, arguments)
-      }
-    })(hook, this.logger)
-    this[<string>type](hookName, wrapped)
+    const wrapped = options.silent
+      ? hook
+      : (function wrapHook(hook, logger) {
+          return function() {
+            logger.log(
+              'Trigger hook:',
+              hookName,
+              cmd ? JSON.stringify(cmd) : ''
+            )
+            return hook.apply(this, arguments)
+          }
+        })(hook, this.logger)
+    this[options.type](hookName, wrapped)
     return <Function>wrapped
   }
   constructor({
@@ -96,7 +104,6 @@ export default class Compiler extends AwaitEventEmitter {
   private _matchedLoaders(path: string) {
     let matchedLoader
     _.some(this.mappers, function(mapper) {
-      // @todo
       if (isMatch(path, mapper.test)) {
         matchedLoader = mapper.loader
         return true

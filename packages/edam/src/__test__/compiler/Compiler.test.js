@@ -10,14 +10,6 @@ import DefaultLogger from '../../core/DefaultLogger'
 import { join } from 'path'
 import fileSystem from '../../lib/fileSystem'
 
-// function spy(fn) {
-//   function beSpied() {
-//     beSpied.callCount++
-//     return fn.apply(this, arguments)
-//   }
-//   beSpied.callCount = 0
-//   return beSpied
-// }
 
 describe('Compiler', function() {
   let cer,
@@ -45,7 +37,7 @@ describe('Compiler', function() {
     cer.addHook(
       'hook',
       'echo $HOOK_PARAMS && echo $HOOK_PARAMS ' + date + ' > compiler/date',
-      'once'
+      { type: 'once' }
     )
     const params = ['2222', ['2', '23']]
     await cer.emit.apply(cer, ['hook'].concat(params))
@@ -63,7 +55,7 @@ describe('Compiler', function() {
     const h = cer.addHook(
       'hook',
       'echo $HOOK_PARAMS && echo $HOOK_PARAMS ' + date + ' > compiler/date',
-      'on'
+      { type: 'on' }
     )
     let params = ['2222', ['2', '23']]
     await cer.emit.apply(cer, ['hook'].concat(params))
@@ -134,7 +126,7 @@ describe('Compiler', function() {
           function(content, variables) {
             const options = this.options
             return JSON.stringify({
-              ...variables,
+              name: variables.name,
               content,
               options
             })

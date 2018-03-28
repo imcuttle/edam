@@ -8,21 +8,9 @@ import fileSystem from '../../lib/fileSystem'
 import { Edam } from '../../index'
 import * as nps from 'path'
 import * as _ from 'lodash'
-import toArray from "../../lib/toArray";
+import toArray from '../../lib/toArray'
 
-const _ignore = require('ignore')
-
-function oppositeGlob(globs: Array<string>): Array<string> {
-  return globs.map(function(glob) {
-    glob = glob.trimLeft()
-    if (glob.startsWith('!')) {
-      glob = glob.slice(1)
-    } else {
-      glob = '!' + glob
-    }
-    return glob
-  })
-}
+import * as mm from 'micromatch'
 
 export default async function filter(/*options*/) {
   const edam = <Edam>this
@@ -46,12 +34,14 @@ export default async function filter(/*options*/) {
       }
 
       let files = await fileSystem.readdirDeep(root, {
-        filter: [`!${edam.templateConfigPath}`],
-        relative: true
+        filter: [`!${edam.templateConfigPath}`]
       })
-      const ig = _ignore().add(ignore)
-      files = ig.filter(files.map(f => nps.relative(root, f)))
-      files = files.map(f => nps.join(root, f))
+
+      files = mm(files.map(f => nps.relative(root, f)), ['*'], {
+        ignore: ignore,
+        dot: true,
+        matchBase: true
+      }).map(f => nps.join(root, f))
 
       // deep read dir and filter
       await Promise.all(

@@ -30,7 +30,10 @@ export default async function filter(/*options*/) {
     })
     _.each(hooks, (hook, key) => {
       toArray(hook).forEach(hook => {
-        compiler.addHook(key, <Hook>hook, 'on')
+        compiler.addHook(key, <Hook>hook, {
+          type: 'on',
+          silent: edam.config.silent
+        })
       })
     })
 
@@ -41,7 +44,10 @@ export default async function filter(/*options*/) {
         installDevDependencies
       } = templateConfig.usefulHook
       if (gitInit) {
-        compiler.addHook('post', 'cd $HOOK_PARAMS_0 && git init', 'once')
+        compiler.addHook('post', 'cd $HOOK_PARAMS_0 && git init', {
+          type: 'once',
+          silent: edam.config.silent
+        })
       }
       if (installDependencies || installDevDependencies) {
         compiler.addHook('post', function (output) {
@@ -51,7 +57,9 @@ export default async function filter(/*options*/) {
             stdio: 'pipe',
             cwd: resolve(output)
           })
-        }, 'once')
+        }, {
+          type: 'once'
+        })
       }
     }
 

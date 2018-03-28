@@ -19,7 +19,7 @@ export interface RCOptions {
   output?: string
   plugins?: Array<Plugin>
   pull?: {
-    npmClient: 'yarn' | 'npm' // | 'cnpm' TODO
+    npmClient: 'yarn' | 'npm' // | 'cnpm' Not Support
     git: 'clone' | 'download'
   }
 }

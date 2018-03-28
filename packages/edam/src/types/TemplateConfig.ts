@@ -63,7 +63,6 @@ export default interface TemplateConfig {
   move?: {}
   copy?: {}
 
-  // TODO
   usefulHook: {
     gitInit?: boolean
     installDependencies?: boolean

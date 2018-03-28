@@ -20,7 +20,8 @@ function isDirectory(filename: string): boolean {
 }
 
 const readdir = pify(fs.readdir)
-async function readdirDeep(path: string, options?: { filter: any }) {
+async function readdirDeep(path: string, options?: { filter?: any }) {
+  options = options || {}
   let files = [path]
   if (isDirectory(path)) {
     files = await readdir(path, options)
@@ -34,6 +35,7 @@ async function readdirDeep(path: string, options?: { filter: any }) {
         })
         files.splice(i, 1)
         files = files.concat(newFiles)
+        i--
       }
     }
     files = _.uniq(files)

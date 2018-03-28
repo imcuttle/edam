@@ -31,6 +31,7 @@ import FileProcessor from './core/TreeProcessor/FileProcessor'
 import { Constants } from './core/constant'
 import DefaultLogger from './core/DefaultLogger'
 import TemplateConfig from './types/TemplateConfig'
+import * as _ from 'lodash'
 
 export class Edam extends AwaitEventEmitter {
   public logger: Logger
@@ -166,19 +167,16 @@ export class Edam extends AwaitEventEmitter {
   }
 
   public async registerPlugins(plugins = []) {
-    await pReduce(
-      plugins.filter(Boolean),
-      async (_, plugin) => {
-        let fn = plugin
-        let options = {}
-        if (Array.isArray(plugin)) {
-          fn = plugin[0]
-          options = plugin[1]
-        }
-
-        await fn.apply(this, [options, this])
+    await pReduce(plugins.filter(Boolean), async (_, plugin) => {
+      let fn = plugin
+      let options = {}
+      if (Array.isArray(plugin)) {
+        fn = plugin[0]
+        options = plugin[1]
       }
-    )
+
+      await fn.apply(this, [options, this])
+    })
   }
 
   public async process(
@@ -203,7 +201,17 @@ export class Edam extends AwaitEventEmitter {
     await this.emit('compiler:before')
     const tree = await this.compiler.run()
     await this.emit('compiler:after', tree)
-    return new FileProcessor(tree, this.config.output, this.compiler)
+
+    const fp = new FileProcessor(tree, this.config.output, this.compiler)
+    ;['move', 'copy'].forEach(name => {
+      const config = this.templateConfig[name]
+      if (_.isObject(config) && config !== null) {
+        _.each(config, function(dest, from) {
+          fp[name](from, dest)
+        })
+      }
+    })
+    return fp
   }
 
   public templateConfig: NormalizedTemplateConfig | TemplateConfig = {
