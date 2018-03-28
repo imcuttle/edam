@@ -6,6 +6,9 @@
  */
 
 module.exports = {
+  ignore: [
+    'im_ignored', 'imignored/*', '!imignored/keep*'
+  ],
   prompts: [
     {
       name: 'username',
@@ -20,5 +23,12 @@ module.exports = {
   ],
   variables: {
     haha: 'hhhh'
+  },
+  hooks: {
+    'assets': [
+      function (assets) {
+        console.log(assets)
+      }
+    ]
   }
 }

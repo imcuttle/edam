@@ -15,7 +15,7 @@ import npmInstall from 'yarn-install'
 export default async function filter(/*options*/) {
   const edam = <Edam>this
 
-  edam.on('normalize:templateConfig:after', () => {
+  edam.prependOnceListener('normalize:templateConfig:after', () => {
     const templateConfig: TemplateConfig = edam.templateConfig
     let { loaders, mappers, hooks } = templateConfig
 

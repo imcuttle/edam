@@ -30,7 +30,7 @@ import prompt from './core/promptProcessor'
 import FileProcessor from './core/TreeProcessor/FileProcessor'
 import { Constants } from './core/constant'
 import DefaultLogger from './core/DefaultLogger'
-import TemplateConfig from "./types/TemplateConfig";
+import TemplateConfig from './types/TemplateConfig'
 
 export class Edam extends AwaitEventEmitter {
   public logger: Logger
@@ -48,7 +48,6 @@ export class Edam extends AwaitEventEmitter {
   protected static constants: Constants = {
     ...constant
   }
-  protected static plugins: Array<Plugin> = plugins
   public plugins: Array<Plugin>
   public sourcePullMethods: {
     [name: string]: (source: Source, edam: Edam) => string
@@ -66,7 +65,6 @@ export class Edam extends AwaitEventEmitter {
     this.utils = Object.assign({}, Edam.utils)
     this.sourcePullMethods = Object.assign({}, Edam.sourcePullMethods)
     this.constants = Object.assign({}, Edam.constants)
-    this.plugins = Edam.plugins.slice()
 
     this.logger = this.compiler.logger = new DefaultLogger()
   }
@@ -75,12 +73,6 @@ export class Edam extends AwaitEventEmitter {
     const { track, config } = await normalizeConfig(this.config, this.options)
     this.config = config
     this.track = track
-
-    if (this.config.plugins) {
-      this.config.plugins.forEach(p => {
-        this.use(p)
-      })
-    }
 
     return this
   }
@@ -91,21 +83,17 @@ export class Edam extends AwaitEventEmitter {
     if (!Array.isArray(plugin)) {
       plugin = [plugin, {}]
     }
-    const index = this.plugins.findIndex(([p]) => p === plugin[0])
+    const index = this.config.plugins.findIndex(([p]) => p === plugin[0])
     if (options.force || index < 0) {
       if (options.force && index >= 0 && options.removeExisted) {
-        this.plugins.splice(index, 1)
+        this.config.plugins.splice(index, 1)
       }
-      this.plugins.push(plugin)
+      this.config.plugins.push(plugin)
     }
     return this
   }
-  public unuse(pluginCore?: Plugin[0]): Edam {
-    if (!pluginCore) {
-      this.plugins = Edam.plugins.slice()
-    } else {
-      this.plugins = this.plugins.filter(([p]) => p !== pluginCore)
-    }
+  public unuse(pluginCore: Plugin[0]): Edam {
+    this.config.plugins = this.config.plugins.filter(([p]) => p !== pluginCore)
     return this
   }
   public setConfig(config: EdamConfig): Edam {
@@ -169,15 +157,18 @@ export class Edam extends AwaitEventEmitter {
     await this.emit('pull:after', templateConfigPath)
   }
 
-  public async run(
-    source?: Source
-  ): Promise<FileProcessor> {
+  public async run(source?: Source): Promise<FileProcessor> {
     this.config.source = source || this.config.source
     await this.normalizeConfig()
+    await this.registerPlugins(this.config.plugins)
+    await this.pull()
+    return await this.process()
+  }
 
+  public async registerPlugins(plugins = []) {
     await pReduce(
-      this.plugins.concat(this.config.plugins),
-      async (config, plugin) => {
+      plugins.filter(Boolean),
+      async (_, plugin) => {
         let fn = plugin
         let options = {}
         if (Array.isArray(plugin)) {
@@ -188,17 +179,21 @@ export class Edam extends AwaitEventEmitter {
         await fn.apply(this, [options, this])
       }
     )
-
-    await this.pull()
-    return await this.process()
   }
 
-  public async process(templateConfigPath = this.templateConfigPath): Promise<FileProcessor> {
+  public async process(
+    templateConfigPath = this.templateConfigPath
+  ): Promise<FileProcessor> {
+    // preset plugins only do something about template
+    await this.registerPlugins(plugins)
     let templateConfig =
       (await getTemplateConfig.apply(
         this,
         [require(templateConfigPath), [this, this]]
       )) || {}
+    this.templateConfigPath = templateConfigPath = require.resolve(
+      templateConfigPath
+    )
     await this.emit('normalize:templateConfig:before', templateConfig)
     this.templateConfig = normalize(templateConfig, templateConfigPath)
     await this.emit('normalize:templateConfig:after', this.templateConfig)

@@ -6,13 +6,14 @@
     "dev": "npm run dist -- -w"
   },
   "dependencies": {
-    "await-event-emitter": "^1.1.0",
+    "await-event-emitter": "^1.1.1",
     "chalk": "^2.3.2",
     "cosmiconfig": "4.0.0",
     "cross-spawn": "^6.0.5",
     "debug": "^3.1.0",
     "download": "^6.2.5",
     "filenamify": "^2.0.0",
+    "ignore": "^3.3.7",
     "ink-autocomplete": "0.0.0",
     "inquirer": "^5.1.0",
     "json5": "^1.0.1",

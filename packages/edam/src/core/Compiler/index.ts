@@ -5,6 +5,7 @@
  * @description
  */
 import * as _ from 'lodash'
+import * as nps from 'path'
 
 import { Hook, Loader, Mapper, StrictLoader } from '../../types/TemplateConfig'
 import * as pReduce from 'p-reduce'
@@ -15,7 +16,6 @@ import VariablesImpl from './Variables'
 import hookify from './hookify'
 import matchMeta from './matchMeta'
 import parseQueryString from '../../lib/parseQueryString'
-import FileProcessor from '../TreeProcessor/FileProcessor'
 
 const debug = require('debug')('edam:Compiler')
 
@@ -87,10 +87,6 @@ export default class Compiler extends AwaitEventEmitter {
   }
   public mappers: Array<Mapper> = [
     {
-      test: '*.json',
-      loader: 'module'
-    },
-    {
       test: '*',
       loader: 'LoDash'
     }
@@ -146,6 +142,16 @@ export default class Compiler extends AwaitEventEmitter {
         options = _.isEmpty(highOrderOptions) ? options : highOrderOptions
 
         const context = await this.variables.get()
+        _.merge(context, {
+          _: {
+            file: {
+              path,
+              dirname: nps.dirname(path),
+              name: nps.basename(path).replace(/(.+)\.[^.]+?$/, '$1'),
+              ext: nps.extname(path)
+            }
+          }
+        })
         const loaderSelf = {
           compiler: this,
           path,

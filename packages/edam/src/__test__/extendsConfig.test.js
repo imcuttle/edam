@@ -66,7 +66,7 @@ describe('extendsConfig', function() {
         'react-a': 'aa',
         react: 'b.react',
         'b.react': 'b.react.origin',
-        rc: 'rc'
+        json5: 'json5'
       }
     })
   })

@@ -19,7 +19,7 @@ export default function getExtendsMerge(
         _.isArray(sourceVal) &&
         (option.concatKeys === '*' || option.concatKeys.includes(key))
       ) {
-        return _.uniq(extendsVal.concat(sourceVal))
+        return _.uniq((extendsVal || []).concat(sourceVal))
       }
     })
   }

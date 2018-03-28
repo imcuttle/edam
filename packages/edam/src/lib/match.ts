@@ -11,7 +11,7 @@ import { isString, isArray } from 'lodash'
 
 export function isMatch(value: string, m: Matcher): boolean {
   if (isString(m) || isArray(m)) {
-    return !!mm([value], m, { matchBase: true, dot: true }).length
+    return !!(mm([value], m, { matchBase: true, dot: true }).length)
   }
   if (m instanceof RegExp) {
     return m.test(value)
