@@ -30,6 +30,7 @@ import prompt from './core/promptProcessor'
 import FileProcessor from './core/TreeProcessor/FileProcessor'
 import { Constants } from './core/constant'
 import DefaultLogger from './core/DefaultLogger'
+import TemplateConfig from "./types/TemplateConfig";
 
 export class Edam extends AwaitEventEmitter {
   public logger: Logger
@@ -210,7 +211,7 @@ export class Edam extends AwaitEventEmitter {
     return new FileProcessor(tree, this.config.output, this.compiler)
   }
 
-  public templateConfig: NormalizedTemplateConfig = {
+  public templateConfig: NormalizedTemplateConfig | TemplateConfig = {
     ignore: [],
     loaders: {},
     mappers: [],

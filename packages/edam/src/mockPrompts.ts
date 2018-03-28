@@ -7,9 +7,10 @@
 
 import { Edam } from './index'
 import FileProcessor from './core/TreeProcessor/FileProcessor'
+import TemplateConfig from './types/TemplateConfig'
 
 export default async function mockPrompts(
-  templatePath: string,
+  template: string | TemplateConfig,
   promptValues = {},
   output?: string
 ): Promise<FileProcessor> {
@@ -18,5 +19,9 @@ export default async function mockPrompts(
   em.once('prompt:after', variables => {
     variables.assign(promptValues)
   })
-  return await em.process(templatePath)
+  if (typeof template === 'string') {
+    return await em.process(template)
+  }
+  em.templateConfig = template
+  return await em.process()
 }
