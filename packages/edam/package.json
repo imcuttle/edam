@@ -8,7 +8,6 @@
   "author": "imcuttle",
   "dependencies": {
     "await-event-emitter": "^1.1.1",
-    "caporal": "^0.10.0",
     "chalk": "^2.3.2",
     "cosmiconfig": "4.0.0",
     "cross-spawn": "^6.0.5",
@@ -20,6 +19,7 @@
     "json5": "^1.0.1",
     "lodash": "^4.17.5",
     "log-symbols": "^2.2.0",
+    "meow": "4.0.0",
     "micromatch": "^3.1.10",
     "mkdirp": "^0.5.1",
     "ora": "^2.0.0",

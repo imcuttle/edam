@@ -10,6 +10,8 @@ import evaluate from '../../lib/eval'
 import cliProcess from './cli'
 import * as _ from 'lodash'
 
+const debug = require('debug')('edam:promptProcessor')
+
 export default async function prompt(
   prompts: Array<Prompt>,
   { yes = true, promptProcess = cliProcess, context = {} } = {}
@@ -17,16 +19,15 @@ export default async function prompt(
   if (!_.isFunction(promptProcess)) {
     throw new Error('prompt is missing the process')
   }
-
-  return await pReduce(
+  debug('input: %O', prompts)
+  const res = await pReduce(
     prompts,
     async function(set, prompt) {
       prompt = { ...prompt }
       let allow = true
       if (_.isString(prompt.when)) {
         allow = <boolean>!!evaluate(prompt.when, set)
-      }
-      else if (_.isFunction(prompt.when)) {
+      } else if (_.isFunction(prompt.when)) {
         allow = await prompt.when(set)
       }
       if (!allow) return set
@@ -52,8 +53,7 @@ export default async function prompt(
       delete prompt.transformer
       if (yes && prompt.yes !== false) {
         value = prompt.default
-      }
-      else {
+      } else {
         value = await promptProcess(prompt)
       }
       if (_.isFunction(transformer)) {
@@ -67,4 +67,6 @@ export default async function prompt(
     },
     {}
   )
+  debug('output: %O', res)
+  return res
 }

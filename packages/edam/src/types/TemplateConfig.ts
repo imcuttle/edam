@@ -48,6 +48,7 @@ export type FileMatcher =
 
 export default interface TemplateConfig {
   prompts?: Array<Prompt>
+
   hooks?: {
     [hookName: string]: Array<Hook> | Hook
   }

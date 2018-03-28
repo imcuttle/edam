@@ -15,6 +15,7 @@ import * as nps from 'path'
 import fileSystem from '../../lib/fileSystem'
 import * as mm from 'micromatch'
 const debug = require('debug')('edam:FileProcessor')
+const tildify = require('tildify')
 
 export default class FileProcessor extends TreeProcessor {
   constructor(
@@ -42,6 +43,7 @@ export default class FileProcessor extends TreeProcessor {
     _.each(this.tree, function(data: State, path) {
       const filename = nps.join(filepath, path)
       if (!option.overwrite && fileSystem.existsSync(filename)) {
+        debug('%s already existed, ignored!', tildify(filename))
         return
       }
       workers.push(

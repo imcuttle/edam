@@ -4,7 +4,7 @@
  * @date 2018/3/24
  * @description
  */
-import { Options } from './normalizeSource'
+import {default as normalizeSource, Options} from './normalizeSource'
 import { EdamConfig } from '../types/Options'
 import toArray from '../lib/toArray'
 import extendsMerge from './extendsMerge'
@@ -32,6 +32,13 @@ export async function innerExtendsConfig(
 
   if (typeof config.output === 'string') {
     config.output = nps.resolve(options.cwd, config.output)
+  }
+
+  if (config.source) {
+    let s = normalizeSource(config.source, options)
+    if (s.type === 'file') {
+      config.source = s.url
+    }
   }
 
   if (config.plugins) {

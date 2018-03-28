@@ -39,7 +39,7 @@ export default function normalizeSource(
   source: Source | string,
   options?: Options
 ): Source {
-  const { cwd = process.cwd() } = options || {}
+  // const { cwd = process.cwd() } = options || {}
 
   if (_.isObject(source)) {
     return normalizeSourceObject(<Source>source, options)
@@ -80,14 +80,6 @@ export default function normalizeSource(
     if (/^(.+)@([^@]*)$/.test(source)) {
       let matchedSource = RegExp.$1
       version = RegExp.$2
-      // version = semver.valid(semver.coerce(RegExp.$2))
-      // if (version === null) {
-      //   throw new Error(
-      //     'The source of npm: "' +
-      //       source +
-      //       '" error happened when parsing version'
-      //   )
-      // }
 
       source = matchedSource
     }

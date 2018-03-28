@@ -79,7 +79,7 @@ export default async function normalizeConfig(
   }
 
   if (!mergedConfig.source) {
-    throw new Error('Sorry, the config file requires `source`')
+    throw new Error('Sorry, edam requires `source`')
   }
 
   if (typeof mergedConfig.output !== 'string') {
@@ -89,11 +89,11 @@ export default async function normalizeConfig(
   }
 
   mergedConfig.output = nps.resolve(options.cwd, mergedConfig.output)
-  if (!fileSystem.isDirectory(mergedConfig.output)) {
+  if (fileSystem.isFile(mergedConfig.output)) {
     throw new Error(
       '`config.output` requires dir path, but "' +
         tildify(mergedConfig.output) +
-        '" isn\'t directory or not exists'
+        '" is a file now'
     )
   }
 
@@ -117,6 +117,7 @@ export default async function normalizeConfig(
   } else {
     source = normalizeSource(source, options)
   }
+
   mergedConfig.source = source
 
   // normalize cacheDir

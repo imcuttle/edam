@@ -6,7 +6,9 @@
  */
 import TemplateConfig, {
   Hook,
-  Loader, StrictLoader,
+  Loader,
+  StrictLoader,
+  Variables
 } from '../../types/TemplateConfig'
 import * as nps from 'path'
 import toArray from '../../lib/toArray'
@@ -22,26 +24,50 @@ export type NormalizedTemplateConfig = TemplateConfig & {
   root: string
 }
 
-export default function normalize(
+async function dynamicGet<T>(valOrCb, args = [], self?): Promise<T> {
+  if (typeof valOrCb === 'function') {
+    return await valOrCb.apply(self, args)
+  }
+  return valOrCb
+}
+
+export default async function normalize(
   templateConfig: TemplateConfig,
   templateConfigPath?: string
-): NormalizedTemplateConfig {
-  // normalize
+) {
+  await this.emit('normalize:templateConfig:before', templateConfig)
+  const data = await this.compiler.variables.get()
+  templateConfig.root = await dynamicGet<string>(templateConfig.root, [data])
   if (!templateConfig.root) {
     templateConfig.root = './template'
   }
   if (templateConfig.root && templateConfigPath) {
-    templateConfig.root = nps.resolve(nps.dirname(templateConfigPath), templateConfig.root)
+    templateConfig.root = nps.resolve(
+      nps.dirname(templateConfigPath),
+      templateConfig.root
+    )
   }
-  // if (!templateConfig.root && templateConfigPath) {
-  //   templateConfig.root = nps.dirname(templateConfigPath)
-  // }
 
-
+  templateConfig.ignore = await dynamicGet<string[]>(templateConfig.ignore, [
+    data
+  ])
   if (!templateConfig.ignore) {
     templateConfig.ignore = []
   }
   templateConfig.ignore = toArray<string>(templateConfig.ignore)
+
+  templateConfig.hooks = await dynamicGet<any>(templateConfig.hooks, [data])
+  templateConfig.variables = await dynamicGet<Variables>(
+    templateConfig.variables,
+    [data]
+  )
+  templateConfig.loaders = await dynamicGet<any>(templateConfig.loaders, [data])
+  templateConfig.mappers = await dynamicGet<any>(templateConfig.mappers, [data])
+  templateConfig.move = await dynamicGet<any>(templateConfig.move, [data])
+  templateConfig.copy = await dynamicGet<any>(templateConfig.copy, [data])
+  templateConfig.usefulHook = await dynamicGet<any>(templateConfig.usefulHook, [
+    data
+  ])
 
   _.each(templateConfig.loaders, function(val, key) {
     if (val) {
@@ -49,7 +75,8 @@ export default function normalize(
     }
   })
 
-  templateConfig
+  this.templateConfig = templateConfig
+  await this.emit('normalize:templateConfig:after', this.templateConfig)
 
-  return <NormalizedTemplateConfig>templateConfig
+  return templateConfig
 }

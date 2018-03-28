@@ -33,7 +33,11 @@ import DefaultLogger from './core/DefaultLogger'
 import TemplateConfig from './types/TemplateConfig'
 import * as _ from 'lodash'
 
+const inquirer = require('inquirer')
+
 export class Edam extends AwaitEventEmitter {
+  public inquirer = inquirer
+
   public logger: Logger
   protected static sourcePullMethods: {
     [name: string]: (source: Source, edam: Edam) => string
@@ -46,7 +50,7 @@ export class Edam extends AwaitEventEmitter {
     ...coreExported,
     ...libExported
   }
-  protected static constants: Constants = {
+  public static constants: Constants = {
     ...constant
   }
   public plugins: Array<Plugin>
@@ -109,15 +113,15 @@ export class Edam extends AwaitEventEmitter {
   promptProcess: PromptProcess = require('./core/promptProcessor/cli/index')
     .default
 
-  public async prompt() {
+  public async prompt(prompts = this.templateConfig.prompts) {
     const context = {
       ...this.constants.DEFAULT_CONTEXT,
       absoluteDir: this.config.output,
       dirName: this.config.output && nps.dirname(this.config.output)
     }
-    await this.emit('prompt:before', this.templateConfig.prompts, context)
+    await this.emit('prompt:before', prompts, context)
     this.compiler.variables.setStore(
-      await prompt(this.templateConfig.prompts, {
+      await prompt(prompts, {
         yes: this.config.yes,
         context,
         promptProcess: this.promptProcess
@@ -192,11 +196,9 @@ export class Edam extends AwaitEventEmitter {
     this.templateConfigPath = templateConfigPath = require.resolve(
       templateConfigPath
     )
-    await this.emit('normalize:templateConfig:before', templateConfig)
-    this.templateConfig = normalize(templateConfig, templateConfigPath)
-    await this.emit('normalize:templateConfig:after', this.templateConfig)
 
-    await this.prompt()
+    await this.prompt(templateConfig.prompts)
+    this.templateConfig = await normalize.apply(this, [templateConfig, templateConfigPath])
 
     await this.emit('compiler:before')
     const tree = await this.compiler.run()

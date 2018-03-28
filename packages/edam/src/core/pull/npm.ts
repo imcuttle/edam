@@ -26,6 +26,7 @@ module.exports = async function(
   const { cacheDir, pull: { npmClient } } = options
 
   const log = (this && this.logger && this.logger.log) || console.log
+  const updateNotify = this && this.config && this.config.updateNotify
 
   let respectNpm5 = npmClient === 'npm'
   const name = source.version ? `${source.url}@${source.version}` : source.url
@@ -52,27 +53,29 @@ module.exports = async function(
     })
     assertProcess()
 
-    const notifier = updateNotifier({
-      pkg: JSON.parse(
-        await fs.readFile(join(modulePath, 'package.json'), {
-          encoding: 'utf8'
-        })
-      )
-    })
-    const output =
-      this && this.config ? tildify(this.config.output) : './output'
-    const upt = notifier.update
-    if (upt) {
-      notifier.notify({
-        message:
-          'Update available ' +
-          chalk.dim(upt.current) +
-          chalk.reset(' → ') +
-          chalk.green(upt.latest) +
-          ' \nRun ' +
-          chalk.cyan(`edam ${source.url}@latest ${output}`) +
-          ' to update'
+    if (updateNotify) {
+      const notifier = updateNotifier({
+        pkg: JSON.parse(
+          await fs.readFile(join(modulePath, 'package.json'), {
+            encoding: 'utf8'
+          })
+        )
       })
+      const output =
+        this && this.config ? tildify(this.config.output) : './output'
+      const upt = notifier.update
+      if (upt) {
+        notifier.notify({
+          message:
+            'Update available ' +
+            chalk.dim(upt.current) +
+            chalk.reset(' → ') +
+            chalk.green(upt.latest) +
+            ' \nRun ' +
+            chalk.cyan(`edam ${source.url}@latest ${output}`) +
+            ' to update'
+        })
+      }
     }
 
     const installedVersion = JSON.parse(
