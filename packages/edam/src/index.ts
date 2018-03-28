@@ -57,10 +57,10 @@ export class Edam extends AwaitEventEmitter {
   }
   public constants: Constants
   public track: Track
-  constructor(public config: EdamConfig, public options: Options = {}) {
+  constructor(public config?: EdamConfig, public options: Options = {}) {
     super()
-    this.setConfig(config)
-    this.setOption(options)
+    config && this.setConfig(config)
+    options && this.setOption(options)
     // fill
     this.utils = Object.assign({}, Edam.utils)
     this.sourcePullMethods = Object.assign({}, Edam.sourcePullMethods)
@@ -119,17 +119,31 @@ export class Edam extends AwaitEventEmitter {
   promptProcess: PromptProcess = require('./core/promptProcessor/cli/index')
     .default
 
-  public async process(source?: Source): Promise<FileProcessor> {
-    this.config.source = source || this.config.source
-    await this.normalizeConfig()
-
-    await pReduce(
-      this.plugins.concat(this.config.plugins),
-      async (config, plugin) => {
-        await plugin.apply(this, [plugin[1] || {}, this])
-      }
+  public async prompt() {
+    const context = {
+      ...this.constants.DEFAULT_CONTEXT,
+      absoluteDir: this.config.output,
+      dirName: this.config.output && nps.dirname(this.config.output)
+    }
+    await this.emit('prompt:before', this.templateConfig.prompts, context)
+    this.compiler.variables.setStore(
+      await prompt(this.templateConfig.prompts, {
+        yes: this.config.yes,
+        context,
+        promptProcess: this.promptProcess
+      })
     )
+    this.compiler.variables.merge({ _: context })
+    await this.emit('prompt:after', this.compiler.variables)
+  }
 
+  public async pull(source?: Source) {
+    this.config.source = source || this.config.source
+
+    source = <Source>this.config.source
+    if (!source) {
+      throw new EdamError('the `source` is required')
+    }
     source = <Source>this.config.source
     if (!source) {
       throw new EdamError('the `source` is required')
@@ -150,24 +164,35 @@ export class Edam extends AwaitEventEmitter {
     templateConfigPath = this.templateConfigPath = require.resolve(
       templateConfigPath
     )
+
     await this.emit('pull:after', templateConfigPath)
+  }
 
-    const context = {
-      ...this.constants.DEFAULT_CONTEXT,
-      absoluteDir: this.config.output,
-      dirName: nps.dirname(this.config.output)
-    }
-    await this.emit('prompt:before', this.templateConfig.prompts, context)
-    this.compiler.variables.setStore(
-      await prompt(this.templateConfig.prompts, {
-        yes: this.config.yes,
-        context,
-        promptProcess: this.promptProcess
-      })
+  public async run(
+    source?: Source
+  ): Promise<FileProcessor> {
+    this.config.source = source || this.config.source
+    await this.normalizeConfig()
+
+    await pReduce(
+      this.plugins.concat(this.config.plugins),
+      async (config, plugin) => {
+        let fn = plugin
+        let options = {}
+        if (Array.isArray(plugin)) {
+          fn = plugin[0]
+          options = plugin[1]
+        }
+
+        await fn.apply(this, [options, this])
+      }
     )
-    this.compiler.variables.merge({ _: context })
-    await this.emit('prompt:after', this.compiler.variables)
 
+    await this.pull()
+    return await this.process()
+  }
+
+  public async process(templateConfigPath = this.templateConfigPath): Promise<FileProcessor> {
     let templateConfig =
       (await getTemplateConfig.apply(
         this,
@@ -177,16 +202,18 @@ export class Edam extends AwaitEventEmitter {
     this.templateConfig = normalize(templateConfig, templateConfigPath)
     await this.emit('normalize:templateConfig:after', this.templateConfig)
 
+    await this.prompt()
+
     await this.emit('compiler:before')
     const tree = await this.compiler.run()
     await this.emit('compiler:after', tree)
-    return new FileProcessor(tree, this.config.output)
+    return new FileProcessor(tree, this.config.output, this.compiler)
   }
 
   public templateConfig: NormalizedTemplateConfig = {
     ignore: [],
     loaders: {},
-    mapper: {},
+    mappers: [],
     root: '',
     usefulHook: {
       gitInit: false,
@@ -199,11 +226,12 @@ export class Edam extends AwaitEventEmitter {
   public compiler: Compiler = new Compiler()
 }
 
-async function edam(config: EdamConfig, options: Options) {
-  return await new Edam(config, options)
+function edam(config: EdamConfig, options: Options): Edam {
+  return new Edam(config, options)
 }
-Object.assign(edam, Edam, {
-  Edam,
-  Compiler
-})
-module.exports = edam
+
+export { default as mockPrompts } from './mockPrompts'
+export { default as Compiler } from './core/Compiler/index'
+export { default as FileProcessor } from './core/TreeProcessor/FileProcessor'
+
+export default edam

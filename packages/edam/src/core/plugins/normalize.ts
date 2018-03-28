@@ -13,15 +13,11 @@ import toArray from '../../lib/toArray'
 import * as _ from 'lodash'
 
 export type NormalizedTemplateConfig = TemplateConfig & {
-  ignore?: string[]
   hooks?: {
     [hookName: string]: Array<Hook>
   }
   loaders?: {
     [loaderId: string]: Loader
-  }
-  mapper?: {
-    [glob: string]: Array<Function>
   }
   root: string
 }
@@ -31,9 +27,17 @@ export default function normalize(
   templateConfigPath?: string
 ): NormalizedTemplateConfig {
   // normalize
-  if (!templateConfig.root && templateConfigPath) {
-    templateConfig.root = nps.dirname(templateConfigPath)
+  if (!templateConfig.root) {
+    templateConfig.root = './template'
   }
+  if (templateConfig.root && templateConfigPath) {
+    templateConfig.root = nps.resolve(nps.dirname(templateConfigPath), templateConfig.root)
+  }
+  // if (!templateConfig.root && templateConfigPath) {
+  //   templateConfig.root = nps.dirname(templateConfigPath)
+  // }
+
+
   if (!templateConfig.ignore) {
     templateConfig.ignore = []
   }

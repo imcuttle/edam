@@ -12,13 +12,18 @@ import { template } from 'lodash'
 // let reEvaluate = /<%([\s\S]+?)%>/g
 // let reInterpolate = /<%=([\s\S]+?)%>/g
 
-function loDashLoader(content: string, variables): string {
-  const options = this.options
+function moduleLoader(content: string, variables): string {
+  // const options = this.options
   // this.root
+
+  const root = this.root
+  const path = this.path
+
+  console.log(root, path)
 
   // let variables: object = this.root.get()
 
-  return template(content, options)(variables)
+  return template(content, {})(variables)
 }
 
-module.exports = loDashLoader
+module.exports = moduleLoader

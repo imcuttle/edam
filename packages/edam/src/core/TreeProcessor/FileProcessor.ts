@@ -4,28 +4,39 @@
  * @date 2018/3/25
  * @description
  */
-import { TreeProcessor, Tree, State } from '../../types/core'
+import { TreeProcessor, Tree, State, AwaitEventEmitter } from '../../types/core'
 import { isMatch, default as match } from '../../lib/match'
 import { Matcher } from '../../types/TemplateConfig'
 import toArray from '../../lib/toArray'
 import * as mkdirp from 'mkdirp'
 import * as rimraf from 'rimraf'
 import * as pify from 'pify'
+import { file } from '../pull/preset'
 
 export default class FileProcessor extends TreeProcessor {
-  constructor(public tree: Tree, public dest: string) {
+  constructor(
+    public tree: Tree,
+    public dest?: string,
+    public emitter?: AwaitEventEmitter
+  ) {
     super(tree)
+    this.emitter = emitter || new AwaitEventEmitter()
     this.dest = dest
   }
   public async writeToFile(
     filepath: string = this.dest,
     option: { clean: boolean } = { clean: true }
   ): Promise<boolean> {
+    await this.emitter.emit('writeToFile:before', filepath)
+
     await pify(mkdirp)(filepath)
     if (option.clean) {
       await pify(rimraf)(filepath)
     }
 
+    await this.emitter.emit('writeToFile:success', filepath)
+    await this.emitter.emit('post', filepath)
+    await this.emitter.emit('writeToFile:fail')
     return true
   }
 
@@ -44,13 +55,14 @@ export default class FileProcessor extends TreeProcessor {
     return fileStates.length === 1 ? fileStates[0] : fileStates
   }
 
-  public async move(m: Matcher, dest: string): FileProcessor {
+  public move(m: Matcher, dest?: string): FileProcessor {
     const paths = this.match(m)
     // file
     if (paths.length === 1 && paths[0] === m) {
       const state = <State>this.delete(paths[0])
       this.new(dest, state)
     } else {
+      //
     }
     // dest
     // paths.forEach()
@@ -62,7 +74,7 @@ export default class FileProcessor extends TreeProcessor {
     return this
   }
 
-  public async copy(): Promise<FileProcessor> {
+  public copy(): FileProcessor {
     return this
   }
 }

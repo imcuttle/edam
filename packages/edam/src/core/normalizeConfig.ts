@@ -19,6 +19,7 @@ import * as assert from 'assert'
 import toArray from '../lib/toArray'
 import resolve from '../lib/resolve'
 import fileSystem from '../lib/fileSystem'
+import parseQueryString from '../lib/parseQueryString'
 
 const tildify = require('tildify')
 const debug = require('debug')('edam:normalizeConfig')
@@ -105,13 +106,9 @@ export default async function normalizeConfig(
   let source = mergedConfig.source
   if (_.isString(source)) {
     // mergedConfig.source append with querystring
-    let qIndex = source.lastIndexOf('?')
-    let query = {}
-    let tmpSource = source
-    if (qIndex >= 0) {
-      query = parseQuery(source.slice(qIndex + 1))
-      tmpSource = source.substring(0, qIndex)
-    }
+    let { query, name } = parseQueryString(source)
+    let tmpSource = name
+
     if (tmpSource in mergedConfig.alias) {
       source = { ...mergedConfig.alias[tmpSource], ...query }
     } else {
@@ -141,7 +138,11 @@ export default async function normalizeConfig(
     ...coreSpecial
   }
   if (!['npm', 'yarn'].includes(normalized.pull.npmClient)) {
-    throw Error(`config.pull.npmClient allows the value which is one of 'npm' | 'yarn'. but ${normalized.pull.npmClient}`)
+    throw Error(
+      `config.pull.npmClient allows the value which is one of 'npm' | 'yarn'. but ${
+        normalized.pull.npmClient
+      }`
+    )
   }
 
   debug('normalized Config: %O', normalized)

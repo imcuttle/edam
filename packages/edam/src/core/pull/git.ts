@@ -81,7 +81,7 @@ module.exports = async function gitPull(
         )
       }
       log(
-        'Installed dependencies automatically, %s packages.',
+        'Installed dependencies automatically, depends %s packages.',
         c.white(Object.keys(dependencies).length)
       )
     }
@@ -143,7 +143,7 @@ module.exports = async function gitPull(
         return await gitCloneSource()
       } catch (error) {
         errorLog(
-          'Error occurs when git clone %s: %s\n' +
+          'Error occurs when git clone %s: \n%s\n' +
             'Fallback to use git download.',
           source.url,
           error.message

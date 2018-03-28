@@ -11,10 +11,11 @@ import * as pReduce from 'p-reduce'
 import { AwaitEventEmitter, Logger, Tree } from '../../types/core'
 import toArray from '../../lib/toArray'
 import { isMatch } from '../../lib/match'
-import EdamError from '../EdamError'
 import VariablesImpl from './Variables'
 import hookify from './hookify'
 import matchMeta from './matchMeta'
+import parseQueryString from '../../lib/parseQueryString'
+import FileProcessor from '../TreeProcessor/FileProcessor'
 
 const debug = require('debug')('edam:Compiler')
 
@@ -26,6 +27,7 @@ export type Asset = {
 export default class Compiler extends AwaitEventEmitter {
   public logger: Logger
   public root: string = ''
+  public hookCwd: string = process.cwd()
   public removeHook(hookName: string, hook?: Function) {
     this.removeListener(hookName, hook)
     return this
@@ -33,13 +35,13 @@ export default class Compiler extends AwaitEventEmitter {
   public addHook(
     hookName: string,
     hook: Hook,
-    type: 'on' | 'off' = 'on'
+    type: 'on' | 'once' = 'on'
   ): Function {
     let cmd = typeof hook === 'string' && hook
-    hook = hookify(hook)
+    hook = hookify(hook, this.hookCwd)
     const wrapped = (function wrapHook(hook, logger) {
       return function() {
-        logger.log('Trigger hook:', hookName, cmd ? ' Cmd: ' + cmd : '')
+        logger.log('Trigger hook:', hookName, cmd ? JSON.stringify(cmd) : '')
         return hook.apply(this, arguments)
       }
     })(hook, this.logger)
@@ -49,9 +51,13 @@ export default class Compiler extends AwaitEventEmitter {
   constructor({
     loaders,
     mappers,
+    hookCwd,
     root
-  }: { loaders?; mappers?; root?: string } = {}) {
+  }: { loaders?; mappers?; root?: string; hookCwd?: string } = {}) {
     super()
+    if (hookCwd) {
+      this.hookCwd = hookCwd
+    }
     if (loaders) {
       this.loaders = loaders
     }
@@ -75,8 +81,20 @@ export default class Compiler extends AwaitEventEmitter {
   } = {}
   public loaders: {
     [loaderId: string]: Array<StrictLoader>
-  } = {}
-  public mappers: Array<Mapper> = []
+  } = {
+    module: require('./loaders/module'),
+    LoDash: require('./loaders/lodash')
+  }
+  public mappers: Array<Mapper> = [
+    {
+      test: '*.json',
+      loader: 'module'
+    },
+    {
+      test: '*',
+      loader: 'LoDash'
+    }
+  ]
   public variables = new VariablesImpl()
 
   private _matchedLoaders(path: string) {
@@ -91,7 +109,12 @@ export default class Compiler extends AwaitEventEmitter {
     return matchedLoader
   }
 
-  async transform(input, loaders: Loader, path: string) {
+  async transform(
+    input,
+    loaders: Loader,
+    path: string,
+    highOrderOptions: object
+  ) {
     loaders = toArray(loaders)
     let data = { input, loaders }
     await this.emit('loader:each:before', data)
@@ -99,26 +122,41 @@ export default class Compiler extends AwaitEventEmitter {
       data.loaders,
       async (input, loader) => {
         if (_.isString(loader)) {
-          let id = loader
+          let { name, query } = parseQueryString(loader)
+          let id = name
           loader = this.loaders[id]
+
           if (!loader) {
             throw new Error(`loaderId: ${id} is not matched.`)
           }
-          return await this.transform(input, loader, path)
+          return await this.transform(
+            input,
+            loader,
+            path,
+            _.isEmpty(query) ? highOrderOptions : query
+          )
         }
 
         let options = {}
         // [ loader, options ]
         if (_.isArray(loader)) {
-          loader = loader[0]
           options = loader[1] || {}
+          loader = loader[0]
+        }
+        options = _.isEmpty(highOrderOptions) ? options : highOrderOptions
+
+        const context = await this.variables.get()
+        const loaderSelf = {
+          compiler: this,
+          path,
+          options
         }
 
         if (loader.raw === true) {
           const buf = Buffer.isBuffer(input) ? input : new Buffer(input)
-          return await loader.apply(this, [buf, options, path])
+          return await loader.apply(loaderSelf, [buf, context])
         }
-        return await loader.apply(this, [input, options, path])
+        return await loader.apply(loaderSelf, [input.toString(), context])
       },
       data.input
     )
@@ -128,12 +166,15 @@ export default class Compiler extends AwaitEventEmitter {
   }
 
   public async run(): Promise<Tree> {
+    await this.emit('run:before')
     await this.emit('assets', this.assets)
     await this.emit('variables', this.variables)
     const workers = _.map(this.assets, async (asset, path) => {
       const input = asset.value
       const loaders = asset.loaders
       const data = { input, loaders }
+      let highOrderOptions
+
       if (_.isString(data.input)) {
         const { content, meta } = matchMeta(data.input, path)
         data.input = content
@@ -146,10 +187,14 @@ export default class Compiler extends AwaitEventEmitter {
               path
             )
           } else {
-            data.loaders = this.loaders[meta.loader.name]
+            // data.loaders = this.loaders[meta.loader.name]
+            // use name instead of function
+            data.loaders = meta.loader.name
+            highOrderOptions = meta.loader.query
           }
         }
       }
+
       if (!data.loaders) {
         data.loaders = this._matchedLoaders(path)
       }
@@ -159,7 +204,12 @@ export default class Compiler extends AwaitEventEmitter {
           await this.emit('loader:before', data)
           return {
             path,
-            output: await this.transform(data.input, data.loaders, path),
+            output: await this.transform(
+              data.input,
+              data.loaders,
+              path,
+              highOrderOptions
+            ),
             ...data
           }
         } catch (err) {
@@ -187,6 +237,8 @@ export default class Compiler extends AwaitEventEmitter {
       const { path, ...rest } = data
       output[path] = rest
     })
+
+    await this.emit('run:after', output)
     return output
   }
 }

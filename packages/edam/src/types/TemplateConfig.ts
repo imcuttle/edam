@@ -52,16 +52,18 @@ export default interface TemplateConfig {
     [hookName: string]: Array<Hook> | Hook
   }
   ignore?: Array<string>
-
   variables?: Variables
   root?: string
   loaders?: {
     [loaderId: string]: Array<StrictLoader>
   }
   mappers?: Array<Mapper>
+
+  // TODO
   move?: {}
   copy?: {}
 
+  // TODO
   usefulHook: {
     gitInit?: boolean
     installDependencies?: boolean

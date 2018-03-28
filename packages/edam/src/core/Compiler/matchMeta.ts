@@ -1,4 +1,5 @@
 import parseQuery from '../../lib/parseQuery'
+import parseQueryString from "../../lib/parseQueryString";
 
 export type Meta = {
   loader?: {
@@ -10,19 +11,10 @@ export type Meta = {
 
 function matchMeta(content: string, path?: string): Meta {
   let meta: Meta = {}
-  let query = {}
-  let loaderName
 
   function fillMeta(str: string) {
-    loaderName = str
-    let i = str.lastIndexOf('?')
-    if (i >= 0) {
-      query = parseQuery(str.slice(i + 1))
-      loaderName = str.substring(0, i)
-    }
     meta.loader = {
-      name: loaderName,
-      query
+      ...parseQueryString(str)
     }
   }
   let regList = [

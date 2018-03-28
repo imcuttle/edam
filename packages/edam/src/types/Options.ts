@@ -10,15 +10,15 @@ export type Source = {
 
 export interface RCOptions {
   // template configuration file, or the name from `alias`, or repo string, npm package
-  source: string | Source
-  cacheDir: string | boolean
+  source?: string | Source
+  cacheDir?: string | boolean
   // alias the source
   alias?: object
   // the wanted extend edam configuration file path (relative or absolute)
   extends?: string | Array<string>
   output?: string
   plugins?: Array<Plugin>
-  pull: {
+  pull?: {
     npmClient: 'yarn' | 'npm' // | 'cnpm' TODO
     git: 'clone' | 'download'
   }

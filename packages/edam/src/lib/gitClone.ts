@@ -2,21 +2,18 @@
 // Forked from https://github.com/jaz303/git-clone/blob/master/index.js
 // use cross-spawn, instead spawn
 
+import processAsync from "./processAsync";
+
 var pify = require('pify')
 var spawn = require('cross-spawn')
+
 
 
 function _checkout(checkout, { targetPath = '', git = 'git' } = {}, cb) {
   var args = ['checkout', checkout]
   var process = spawn(git, args, { cwd: targetPath })
 
-  process.on('close', function(status) {
-    if (status == 0) {
-      cb && cb()
-    } else {
-      cb && cb(new Error("'git checkout' failed with status " + status))
-    }
-  })
+  processAsync(process, 'git checkout', cb)
 }
 
 function clone(repo, targetPath, opts, cb) {
@@ -42,15 +39,11 @@ function clone(repo, targetPath, opts, cb) {
   args.push(targetPath)
 
   var process = spawn(git, args)
-  process.on('close', function(status) {
-    if (status == 0) {
-      if (opts.checkout) {
-        checkout()
-      } else {
-        cb && cb()
-      }
+  processAsync(process, 'git clone', function (err, stdout) {
+    if (opts.checkout) {
+      checkout()
     } else {
-      cb && cb(new Error("'git clone' failed with status " + status))
+      cb && cb()
     }
   })
 
@@ -60,16 +53,15 @@ function clone(repo, targetPath, opts, cb) {
 }
 
 function _pullForce(targetPath, cb) {
-  var process = spawn('git', ['pull', '--force', '--allow-unrelated-histories'], {
-    cwd: targetPath
-  })
-  process.on('close', function(status) {
-    if (status == 0) {
-      cb && cb()
-    } else {
-      cb && cb(new Error("'git pull' failed with status " + status))
+  var process = spawn(
+    'git',
+    ['pull', '--force', '--allow-unrelated-histories'],
+    {
+      cwd: targetPath
     }
-  })
+  )
+
+  processAsync(process, 'git pull', cb)
 }
 
 export default pify(clone)

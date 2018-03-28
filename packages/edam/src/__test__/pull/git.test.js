@@ -31,7 +31,7 @@ describe('git', function() {
           git: 'clone'
         }
       })
-    ).toBe(nps.join(output, 'clone', filenamify(source.url), 'master'))
+    ).toBe(nps.join(output, 'clone', filenamify(source.url)))
 
     expect(
       await gitPull(source, constant.DEFAULT_CACHE_DIR, {
@@ -41,7 +41,7 @@ describe('git', function() {
           git: 'clone'
         }
       })
-    ).toBe(nps.join(output, 'clone', filenamify(source.url), 'master'))
+    ).toBe(nps.join(output, 'clone', filenamify(source.url)))
   })
 
   it('should download works on simple case', async () => {

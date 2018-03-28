@@ -22,10 +22,6 @@ function gitUserInfo() {
 
 export class Constants {
   public DEFAULT_CACHE_DIR: string = nps.join(__dirname, '../../../.cache/edam')
-  public DEFAULT_TPL_MAPPERS: Array<Mapper> = []
-  public DEFAULT_TPL_LOADERS: {
-    [loaderId: string]: Array<StrictLoader>
-  } = {}
   public DEFAULT_CONTEXT = {
     git: gitUserInfo(),
     pm: yarnInstall.getPm({ respectNpm5: true })

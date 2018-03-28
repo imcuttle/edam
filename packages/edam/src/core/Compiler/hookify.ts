@@ -5,11 +5,13 @@
  * @description
  */
 import { Hook } from '../../types/TemplateConfig'
-const spawn = require('cross-spawn')
+import processAsync from '../../lib/processAsync'
+import runner from '../../lib/runner'
+const pify = require('pify')
 
 const debug = require('debug')('edam:hookify')
 
-export default function hookify(hook: Hook): Function {
+export default function hookify(hook: Hook, cwd: string): Function {
   if (typeof hook === 'function') {
     return hook
   }
@@ -20,34 +22,22 @@ export default function hookify(hook: Hook): Function {
 
   debug('hockify cmd: %s', hook)
   // string
-  return async function(data) {
-    const string = JSON.stringify(data)
-    debug('invoke cmd hook %s \n with input: %O', hook, data)
-    let proc = spawn(`${hook}`, {
-      input: string
-    })
+  return async function(...args) {
+    // const string = JSON.stringify(args)
+    debug('invoke cmd hook "%s" \n with input: %O', hook, args)
 
-    return new Promise((resolve, reject) => {
-      const chunks = []
-      proc.on('data', chunk => {
-        chunks.push(chunk)
-      })
-      proc.on('end', () => {
-        debug('[%s] %s', hook, Buffer.concat(chunks).toString())
-      })
-      proc.on('error', function(err) {
-        reject(err)
-      })
-      proc.on('close', status => {
-        // eslint-disable-next-line eqeqeq
-        if (status == 0) {
-          resolve(Buffer.concat(chunks).toString())
-        } else {
-          reject(
-            new Error(JSON.stringify(hook) + ' failed with status ' + status)
-          )
-        }
-      })
+    const env = Object.assign({}, process.env, {
+      HOOK_PARAMS: JSON.stringify(args)
     })
+    args.forEach(function (arg, index) {
+      env['HOOK_PARAMS_' + index] = arg.toString()
+    })
+    let proc = runner(hook, {
+      env,
+      cwd
+    })
+    const output = await pify(processAsync)(proc, `[${hook}]`)
+    debug('hook "%s" output: %s', hook, output)
+    return
   }
 }
