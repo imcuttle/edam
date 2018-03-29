@@ -1,6 +1,6 @@
 {
   "name": "edam-completer",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "dependencies": {
     "chalk": "^2.3.2",
     "tabtab": "^2.2.2"
