@@ -5,6 +5,7 @@
     "dist": "rimraf dist && tsc",
     "dev": "npm run dist -- -w"
   },
+  "preferGlobal": true,
   "author": "imcuttle",
   "dependencies": {
     "await-event-emitter": "^1.1.1",
