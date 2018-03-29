@@ -1,10 +1,10 @@
 {
   "name": "edam",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "scripts": {
     "dist": "rimraf dist && tsc",
     "dev": "npm run dist -- -w",
-    "prepare": "npm run dist",
+    "prepublish": "npm run dist",
     "changelog": "conventional-changelog -p angular -i ../../CHANGELOG.md -s -r 0 && git add ../../CHANGELOG.md"
   },
   "preferGlobal": true,
