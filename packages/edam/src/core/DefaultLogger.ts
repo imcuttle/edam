@@ -21,14 +21,15 @@ function concat(head, arr, label) {
 }
 
 export default class DefaultLogger implements Logger {
+  silent: false
   public log(head, ...arr) {
-    console.log.apply(console, concat(head, arr, logSymbols.info))
+    !this.silent && console.log.apply(console, concat(head, arr, logSymbols.info))
   }
   public success(head, ...arr) {
-    console.log.apply(console, concat(head, arr, logSymbols.success))
+    !this.silent && console.log.apply(console, concat(head, arr, logSymbols.success))
   }
   public warn(head, ...arr) {
-    console.warn.apply(console, concat(head, arr, logSymbols.warning))
+    !this.silent && console.warn.apply(console, concat(head, arr, logSymbols.warning))
   }
   public error(head, ...arr) {
     console.error.apply(console, concat(head, arr, logSymbols.error))

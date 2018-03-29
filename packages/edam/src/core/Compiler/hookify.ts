@@ -7,6 +7,7 @@
 import { Hook } from '../../types/TemplateConfig'
 import processAsync from '../../lib/processAsync'
 import runner from '../../lib/runner'
+import EdamError from "../EdamError";
 const pify = require('pify')
 
 const debug = require('debug')('edam:hookify')
@@ -17,7 +18,7 @@ export default function hookify(hook: Hook, cwd: string): Function {
   }
 
   if (typeof hook !== 'string') {
-    throw new Error('Hook requires string or function, but ' + typeof hook)
+    throw new EdamError('Hook requires string or function, but ' + typeof hook)
   }
 
   debug('hockify cmd: %s', hook)

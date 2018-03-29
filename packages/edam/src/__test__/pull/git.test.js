@@ -11,7 +11,7 @@ import * as nps from 'path'
 import fileSystem from '../../lib/fileSystem'
 const filenamify = require('filenamify')
 
-jest.setTimeout(40000) // 40s
+jest.setTimeout(60000) // 40s
 describe('git', function() {
   let source = {
     type: 'git',

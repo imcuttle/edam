@@ -32,8 +32,18 @@ import { Constants } from './core/constant'
 import DefaultLogger from './core/DefaultLogger'
 import TemplateConfig from './types/TemplateConfig'
 import * as _ from 'lodash'
+import symbolic from './lib/symbolic'
+import { store, get } from './core/storePrompts'
 
 const inquirer = require('inquirer')
+// const debug = require('debug')('edam:core')
+
+function throwEdamError(err, message) {
+  if (err instanceof EdamError) {
+    throw err
+  }
+  throw `${message} ${err.stack}`
+}
 
 export class Edam extends AwaitEventEmitter {
   public inquirer = inquirer
@@ -70,15 +80,22 @@ export class Edam extends AwaitEventEmitter {
     this.utils = Object.assign({}, Edam.utils)
     this.sourcePullMethods = Object.assign({}, Edam.sourcePullMethods)
     this.constants = Object.assign({}, Edam.constants)
+    this.logger = new DefaultLogger()
 
-    this.logger = this.compiler.logger = new DefaultLogger()
+    // proxy
+    symbolic(this.compiler, 'logger', [this, 'logger'])
+    symbolic(this.logger, 'silent', [this, ['config', 'silent']])
+
+    symbolic(this.compiler, 'hookCwd', [this, ['config', 'output']])
+    symbolic(this.compiler, 'root', [this, ['templateConfig', 'root']])
   }
 
   private async normalizeConfig(): Promise<Edam> {
+    await this.emit('normalizeConfig:before', this.config, this.options)
     const { track, config } = await normalizeConfig(this.config, this.options)
     this.config = config
     this.track = track
-
+    await this.emit('normalizeConfig:after', this.config)
     return this
   }
   public use(
@@ -114,52 +131,79 @@ export class Edam extends AwaitEventEmitter {
     .default
 
   public async prompt(prompts = this.templateConfig.prompts) {
-    const context = {
-      ...this.constants.DEFAULT_CONTEXT,
-      absoluteDir: this.config.output,
-      dirName: this.config.output && nps.dirname(this.config.output)
-    }
-    await this.emit('prompt:before', prompts, context)
-    this.compiler.variables.setStore(
-      await prompt(prompts, {
+    try {
+      const context = {
+        ...this.constants.DEFAULT_CONTEXT,
+        absoluteDir: this.config.output,
+        dirName: this.config.output && nps.dirname(this.config.output)
+      }
+
+      if (this.config.storePrompts && this.config.cacheDir) {
+        let oldPromptValues = await get({
+          source: <Source>this.config.source,
+          cacheDir: this.config.cacheDir
+        })
+
+        oldPromptValues &&
+          Object.keys(oldPromptValues).length &&
+          prompts.forEach(prom => {
+            const { name } = prom
+            if (typeof oldPromptValues[name] !== 'undefined') {
+              prom.default = oldPromptValues[name]
+            }
+          })
+      }
+
+      await this.emit('prompt:before', prompts, context)
+      const promptValues = await prompt(prompts, {
         yes: this.config.yes,
         context,
         promptProcess: this.promptProcess
       })
-    )
-    this.compiler.variables.merge({ _: context })
-    await this.emit('prompt:after', this.compiler.variables)
+      this.compiler.variables.setStore(promptValues)
+
+      if (this.config.storePrompts && this.config.cacheDir) {
+        await store(promptValues, {
+          source: <Source>this.config.source,
+          cacheDir: this.config.cacheDir
+        })
+      }
+      this.compiler.variables.merge({ _: context })
+      await this.emit('prompt:after', this.compiler.variables)
+    } catch (err) {
+      throwEdamError(err, 'Error occurs when prompting \n')
+    }
   }
 
   public async pull(source?: Source) {
-    this.config.source = source || this.config.source
+    try {
+      this.config.source = source || this.config.source
 
-    source = <Source>this.config.source
-    if (!source) {
-      throw new EdamError('the `source` is required')
-    }
-    source = <Source>this.config.source
-    if (!source) {
-      throw new EdamError('the `source` is required')
-    }
-    const pullMethod = this.sourcePullMethods[source.type]
-    if (typeof pullMethod !== 'function') {
-      throw new EdamError(
-        `source pull method is not found of type: ${source.type}`
+      source = <Source>this.config.source
+      if (!source) {
+        throw new EdamError('the `source` is required')
+      }
+      const pullMethod = this.sourcePullMethods[source.type]
+      if (typeof pullMethod !== 'function') {
+        throw new EdamError(
+          `source pull method is not found of type: ${source.type}`
+        )
+      }
+
+      await this.emit('pull:before', source)
+      let templateConfigPath: string = await pullMethod.apply(this, [
+        source,
+        this.config.cacheDir || this.constants.DEFAULT_CACHE_DIR,
+        this.config
+      ])
+      templateConfigPath = this.templateConfigPath = require.resolve(
+        templateConfigPath
       )
+
+      await this.emit('pull:after', templateConfigPath)
+    } catch (err) {
+      throwEdamError(err, 'Error occurs when pulling \n')
     }
-
-    await this.emit('pull:before')
-    let templateConfigPath: string = await pullMethod.apply(this, [
-      source,
-      this.config.cacheDir || this.constants.DEFAULT_CACHE_DIR,
-      this.config
-    ])
-    templateConfigPath = this.templateConfigPath = require.resolve(
-      templateConfigPath
-    )
-
-    await this.emit('pull:after', templateConfigPath)
   }
 
   public async run(source?: Source): Promise<FileProcessor> {
@@ -171,16 +215,20 @@ export class Edam extends AwaitEventEmitter {
   }
 
   public async registerPlugins(plugins = []) {
-    await pReduce(plugins.filter(Boolean), async (_, plugin) => {
-      let fn = plugin
-      let options = {}
-      if (Array.isArray(plugin)) {
-        fn = plugin[0]
-        options = plugin[1]
-      }
+    try {
+      await pReduce(plugins.filter(Boolean), async (_, plugin) => {
+        let fn = plugin
+        let options = {}
+        if (Array.isArray(plugin)) {
+          fn = plugin[0]
+          options = plugin[1]
+        }
 
-      await fn.apply(this, [options, this])
-    })
+        await fn.apply(this, [options, this])
+      })
+    } catch (err) {
+      throwEdamError(err, 'Error occurs when register Plugin: \n')
+    }
   }
 
   public async process(
@@ -188,6 +236,7 @@ export class Edam extends AwaitEventEmitter {
   ): Promise<FileProcessor> {
     // preset plugins only do something about template
     await this.registerPlugins(plugins)
+
     let templateConfig =
       (await getTemplateConfig.apply(
         this,
@@ -198,11 +247,19 @@ export class Edam extends AwaitEventEmitter {
     )
 
     await this.prompt(templateConfig.prompts)
-    this.templateConfig = await normalize.apply(this, [templateConfig, templateConfigPath])
+    this.templateConfig = await normalize.apply(this, [
+      templateConfig,
+      templateConfigPath
+    ])
 
-    await this.emit('compiler:before')
-    const tree = await this.compiler.run()
-    await this.emit('compiler:after', tree)
+    let tree
+    try {
+      await this.emit('compiler:before')
+      tree = await this.compiler.run()
+      await this.emit('compiler:after', tree)
+    } catch (err) {
+      throwEdamError(err, 'Error occurs when compiling \n')
+    }
 
     const fp = new FileProcessor(tree, this.config.output, this.compiler)
     ;['move', 'copy'].forEach(name => {

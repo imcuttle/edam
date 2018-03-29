@@ -26,6 +26,7 @@ export class AwaitEventEmitter extends AwaitEventEmitterCore {
 }
 
 export interface Logger {
+  silent: boolean
   log: Function
   success: Function
   warn: Function

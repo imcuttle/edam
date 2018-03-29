@@ -44,7 +44,8 @@ export default async function normalizeConfig(
       extends: [],
       plugins: [],
       alias: {},
-      cacheDir: true
+      cacheDir: true,
+      updateNotify: true
     },
     looseConfig
   )
@@ -53,6 +54,7 @@ export default async function normalizeConfig(
     userc: looseConfig.userc,
     yes: looseConfig.yes,
     silent: looseConfig.silent,
+    updateNotify: looseConfig.updateNotify,
     name: looseConfig.name
   }
 
@@ -79,18 +81,18 @@ export default async function normalizeConfig(
   }
 
   if (!mergedConfig.source) {
-    throw new Error('Sorry, edam requires `source`')
+    throw new EdamError('Sorry, edam requires `source`')
   }
 
   if (typeof mergedConfig.output !== 'string') {
-    throw new Error(
+    throw new EdamError(
       '`config.output` requires dir path, but ' + typeof mergedConfig.output
     )
   }
 
   mergedConfig.output = nps.resolve(options.cwd, mergedConfig.output)
   if (fileSystem.isFile(mergedConfig.output)) {
-    throw new Error(
+    throw new EdamError(
       '`config.output` requires dir path, but "' +
         tildify(mergedConfig.output) +
         '" is a file now'
@@ -130,6 +132,10 @@ export default async function normalizeConfig(
     mergedConfig.cacheDir = constant.DEFAULT_CACHE_DIR
   }
 
+  if (typeof mergedConfig.storePrompts === 'undefined') {
+    mergedConfig.storePrompts = true
+  }
+
   const normalized = {
     ...mergedConfig,
     pull: {
@@ -139,7 +145,7 @@ export default async function normalizeConfig(
     ...coreSpecial
   }
   if (!['npm', 'yarn'].includes(normalized.pull.npmClient)) {
-    throw Error(
+    throw new EdamError(
       `config.pull.npmClient allows the value which is one of 'npm' | 'yarn'. but ${
         normalized.pull.npmClient
       }`

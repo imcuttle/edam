@@ -12,11 +12,4 @@ describe('EdamError', function() {
     expect(new EdamError('error').id).toBe('EDAM_ERROR')
     expect(new EdamError('error', 'NOT_FOUND').code).toBe('NOT_FOUND')
   })
-
-  it('should error has right message', () => {
-    expect(new EdamError('error').message).toBe('[EDAM] error')
-    expect(() => {
-      throw new EdamError('error')
-    }).toThrow(/\[EDAM\] error/)
-  })
 })

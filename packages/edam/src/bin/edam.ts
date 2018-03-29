@@ -1,11 +1,15 @@
 #!/usr/bin/env node
+/* eslint-disable indent */
 'use strict'
+import EdamError from '../core/EdamError'
+
 const meow = require('meow')
 import c from 'chalk'
 import edam, { Edam } from '../'
 import { generateFlagData, generateFlagHelp } from './util'
 const pkg = require('../../package.json')
 const tildify = require('tildify')
+const ora = require('ora')
 const updateNotify = require('update-notifier')
 
 const flags = [
@@ -72,6 +76,17 @@ const flags = [
     default: false
   },
   {
+    name: 'no-store',
+    type: 'boolean',
+    desc: 'storePrompts',
+    default: false
+  },
+  {
+    name: 'overwrite',
+    alias: 'o',
+    default: false
+  },
+  {
     name: 'silent',
     type: 'boolean',
     desc: 'silent',
@@ -84,7 +99,11 @@ const flags = [
 const cli = meow(
   `
     ${c.white('Usage')}
-      $ ${c.cyan.bold('edam')} ${c.keyword('orchid').bold('<source>')} ${c.keyword('orchid').bold('<output>')} ${c.keyword('orange')('[options]')}
+      $ ${c.cyan.bold('edam')} ${c
+    .keyword('orchid')
+    .bold('<source>')} ${c.keyword('orchid').bold('<output>')} ${c.keyword(
+    'orange'
+  )('[options]')}
  
     ${c.white('Options')}
 ${generateFlagHelp(flags, '      ')}
@@ -98,8 +117,7 @@ ${generateFlagHelp(flags, '      ')}
     autoHelp: false,
     description: `${c.cyan.bold(pkg.description)} ${c.gray(pkg.version)}`
   }
-);
-
+)
 ;(async function() {
   if (cli.flags.help) {
     cli.showHelp()
@@ -111,8 +129,7 @@ ${generateFlagHelp(flags, '      ')}
   ;['extends', 'plugins'].forEach(name => {
     if (flags[name]) {
       flags[name] = flags[name].split(',')
-    }
-    else {
+    } else {
       flags[name] = []
     }
   })
@@ -130,14 +147,54 @@ ${generateFlagHelp(flags, '      ')}
       yes: flags.yes,
       silent: flags.silent,
       output: cli.input[1],
-      source: cli.input[0]
+      source: cli.input[0],
+      // overwrite: flags.overwrite,
+      storePrompts: !flags.noStore
     }
   )
 
-  const fp = await edam(config, {
+  // default
+  if (config.cacheDir === tildify(Edam.constants.DEFAULT_CACHE_DIR)) {
+    config.cacheDir = Edam.constants.DEFAULT_CACHE_DIR
+  }
+
+  const em = edam(config, {
     cwd: process.cwd()
-  }).run()
-  await fp.writeToFile()
+  })
+  const spinner = ora('Running...')
+  em
+    .on('pull:before', source => {
+      // spinner.start()
+      if (source && ['npm', 'git'].includes(source.type)) {
+        spinner.start(`Pulling template from ${source.type}: ${source.url}`)
+      }
+    })
+    .on('pull:after', templateConfigPath => {
+      spinner.succeed(
+        `Done Pull. template path: "${tildify(templateConfigPath)}"`
+      )
+    })
+
+  em.compiler
+    .on('pre', (/*output*/) => {
+      spinner.start('Writing to file...')
+    })
+    .on('post', output => {
+      spinner.succeed(
+        `Done! the output: "${tildify(output)}" is waiting for you`
+      )
+    })
+
+  try {
+    const fp = await em.run()
+    await fp.writeToFile(void 0, { overwrite: <boolean>flags.overwrite })
+  } catch (err) {
+    if (err instanceof EdamError) {
+      spinner.fail(err.message)
+    } else {
+      console.error(err)
+    }
+  }
 
   if (config.updateNotify) {
     updateNotify({ pkg })

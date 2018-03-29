@@ -22,14 +22,14 @@ export interface RCOptions {
     npmClient: 'yarn' | 'npm' // | 'cnpm' Not Support
     git: 'clone' | 'download'
   }
-  updateNotify?: boolean
+  storePrompts?: boolean
 }
 
 export interface EdamConfig extends RCOptions {
   // the template's name, be used for log
   // NOTE: it's unused now
   name?: string
-
+  updateNotify?: boolean
   userc?: boolean
   yes?: boolean
   // when silent is `true` equals yes: true

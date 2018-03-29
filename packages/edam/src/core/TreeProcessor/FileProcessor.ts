@@ -29,7 +29,7 @@ export default class FileProcessor extends TreeProcessor {
   }
   public async writeToFile(
     filepath: string = this.dest,
-    option: { clean: boolean; overwrite: boolean } = {
+    option: { clean?: boolean; overwrite?: boolean } = {
       clean: false,
       overwrite: false
     }
@@ -38,7 +38,7 @@ export default class FileProcessor extends TreeProcessor {
     if (option.clean) {
       await pify(rimraf)(filepath)
     }
-
+    await this.emitter.emit('pre', filepath)
     const workers = []
     _.each(this.tree, function(data: State, path) {
       const filename = nps.join(filepath, path)

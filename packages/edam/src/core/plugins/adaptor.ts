@@ -11,6 +11,7 @@ import toArray from '../../lib/toArray'
 import { Hook, default as TemplateConfig } from '../../types/TemplateConfig'
 import { dirname, resolve } from 'path'
 import npmInstall from 'yarn-install'
+import symbolic from "../../lib/symbolic";
 
 export default async function filter(/*options*/) {
   const edam = <Edam>this
@@ -21,9 +22,6 @@ export default async function filter(/*options*/) {
 
     const compiler = edam.compiler
     const variables = edam.compiler.variables
-    compiler.hookCwd = edam.config.output
-    compiler.root = templateConfig.root
-
     getExtendsMerge({ concatKeys: ['mappers'] })(compiler, {
       loaders,
       mappers
