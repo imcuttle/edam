@@ -60,9 +60,9 @@ export default interface TemplateConfig {
   }
   mappers?: Array<Mapper>
 
-  // TODO
   move?: {}
   copy?: {}
+  remove?: {}
 
   usefulHook: {
     gitInit?: boolean

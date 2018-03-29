@@ -11,7 +11,7 @@ import { join } from 'path'
 import fileSystem from '../../lib/fileSystem'
 
 const filenamify = require('filenamify')
-const npmInstall = require('yarn-install')
+const npmInstall = require('../../lib/yarnInstall')
 const tildify = require('tildify')
 const down = require('download')
 const c = require('chalk')
@@ -67,17 +67,17 @@ module.exports = async function gitPull(
     })
     const dependencies = JSON.parse(text).dependencies
     if (dependencies && Object.keys(dependencies).length > 0) {
-      const proc = npmInstall({
-        stdio: 'ignore',
-        respectNpm5: npmClient === 'npm',
-        cwd: target,
-        production: true
-      })
-      // eslint-disable-next-line eqeqeq
-      if (proc.status != '0') {
+      try {
+        await npmInstall({
+          stdio: 'ignore',
+          respectNpm5: npmClient === 'npm',
+          cwd: target,
+          production: true
+        })
+      } catch (err) {
         throw new Error(
-          `Install package from git "${source.url}" failed: ` +
-            proc.error.message || proc.stderr.toString().trim()
+          `Install package from git "${source.url}" failed \n` +
+          err.stack
         )
       }
       log(

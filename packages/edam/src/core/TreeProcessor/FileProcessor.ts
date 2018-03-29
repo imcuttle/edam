@@ -76,6 +76,14 @@ export default class FileProcessor extends TreeProcessor {
     return fileStates.length === 1 ? fileStates[0] : fileStates
   }
 
+  public remove(m: string | string[]): void {
+    debug('remove input: %o', m)
+    toArray(m).forEach(eachm => {
+      const paths = this.match(<string>eachm)
+      this.delete(paths)
+    })
+  }
+
   private _move(path: string, to: string) {
     path = nps.normalize(path)
     to = nps.normalize(to)

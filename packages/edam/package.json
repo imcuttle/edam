@@ -3,7 +3,8 @@
   "version": "0.0.1",
   "scripts": {
     "dist": "rimraf dist && tsc",
-    "dev": "npm run dist -- -w"
+    "dev": "npm run dist -- -w",
+    "prepublishOnly": "npm run dist"
   },
   "preferGlobal": true,
   "author": "imcuttle",
@@ -15,7 +16,6 @@
     "debug": "^3.1.0",
     "download": "^6.2.5",
     "filenamify": "^2.0.0",
-    "ink-autocomplete": "0.0.0",
     "inquirer": "^5.1.0",
     "json5": "^1.0.1",
     "lodash": "^4.17.5",
@@ -33,14 +33,13 @@
     "semver": "^5.5.0",
     "tildify": "^1.2.0",
     "update-notifier": "^2.4.0",
-    "url-join": "^4.0.0",
-    "yarn-install": "^0.5.1"
+    "url-join": "^4.0.0"
   },
   "devDependencies": {
     "bdd-stdin": "^0.2.0"
   },
   "bin": {
-    "edam": "./dist/bin/edam.js"
+    "edam": "./bin/edam.js"
   },
   "repository": {
     "type": "git",
@@ -53,5 +52,24 @@
   "description": "The core package of Edam.",
   "main": "dist/index.js",
   "keywords": [],
-  "license": "MIT"
+  "license": "MIT",
+  "tabtab": {
+    "nvm": [
+      "help",
+      "use",
+      "install",
+      "uninstall",
+      "run",
+      "current",
+      "ls",
+      "ls-remote"
+    ],
+    "use": [
+      "stable",
+      "default",
+      "iojs",
+      "v5.11.0",
+      "v6.0.0"
+    ]
+  }
 }

@@ -10,15 +10,16 @@ import { join } from 'path'
 import * as mkdirp from 'mkdirp'
 import fs from '../../lib/fileSystem'
 import chalk from 'chalk'
+import EdamError from '../EdamError'
 
 const tildify = require('tildify')
 const updateNotifier = require('update-notifier')
 const c = require('chalk')
 const debug = require('debug')('edam:pull:npm')
 const semver = require('semver')
-const yarnInstall = require('yarn-install')
+const yarnInstall = require('../../lib/yarnInstall')
 
-module.exports = async function(
+module.exports = async function npmPull(
   source: Source,
   destDir: string,
   options: EdamConfig
@@ -29,29 +30,26 @@ module.exports = async function(
   const updateNotify = this && this.config && this.config.updateNotify
 
   let respectNpm5 = npmClient === 'npm'
+
   const name = source.version ? `${source.url}@${source.version}` : source.url
   let dest: string
   let modulePath: string
   let oldPkgPath: string
 
-  let proc
-  function assertProcess() {
-    // eslint-disable-next-line eqeqeq
-    if (proc.status != '0') {
-      throw new Error(
-        `Install package "${name}" failed: ` + proc.error.message ||
-          proc.stderr.toString().trim()
+  const install = async () => {
+    try {
+      await yarnInstall([name], {
+        respectNpm5,
+        stdio: 'pipe',
+        cwd: dest
+        // showCommand: true
+      })
+    } catch (err) {
+      throw new EdamError(
+        `Install package "${name}" failed. \n` +
+        (err && err.stack)
       )
     }
-  }
-  const install = async () => {
-    proc = yarnInstall([name], {
-      respectNpm5,
-      stdio: 'pipe',
-      cwd: dest
-      // showCommand: true
-    })
-    assertProcess()
 
     if (updateNotify) {
       const notifier = updateNotifier({

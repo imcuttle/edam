@@ -1,15 +1,14 @@
 #!/usr/bin/env node
 /* eslint-disable indent */
-'use strict'
-import EdamError from '../core/EdamError'
+const c = require('chalk')
+const constant = require('../dist/core/constant').default
+
+const generateFlagData = require('./util').generateFlagData
+const generateFlagHelp = require('./util').generateFlagHelp
 
 const meow = require('meow')
-import c from 'chalk'
-import edam, { Edam } from '../'
-import { generateFlagData, generateFlagHelp } from './util'
-const pkg = require('../../package.json')
+const pkg = require('../package.json')
 const tildify = require('tildify')
-const ora = require('ora')
 const updateNotify = require('update-notifier')
 
 const flags = [
@@ -24,7 +23,7 @@ const flags = [
     name: 'cache-dir',
     type: 'boolean',
     desc: 'sss',
-    default: tildify(Edam.constants.DEFAULT_CACHE_DIR)
+    default: tildify(constant.DEFAULT_CACHE_DIR)
   },
   {
     name: 'no-cache',
@@ -118,7 +117,8 @@ ${generateFlagHelp(flags, '      ')}
     description: `${c.cyan.bold(pkg.description)} ${c.gray(pkg.version)}`
   }
 )
-;(async function() {
+
+;(function() {
   if (cli.flags.help) {
     cli.showHelp()
     return
@@ -153,63 +153,75 @@ ${generateFlagHelp(flags, '      ')}
     }
   )
 
+  const edam = require('../dist').default
+  const Edam = require('../dist').Edam
   // default
   if (config.cacheDir === tildify(Edam.constants.DEFAULT_CACHE_DIR)) {
     config.cacheDir = Edam.constants.DEFAULT_CACHE_DIR
   }
 
+  let spinner = require('ora')()
   const em = edam(config, {
     cwd: process.cwd()
   })
-  const spinner = ora('Running...')
   em
-    .on('pull:before', source => {
-      // spinner.start()
+    .once('pull:before', async source => {
       if (source && ['npm', 'git'].includes(source.type)) {
+        // console.log(process._getActiveHandles())
+        // console.log(process._getActiveRequests().length)
+
         spinner.start(`Pulling template from ${source.type}: ${source.url}`)
       }
     })
-    .on('pull:after', templateConfigPath => {
+    .once('pull:after', async templateConfigPath => {
       spinner.succeed(
         `Done Pull. template path: "${tildify(templateConfigPath)}"`
       )
     })
 
   em.compiler
-    .on('pre', (/*output*/) => {
-      spinner.start('Writing to file...')
+    .once('pre', (/*output*/) => {
+      // spinner.start('Writing to file...')
     })
-    .on('post', output => {
+    .once('post', output => {
       spinner.succeed(
         `Done! the output: "${tildify(output)}" is waiting for you`
       )
     })
 
-  try {
-    const fp = await em.run()
-    await fp.writeToFile(void 0, { overwrite: <boolean>flags.overwrite })
-  } catch (err) {
-    if (err instanceof EdamError) {
-      spinner.fail(err.message)
-    } else {
-      console.error(err)
-    }
-  }
+  //
+  let code = 0
+  em.run()
+    .then(function (fp) {
+      return fp.writeToFile(void 0, { overwrite: flags.overwrite })
+    })
+    .catch(function (err) {
+      if (err && err.id === 'EDAM_ERROR') {
+        spinner.fail(err.message)
+      } else {
+        console.error('\n\n\n' + err.trimLeft())
+      }
+      code = 1
+    })
+    .then(function () {
+      if (config.updateNotify) {
+        updateNotify({ pkg })
+        const upt = updateNotify.update
+        if (upt) {
+          updateNotify.notify({
+            message:
+            'Update available ' +
+            c.dim(upt.current) +
+            c.reset(' → ') +
+            c.green(upt.latest) +
+            ' \nRun ' +
+            c.cyan('npm install edam@latest -g') +
+            ' to update'
+          })
+        }
+      }
 
-  if (config.updateNotify) {
-    updateNotify({ pkg })
-    const upt = updateNotify.update
-    if (upt) {
-      updateNotify.notify({
-        message:
-          'Update available ' +
-          c.dim(upt.current) +
-          c.reset(' → ') +
-          c.green(upt.latest) +
-          ' \nRun ' +
-          c.cyan('npm install edam@latest -g') +
-          ' to update'
-      })
-    }
-  }
+      process.exit(code)
+    })
+
 })()

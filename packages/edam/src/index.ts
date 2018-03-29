@@ -39,7 +39,7 @@ const inquirer = require('inquirer')
 // const debug = require('debug')('edam:core')
 
 function throwEdamError(err, message) {
-  if (err instanceof EdamError) {
+  if (err && err.id === 'EDAM_ERROR') {
     throw err
   }
   throw `${message} ${err.stack}`
@@ -91,6 +91,7 @@ export class Edam extends AwaitEventEmitter {
   }
 
   private async normalizeConfig(): Promise<Edam> {
+    await this.emit('normalizeConfig:before', this.config, this.options)
     await this.emit('normalizeConfig:before', this.config, this.options)
     const { track, config } = await normalizeConfig(this.config, this.options)
     this.config = config

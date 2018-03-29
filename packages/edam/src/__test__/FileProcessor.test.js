@@ -137,6 +137,17 @@ describe('FileProcessor', function() {
     expect(fp.tree['x.ts']).not.toBe(fp.tree['pull/npm.ts'])
   })
 
+  it('should FileProcessor remove works with exact path', async function () {
+    fp.remove('pull/*')
+
+    expect(Object.keys(fp.tree)).toEqual(
+      expect.arrayContaining([
+        'push/git.ts',
+        'root.txt'
+      ])
+    )
+  })
+
   // NOT Support now
   // it('should FileProcessor move works on directory', async function () {
   //   fp.move('pull/', 'x')

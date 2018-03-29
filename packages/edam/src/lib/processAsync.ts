@@ -17,10 +17,10 @@ function processAsync(process, cmd: string = '', cb) {
 
   let stderr = ''
   let stdout = ''
-  process.stderr.on('data', chunk => {
+  process.stderr && process.stderr.on('data', chunk => {
     stderr += chunk.toString()
   })
-  process.stdout.on('data', chunk => {
+  process.stdout && process.stdout.on('data', chunk => {
     stdout += chunk.toString()
   })
   process.on('close', function(status) {

@@ -4,11 +4,14 @@
     "packages/*"
   ],
   "changelog": {
+    "repo": "imcuttle/edam",
     "labels": {
+      "refactor": "Refactor",
       "perf": ":rocket: Enhancement",
       "fix": ":bug: Bug Fix",
       "feat": ":boom: New Feature"
     }
   },
+  "cacheDir": ".changelog",
   "version": "0.0.1"
 }

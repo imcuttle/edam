@@ -10,8 +10,7 @@ import * as _ from 'lodash'
 import toArray from '../../lib/toArray'
 import { Hook, default as TemplateConfig } from '../../types/TemplateConfig'
 import { dirname, resolve } from 'path'
-import npmInstall from 'yarn-install'
-import symbolic from "../../lib/symbolic";
+const npmInstall = require('../../lib/yarnInstall')
 
 export default async function filter(/*options*/) {
   const edam = <Edam>this
@@ -48,8 +47,8 @@ export default async function filter(/*options*/) {
         })
       }
       if (installDependencies || installDevDependencies) {
-        compiler.addHook('post', function (output) {
-          npmInstall({
+        compiler.addHook('post', async function (output) {
+          await npmInstall({
             production: installDependencies && !installDevDependencies,
             dev: !installDependencies && installDevDependencies,
             stdio: 'pipe',

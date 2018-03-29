@@ -5,9 +5,8 @@
  * @description
  */
 import * as nps from 'path'
-import { Mapper, StrictLoader } from '../types/TemplateConfig'
 
-const yarnInstall = require('yarn-install')
+const yarnInstall = require('../lib/yarnInstall')
 const parseGitConfig = require('parse-git-config')
 const gitConfigPath = require('git-config-path')
 
@@ -18,7 +17,6 @@ function gitUserInfo() {
     parseGitConfig.sync({ path: gitConfigPath() }).user
   )
 }
-
 
 export class Constants {
   public DEFAULT_CACHE_DIR: string = nps.join(__dirname, '../../../.cache/edam')

@@ -1,0 +1,17 @@
+{
+  "name": "edam-completer",
+  "version": "0.0.1",
+  "dependencies": {
+    "chalk": "^2.3.2",
+    "tabtab": "^2.2.2"
+  },
+  "bin": {
+    "edam-completer": "completer.js"
+  },
+  "main": "completer.js",
+  "scripts": {
+    "install": "tabtab install --name edam --completer edam-completer",
+    "uninstall": "tabtab uninstall --name edam --auto",
+    "test": "npm link"
+  }
+}
