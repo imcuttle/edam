@@ -4,6 +4,7 @@
     "target": "ES2015",
     "sourceMap": false,
     "lib": ["es7"],
+    "declaration": true,
     "typeRoots": [
       "./node_modules/@types"
     ]

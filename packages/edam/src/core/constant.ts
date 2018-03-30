@@ -10,7 +10,7 @@ const yarnInstall = require('../lib/yarnInstall')
 const parseGitConfig = require('parse-git-config')
 const gitConfigPath = require('git-config-path')
 
-function gitUserInfo() {
+function gitUserInfo(): { name: string, email: string } {
   return Object.assign(
     { name: '', email: '' },
     parseGitConfig.sync({ path: gitConfigPath('global') }).user,
@@ -22,7 +22,7 @@ export class Constants {
   public DEFAULT_CACHE_DIR: string = nps.join(__dirname, '../../../.cache/edam')
   public DEFAULT_CONTEXT = {
     git: gitUserInfo(),
-    pm: yarnInstall.getPm({ respectNpm5: true })
+    pm: <string>yarnInstall.getPm({ respectNpm5: true })
   }
 }
 
