@@ -13,6 +13,7 @@ cache:
 
 install:
   - npm install
+  - npm run bootstrap
 
 before_script:
   - npm install codecov
