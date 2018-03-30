@@ -1,0 +1,8 @@
+
+Name: <%= name %>
+Password: <%= password %>
+Gender: <%= gender %>
+Age: <%= age %>
+Hobbies: <%= hobbies.join(',') %>
+Movies: <%= movies.join(',') %>
+Reason of adam: <%= typeof reason_of_adam !== 'undefined' ? reason_of_adam : 'empty' %>

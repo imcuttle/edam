@@ -18,7 +18,7 @@ const c = require('chalk')
 const nurl = require('url')
 const urlJoin = require('url-join')
 // const ora = require('ora')
-// const debug = require('debug')('edam:pull:git')
+const debug = require('debug')('edam:pull:git')
 
 function download(url, dest) {
   return down(url, dest, {
@@ -59,10 +59,16 @@ module.exports = async function gitPull(
 ) {
   const { cacheDir, pull: { git, npmClient } } = config
   const log = (this && this.logger && this.logger.log) || console.log
-  const errorLog = (this && this.logger && this.logger.error) || console.error
+  const errorLog = (this && this.logger && this.logger.warn) || console.error
 
   async function installFromPkg(target) {
-    const text = await fileSystem.readFile(join(target, 'package.json'), {
+    debug('installFromPkg: %s', target)
+    const path = join(target, 'package.json')
+    if (!fileSystem.isFile(path)) {
+      debug('installFromPkg: %s does not have the package.json', target)
+      return
+    }
+    const text = await fileSystem.readFile(path, {
       encoding: 'utf8'
     })
     const dependencies = JSON.parse(text).dependencies

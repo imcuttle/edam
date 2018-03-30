@@ -81,8 +81,14 @@ const flags = [
     default: false
   },
   {
-    name: 'overwrite',
+    name: 'output',
     alias: 'o',
+    type: 'string',
+    desc: 'output'
+  },
+  {
+    name: 'overwrite',
+    alias: 'w',
     default: false
   },
   {
@@ -146,7 +152,7 @@ ${generateFlagHelp(flags, '      ')}
       },
       yes: flags.yes,
       silent: flags.silent,
-      output: cli.input[1],
+      output: flags.output || process.cwd(),
       source: cli.input[0],
       // overwrite: flags.overwrite,
       storePrompts: !flags.noStore
@@ -163,6 +169,25 @@ ${generateFlagHelp(flags, '      ')}
   let spinner = require('ora')()
   const em = edam(config, {
     cwd: process.cwd()
+  })
+
+  const format = require('util').format
+  Object.assign(em.logger, {
+    _log() {
+      spinner.color = 'cyan'
+      spinner.text = format.apply(null, arguments)
+    },
+    _warn() {
+      spinner.color = 'yellow'
+      spinner.text = format.apply(null, arguments)
+    },
+    _success() {
+      spinner.succeed(format.apply(null, arguments))
+    },
+    _error() {
+      // the error outside are caught outside.
+      spinner.fail(format.apply(null, arguments))
+    }
   })
   em
     .once('pull:before', async source => {
@@ -199,7 +224,7 @@ ${generateFlagHelp(flags, '      ')}
       if (err && err.id === 'EDAM_ERROR') {
         spinner.fail(err.message)
       } else {
-        console.error('\n\n\n' + err.trimLeft())
+        spinner.fail(err)
       }
       code = 1
     })

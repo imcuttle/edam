@@ -33,7 +33,7 @@ describe('isGitUrl', function () {
   it('should works 2', function () {
     expect(
       isGitUrl('telescopejs/telescope')
-    ).toBeFalsy()
+    ).toBeTruthy()
 
     expect(
       isGitUrl('telescopejs/telescope/master')

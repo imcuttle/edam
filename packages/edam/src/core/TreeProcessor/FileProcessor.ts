@@ -5,7 +5,13 @@
  * @date 2018/3/25
  * @description
  */
-import { TreeProcessor, Tree, State, AwaitEventEmitter } from '../../types/core'
+import {
+  TreeProcessor,
+  Tree,
+  State,
+  AwaitEventEmitter,
+  Logger
+} from '../../types/core'
 import toArray from '../../lib/toArray'
 import * as mkdirp from 'mkdirp'
 import * as rimraf from 'rimraf'
@@ -14,10 +20,12 @@ import * as _ from 'lodash'
 import * as nps from 'path'
 import fileSystem from '../../lib/fileSystem'
 import * as mm from 'micromatch'
+import DefaultLogger from '../DefaultLogger'
 const debug = require('debug')('edam:FileProcessor')
 const tildify = require('tildify')
 
 export default class FileProcessor extends TreeProcessor {
+  public logger: Logger = new DefaultLogger()
   constructor(
     public tree: Tree,
     public dest?: string,
@@ -40,10 +48,11 @@ export default class FileProcessor extends TreeProcessor {
     }
     await this.emitter.emit('pre', filepath)
     const workers = []
-    _.each(this.tree, function(data: State, path) {
+    _.each(this.tree, (data: State, path) => {
       const filename = nps.join(filepath, path)
       if (!option.overwrite && fileSystem.existsSync(filename)) {
         debug('%s already existed, ignored!', tildify(filename))
+        this.logger.warn('%s already existed, ignored!', tildify(filename))
         return
       }
       workers.push(

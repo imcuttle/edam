@@ -1,0 +1,8 @@
+
+Name: ddddd
+Password: password
+Gender: F
+Age: 18
+Hobbies: Play,Eat
+Movies: adam,egg
+Reason of adam: ssss Just like it!学习

@@ -52,7 +52,7 @@ describe('normalizeConfig', function() {
           'react-a': 'aa',
           'b.react': 'b.react.origin',
           'github': 'github:tele/rele',
-          'file': 'fixture/source'
+          'file': './fixture/source'
         },
         source: 'react'
       },

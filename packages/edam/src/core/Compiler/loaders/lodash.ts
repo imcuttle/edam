@@ -18,7 +18,7 @@ function loDashLoader(content: string, variables): string {
 
   // let variables: object = this.root.get()
 
-  return template(content, options)(variables)
+  return template(content, { interpolate: /<%=([\s\S]+?)%>/g, ...options })(variables)
 }
 
 module.exports = loDashLoader

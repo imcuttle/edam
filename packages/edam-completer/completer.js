@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 /* eslint-disable */
 const tab = require('tabtab')({
-  cache: false
+  cache: false,
+  // cache: true,
   // name: 'edam'
 })
 const nps = require('path')
@@ -15,6 +16,7 @@ const url = u.resolve(
   'https://api.github.com',
   nps.join('/repos', REPO, 'branches')
 )
+
 // https://github.com/imcuttle/edam-vendor.git
 function fetch(cb) {
   let resp = ''
@@ -41,9 +43,12 @@ function fetch(cb) {
             json = JSON.parse(resp)
             process.env.EDAM_COMPLETE && console.log('Response: \n', json)
 
+            let transform = function (branch) {
+              return REPO + '?checkout=' + branch
+            }
             cb(
               json.map(function(x) {
-                return x.name
+                return transform(x.name)
               })
             )
           })
@@ -98,7 +103,9 @@ function complFiles(compl) {
 
 tab.on('edam', function(compl, done) {
   if (compl.prev !== 'edam') {
-    done(null, complFiles(compl))
+    if (['-o', '--output'].includes(compl.prev)) {
+      done(null, complFiles(compl))
+    }
     return
   }
   // console.error(compl)

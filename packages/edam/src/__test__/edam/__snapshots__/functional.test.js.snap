@@ -32,7 +32,7 @@ module.exports = function (variables) {
  * @description
  */
 
-module.exports = '\${value}'
+module.exports = '<%= value %>'
 ",
     "loaders": "LoDash",
     "output": "/**

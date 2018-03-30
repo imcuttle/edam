@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title><%- title %></title>
+  <link rel="stylesheet" href="//unpkg.com/bootstrap@3.3.7/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="//unpkg.com/animate.css@3.6.1/animate.min.css">
+  <style>
+    .form {
+      margin: 30px auto;
+      max-width: 500px;
+    }
+    .bg-danger, .bg-success {
+      padding: 13px;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <div class="form">
+    <p class="bg-danger hidden" id="alert-msg">...</p>
+    <div id="form-placeholder">
+
+    </div>
+
+    <div class="text-center">
+      <button class="btn btn-primary" onclick="di.submit()">Submit</button>
+    </div>
+  </div>
+</div>
+<script>
+  function renderEachPrompt(p) {
+    var disabled = p._hasWhen ? ' disabled ' : ''
+    if (['radio', 'checkbox'].includes(p.type)) {
+      var _default = Array.isArray(p.default) ? p.default : [p.default]
+      var arr = (p.options || []).map(function (op) {
+        var checked = _default.includes(op)
+        var className = p.type + '-inline'
+        if (p.style === 'block') {
+          className = ''
+        }
+        var s = `<label class="${className}">
+  <input ${disabled} type="${p.type}" ${checked ? 'checked=""' : ''} name="${p.name}" value="${op.toString()}"/>${op.toString()}
+</label>`
+        if (p.style === 'block') {
+          s = `<div class="${p.type}">${s}</div>`
+        }
+        return s
+      })
+      arr = [
+        '<div class="form-group">',
+        `<label style="margin-right: 10px">${p.label || p.message}</label>`
+      ].concat(arr).concat('</div>')
+      return arr.join('')
+    } else {
+      return `<div class="form-group">
+  <label for="${p.name}">${p.label || p.message}</label>
+  <input ${disabled} type="${p.type}" autocomplete="off" spellcheck="false" value="${p.default}" class="form-control"
+         name="${p.name}" placeholder="${p.placeholder || p.message}"/>
+</div>`
+    }
+  }
+</script>
+<script src="//unpkg.com/jquery@3.3.1/dist/jquery.min.js"></script>
+<script>
+  function action(data) {
+    var ele = di.ele
+
+    if (data.status === 'ok') {
+      var d = data.data
+      switch (data.action) {
+        case 'errors':
+          var msg = ''
+          for (var k in d) {
+            msg += `Field: "${k}" has illegal value: ${d[k]}\n`
+          }
+          if (msg) {
+            window.msg.error(msg)
+            window.msg.animate.bounce(msg)
+          }
+          break
+        case 'close':
+          window.msg.succeed('Submit succeed, the window would be closed soon. :)')
+          setTimeout(() => {
+            window.close()
+          }, 2000)
+          break
+        case 'validate-passed':
+          window.msg.succeed(`Field: "${d}" passed.`)
+        case 'passed':
+          $.get('/when', function (data) {
+            action(data)
+          })
+          break
+        case 'when-passed':
+          d.passed.forEach(function (name) {
+            var el = ele.querySelector(`input[name=${JSON.stringify(name)}]`)
+            if (el) {
+              el.disabled = false
+            }
+          })
+          d.failed.forEach(function (name) {
+            var el = ele.querySelector(`input[name=${JSON.stringify(name)}]`)
+            if (el) {
+              el.disabled = true
+            }
+          })
+      }
+    }
+  }
+
+  window.di = {
+    ele: window['form-placeholder'],
+    prompts: JSON.parse(<%= JSON.stringify(JSON.stringify(prompts)) %>),
+    _t: null,
+    submit: function () {
+      if (this._t) {
+        clearTimeout(this._t)
+      }
+      this._t = setTimeout(function () {
+        $.post('/submit', {}, function (data) {
+          action(data)
+        })
+      }, 300)
+    },
+    renderEachPrompt: renderEachPrompt
+  }
+
+  var msgEle = window['alert-msg']
+  window.msg = {
+    _rep: function (type, text) {
+      msgEle.className = ''
+      msgEle.classList.add('bg-' + type)
+      msgEle.innerText = text
+    },
+    error: function (text) {
+      this._rep('danger', text)
+    },
+    succeed: function (text) {
+      this._rep('success', text)
+    },
+    animate: {
+      _t: null,
+      _base: function (name, delay) {
+        msgEle.classList.add(name)
+        msgEle.classList.add('animated')
+        if (this._t) {
+          clearTimeout(this._t)
+        }
+        this._t = setTimeout(function () {
+          msgEle.classList.remove(name)
+          msgEle.classList.remove('animated')
+        }, 1000)
+      },
+      pulse: function () {
+        this._base('pulse')
+      },
+      bounce: function () {
+        this._base('bounce')
+      },
+    }
+  }
+
+  ;(function (di) {
+    // enable when first time
+    $.get('/when', action)
+
+    var s = di.prompts.map(function (p) {
+      return di.renderEachPrompt(p)
+    }).join('')
+    // console.error(s)
+    di.ele.innerHTML = s
+    var inputs = di.ele.querySelectorAll('input')
+    di.ele.addEventListener('change', function (evt) {
+      if (evt.target && evt.target.tagName && evt.target.tagName.toLowerCase() === 'input') {
+        var t = evt.target
+        var val = evt.target.value
+
+        if (t.type === 'checkbox') {
+          var els = di.ele.querySelectorAll(`input[name=${JSON.stringify(t.name)}][type=checkbox]`)
+          val = []
+          Array.from(els)
+            .forEach(function (ele) {
+              ele.checked && val.push(ele.value)
+            })
+        }
+
+        $.get('/set', { name: t.name, value: val }, function (data) {
+          action(data)
+        }, 'json')
+      }
+    })
+
+    // Array.from(inputs)
+    //   .forEach(function (inp) {
+    //
+    //   })
+  })(window.di)
+</script>
+</body>
+</html>

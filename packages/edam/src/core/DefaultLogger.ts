@@ -22,16 +22,28 @@ function concat(head, arr, label) {
 
 export default class DefaultLogger implements Logger {
   silent = false
+  public _log = (head, ...arr) => {
+    console.log.apply(console, concat(head, arr, logSymbols.info))
+  }
+  public _success = (head, ...arr) => {
+    console.log.apply(console, concat(head, arr, logSymbols.success))
+  }
+  public _warn = (head, ...arr) => {
+    console.warn.apply(console, concat(head, arr, logSymbols.warning))
+  }
+  public _error = (head, ...arr) => {
+    console.error.apply(console, concat(head, arr, logSymbols.error))
+  }
   public log = (head, ...arr) => {
-    !this.silent && console.log.apply(console, concat(head, arr, logSymbols.info))
+    !this.silent && this._log(head, ...arr)
   }
   public success = (head, ...arr) => {
-    !this.silent && console.log.apply(console, concat(head, arr, logSymbols.success))
+    !this.silent && this._success(head, ...arr)
   }
   public warn = (head, ...arr) => {
-    !this.silent && console.warn.apply(console, concat(head, arr, logSymbols.warning))
+    !this.silent && this._warn(head, ...arr)
   }
   public error = (head, ...arr) => {
-    console.error.apply(console, concat(head, arr, logSymbols.error))
+    this._error(head, ...arr)
   }
 }

@@ -34,6 +34,14 @@ describe('normalizeSource', function () {
     })
 
     expect(
+      normalizeSource('telescopejs/telescope')
+    ).toEqual({
+      type: 'git',
+      url: 'https://github.com/telescopejs/telescope.git',
+      checkout: 'master'
+    })
+
+    expect(
       normalizeSource('https://github.com/telescopejs/telescope')
     ).toEqual({
       type: 'git',

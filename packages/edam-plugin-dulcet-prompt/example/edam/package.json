@@ -1,0 +1,9 @@
+{
+  "name": "example",
+  "private": true,
+  "main": "edam.js",
+  "version": "0.0.1",
+  "dependencies": {
+
+  }
+}

@@ -7,6 +7,7 @@
 import parseQuery from './parseQuery'
 import * as cacheParseGithubUrl from 'parse-github-url'
 import parseQueryString from './parseQueryString'
+import { isExact } from './isGitUrl'
 
 function parseGithubUrl(url: string): object {
   return { ...cacheParseGithubUrl(url) }
@@ -18,7 +19,7 @@ export default function parse(url: string) {
   let obj
   const { query, name } = parseQueryString(url)
   url = name
-  if (/^github:/.test(url)) {
+  if (/^github:/.test(url) || (url.split('/').length === 2 && !isExact(url))) {
     obj = parseGithubUrl(url.replace(/^github:/, ''))
     url = `https://github.com/${obj.repo}.git`
   } else {

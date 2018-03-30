@@ -3,6 +3,7 @@
   "packages": [
     "packages/*"
   ],
+  "useWorkspaces": true,
   "changelog": {
     "repo": "imcuttle/edam",
     "labels": {

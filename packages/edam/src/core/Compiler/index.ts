@@ -226,7 +226,7 @@ export default class Compiler extends AwaitEventEmitter {
             ...data
           }
         } catch (err) {
-          this.logger.error(
+          this.logger.warn(
             'Error occurs when transforming content of file: ' + path + '\n',
             err
           )
