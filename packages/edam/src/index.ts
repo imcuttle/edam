@@ -283,6 +283,7 @@ export class Edam extends AwaitEventEmitter {
         })
       }
     })
+    fp.remove(this.templateConfig.remove)
     return fp
   }
 

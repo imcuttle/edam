@@ -85,7 +85,7 @@ export default class FileProcessor extends TreeProcessor {
     return fileStates.length === 1 ? fileStates[0] : fileStates
   }
 
-  public remove(m: string | string[]): void {
+  public remove(m: string | string[] = []): void {
     debug('remove input: %o', m)
     toArray(m).forEach(eachm => {
       const paths = this.match(<string>eachm)
