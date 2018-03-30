@@ -16,90 +16,91 @@ const flags = [
     name: 'help',
     alias: 'h',
     type: 'boolean',
-    desc: 'help',
+    desc: 'Show the help document.',
     default: null
   },
   {
     name: 'cache-dir',
     type: 'boolean',
-    desc: 'cache-dir',
+    desc: 'Appoint to the cache where to store. It should be a directory path.',
     default: tildify(constant.DEFAULT_CACHE_DIR)
   },
   {
     name: 'no-cache',
     type: 'boolean',
-    desc: 'noCache',
+    desc: 'Disables the cache feature which is not be recommended',
     default: false
   },
   {
     name: 'update-notify',
     type: 'boolean',
-    desc: 'update-notify',
+    desc: 'Notifies the latest upgrade information like npm',
     default: true
   },
   {
     name: 'extends',
     type: 'string',
-    desc: 'extends',
+    desc:
+      'Extends external edam configuration files.  ' +
+      'eg. --extends="./.edamrc,../.edamrc"',
     default: null
   },
   {
     name: 'plugins',
     type: 'string',
-    desc: 'eg. "./a,./b"',
+    desc: 'The plugins you requires. eg. --plugins="edam-plugin-dulcet-prompt"',
     default: null
   },
   {
     name: 'pull.npmClient',
     type: 'string',
-    desc: '"npm" | "yarn"',
+    desc: 'Appoints to the command when installing package form npmjs.com. [npm|yarn]',
     default: 'npm'
   },
   {
     name: 'pull.git',
     type: 'string',
-    desc: '"clone" | "download"',
+    desc: 'Uses which way to pull git repo. [clone|download]',
     default: 'clone'
   },
   {
     name: 'userc',
     type: 'boolean',
-    desc: 'userc',
+    desc: 'Edam can deduce the configuration file from current work directory like `.babelrc`.',
     default: true
   },
   {
     name: 'yes',
     alias: 'y',
     type: 'boolean',
-    desc: 'yes',
+    desc: 'Uses stored prompt\'s values instead of typing arduously.',
     default: false
   },
   {
     name: 'no-store',
     type: 'boolean',
-    desc: 'storePrompts',
+    desc: 'Disables storing latest prompt\'s values.',
     default: false
   },
   {
     name: 'output',
     alias: 'o',
     type: 'string',
-    desc: 'output'
+    desc: 'The output directory.'
   },
   {
     name: 'overwrite',
     alias: 'w',
+    desc: 'Whether overwrite the previous output.',
     default: false
   },
   {
     name: 'silent',
     type: 'boolean',
-    desc: 'silent',
+    desc: 'Just shut up.',
     default: false
   }
 ]
-
-// Store prompts ?
 
 const cli = meow(
   `
@@ -111,16 +112,15 @@ const cli = meow(
   )('[options]')}
  
     ${c.white('Options')}
+    
 ${generateFlagHelp(flags, '      ')}
- 
-    ${c.white('Examples')}
-      $ foo unicorns --rainbow
-      🌈 unicorns 🌈
 `,
   {
     flags: generateFlagData(flags),
     autoHelp: false,
-    description: `${c.cyan.bold(require('../package.json').description)} ${c.gray(pkg.version)}`
+    description: `🚀 ${c.cyan.bold(
+      require('../package.json').description
+    )} ${c.gray(pkg.version)}`
   }
 )
 
@@ -133,12 +133,15 @@ ${generateFlagHelp(flags, '      ')}
   const flags = cli.flags
   // parse array input
   ;['extends', 'plugins'].forEach(name => {
-    if (flags[name]) {
-      flags[name] = flags[name].split(',')
-    } else {
-      flags[name] = []
+    if (!Array.isArray(flags[name])) {
+      if (flags[name]) {
+        flags[name] = flags[name].split(',')
+      } else {
+        flags[name] = []
+      }
     }
   })
+
   const config = Object.assign(
     {},
     {
@@ -216,11 +219,12 @@ ${generateFlagHelp(flags, '      ')}
 
   //
   let code = 0
-  em.run()
-    .then(function (fp) {
+  em
+    .run()
+    .then(function(fp) {
       return fp.writeToFile(void 0, { overwrite: flags.overwrite })
     })
-    .catch(function (err) {
+    .catch(function(err) {
       if (err && err.id === 'EDAM_ERROR') {
         spinner.fail(err.message)
       } else {
@@ -228,25 +232,24 @@ ${generateFlagHelp(flags, '      ')}
       }
       code = 1
     })
-    .then(function () {
+    .then(function() {
       if (config.updateNotify) {
         const notifier = updateNotify({ pkg })
         const upt = updateNotify.update
         if (upt) {
           notifier.notify({
             message:
-            'Update available ' +
-            c.dim(upt.current) +
-            c.reset(' → ') +
-            c.green(upt.latest) +
-            ' \nRun ' +
-            c.cyan('npm install edam@latest -g') +
-            ' to update'
+              'Update available ' +
+              c.dim(upt.current) +
+              c.reset(' → ') +
+              c.green(upt.latest) +
+              ' \nRun ' +
+              c.cyan('npm install edam@latest -g') +
+              ' to update'
           })
         }
       }
 
       process.exit(code)
     })
-
 })()

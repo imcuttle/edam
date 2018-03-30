@@ -6,50 +6,60 @@
  */
 
 const c = require('chalk')
+const cliui = require('cliui')
+const cliWidth = require('cli-width')
+const CLI_WIDTH = cliWidth()
 
-exports.generateFlagHelp = function generateFlagHelp(flags = [], indentPrefix = '') {
+exports.generateFlagHelp = function generateFlagHelp(flags = []) {
+  const ui = cliui()
   let maxNameLen = 0
   let maxDescLen = 0
   let list = flags.map(({ name, alias, desc = '', default: _d }) => {
     name = (alias ? `-${alias}, ` : '') + `--${name}`
     maxNameLen = Math.max(maxNameLen, name.length)
-    maxDescLen = Math.max(maxDescLen, desc.length)
+
+    maxDescLen = Math.max.apply(
+      null,
+      [maxDescLen].concat(desc.split('\n').map(x => x.length))
+    )
+
     return [name, desc, _d != null ? `[default: ${_d}]` : '']
   })
 
+  // 50 is gussed align right chars width
+  maxDescLen = Math.min(maxDescLen, CLI_WIDTH - (maxNameLen + 11) - 50)
   // align
-  return list
-    .map(arr => {
-      if (arr[0].length < maxNameLen) {
-        arr[0] = arr[0] + Array(maxNameLen - arr[0].length + 1).join(' ')
+  list.map(arr => {
+    ui.div(
+      {
+        text: c.keyword('plum')(arr[0]),
+        width: maxNameLen + 11,
+        padding: [0, 5, 0, 6]
+      },
+      {
+        text: c.blue(arr[1]),
+        width: maxDescLen
+      },
+      {
+        text: c.keyword('lightgrey')(arr[2]),
+        align: 'right'
       }
-      if (arr[1].length < maxDescLen) {
-        arr[1] = arr[1] + Array(maxDescLen - arr[1].length + 1).join(' ')
-      }
-      arr[0] = c.keyword('plum')(arr[0])
-      arr[1] = c.blue(arr[1])
-      arr[2] = c.keyword('lightgrey')(arr[2])
-      return indentPrefix + arr.join('   ')
-    })
-    .join('\n')
+    )
+  })
+
+  return ui.toString()
 }
 
 exports.generateFlagData = function generateFlagData(flags = []) {
-  return flags.reduce((set, { name, alias, type, /*desc = '', */default: _d }) => {
-    set[name] = {
-      alias,
-      type,
-      default: _d
-    }
-    return set
-  }, {})
+  return flags.reduce(
+    (set, { name, alias, type, /*desc = '', */ default: _d }) => {
+      set[name] = {
+        alias,
+        type,
+        default: _d
+      }
+      return set
+    },
+    {}
+  )
 }
-
-// const spinner = require('ora')()
-// setTimeout(function () {
-//   spinner.start('asdadas')
-// }, 2000)
-//
-// setTimeout(function () {
-//   spinner.succeed('asdadas')
-// }, 4000)

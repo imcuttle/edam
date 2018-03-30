@@ -12,6 +12,8 @@
   "dependencies": {
     "await-event-emitter": "^1.1.1",
     "chalk": "^2.3.2",
+    "cli-width": "^2.2.0",
+    "cliui": "^4.0.0",
     "cosmiconfig": "4.0.0",
     "cross-spawn": "^6.0.5",
     "debug": "^3.1.0",
@@ -50,7 +52,7 @@
     "url": "https://github.com/imcuttle/edam/issues"
   },
   "homepage": "https://github.com/imcuttle/edam#readme",
-  "description": "The core package of Edam.",
+  "description": "The multifunctional scaffold generater",
   "main": "dist/index.js",
   "keywords": [],
   "license": "MIT",
