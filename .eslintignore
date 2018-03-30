@@ -2,4 +2,5 @@
 public/
 node_modules/
 **/dist/**
-__test__/**
+
+**/__tests__/**

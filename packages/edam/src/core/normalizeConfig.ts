@@ -5,7 +5,6 @@
  * @description
  */
 import { EdamConfig } from '../types/Options'
-import EdamError from './EdamError'
 import { default as normalizeSource, Options } from './normalizeSource'
 import { load } from '../lib/loadConfig'
 import extendsMerge from './extendsMerge'
@@ -80,25 +79,6 @@ export default async function normalizeConfig(
     }
   }
 
-  if (!mergedConfig.source) {
-    throw new EdamError('Sorry, edam requires `source`')
-  }
-
-  if (typeof mergedConfig.output !== 'string') {
-    throw new EdamError(
-      '`config.output` requires dir path, but ' + typeof mergedConfig.output
-    )
-  }
-
-  mergedConfig.output = nps.resolve(options.cwd, mergedConfig.output)
-  if (fileSystem.isFile(mergedConfig.output)) {
-    throw new EdamError(
-      '`config.output` requires dir path, but "' +
-        tildify(mergedConfig.output) +
-        '" is a file now'
-    )
-  }
-
   // normalize source
   _.each(mergedConfig.alias, (val, key) => {
     mergedConfig.alias[key] = normalizeSource(mergedConfig.alias[key], options)
@@ -143,13 +123,6 @@ export default async function normalizeConfig(
       ...mergedConfig.pull
     },
     ...coreSpecial
-  }
-  if (!['npm', 'yarn'].includes(normalized.pull.npmClient)) {
-    throw new EdamError(
-      `config.pull.npmClient allows the value which is one of 'npm' | 'yarn'. but ${
-        normalized.pull.npmClient
-      }`
-    )
   }
 
   debug('normalized Config: %O', normalized)

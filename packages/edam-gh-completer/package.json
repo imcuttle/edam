@@ -1,0 +1,17 @@
+{
+  "name": "edam-gh-completer",
+  "version": "0.0.2",
+  "dependencies": {
+    "tabtab": "^2.2.2"
+  },
+  "main": "completer.js",
+  "scripts": {
+    "install": "tabtab install --name edam --completer edam-gh-completer",
+    "uninstall": "tabtab uninstall --name edam --auto",
+    "test": "npm link"
+  },
+  "preferGlobal": true,
+  "peerDependencies": {
+    "edam": "^0.0.5"
+  }
+}

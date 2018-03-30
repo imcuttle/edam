@@ -16,12 +16,12 @@ export type Hook = string | Function
 
 export type Glob = string
 
-type VarCenter = {
+export type VarCenter = {
   once: Function
   always: Function // default
 }
 
-type GetVariable = (vc: VarCenter) => AsyncOrSync<any>
+export type GetVariable = (vc: VarCenter) => AsyncOrSync<any>
 export type Variable = GetVariable | any
 export type Variables = {
   [name: string]: Variable

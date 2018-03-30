@@ -1,11 +1,11 @@
-const c = require('chalk')
-
 /**
  * @file util
  * @author Cuttle Cong
  * @date 2018/3/28
  * @description
  */
+
+const c = require('chalk')
 
 exports.generateFlagHelp = function generateFlagHelp(flags = [], indentPrefix = '') {
   let maxNameLen = 0

@@ -186,5 +186,18 @@ describe('normalizeSource', function () {
         type: 'file',
         url: nps.resolve(__dirname, 'fixture/loadConfig/file.js')
       })
+
+    expect(normalizeSource('fixture/.edamrc', { cwd: __dirname }))
+      .toEqual({
+        type: 'file',
+        url: nps.resolve(__dirname, 'fixture/.edamrc')
+      })
+
+    expect(normalizeSource('npm:fixture/.edamrc', { cwd: __dirname }))
+      .toEqual({
+        type: 'npm',
+        url: 'fixture/.edamrc',
+        version: ''
+      })
   })
 })

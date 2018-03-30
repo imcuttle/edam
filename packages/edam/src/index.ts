@@ -34,8 +34,10 @@ import TemplateConfig from './types/TemplateConfig'
 import * as _ from 'lodash'
 import symbolic from './lib/symbolic'
 import { store, get } from './core/storePrompts'
+import fileSystem from './lib/fileSystem'
 
 const inquirer = require('inquirer')
+const tildify = require('tildify')
 // const debug = require('debug')('edam:core')
 
 function throwEdamError(err, message) {
@@ -216,8 +218,39 @@ export class Edam extends AwaitEventEmitter {
     return this
   }
 
+  public checkConfig() {
+    const normalized = this.config
+    if (!normalized.source) {
+      throw new EdamError('Sorry, edam requires `source`')
+    }
+
+    if (typeof normalized.output !== 'string') {
+      throw new EdamError(
+        '`config.output` requires dir path, but ' + typeof normalized.output
+      )
+    }
+
+    normalized.output = nps.resolve(this.options.cwd, normalized.output)
+    if (fileSystem.isFile(normalized.output)) {
+      throw new EdamError(
+        '`config.output` requires dir path, but "' +
+          tildify(normalized.output) +
+          '" is a file now'
+      )
+    }
+
+    if (!['npm', 'yarn'].includes(normalized.pull.npmClient)) {
+      throw new EdamError(
+        `config.pull.npmClient allows the value which is one of 'npm' | 'yarn'. but ${
+          normalized.pull.npmClient
+        }`
+      )
+    }
+  }
+
   public async run(source?: Source): Promise<FileProcessor> {
     await this.ready(source)
+    this.checkConfig()
     await this.pull()
     return await this.process()
   }

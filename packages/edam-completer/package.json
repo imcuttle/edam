@@ -1,12 +1,11 @@
 {
   "name": "edam-completer",
-  "version": "0.0.2",
+  "version": "0.0.1",
   "dependencies": {
-    "chalk": "^2.3.2",
-    "tabtab": "^2.2.2"
-  },
-  "bin": {
-    "edam-completer": "completer.js"
+    "co": "^4.6.0",
+    "edam": "^0.0.4",
+    "tabtab": "^2.2.2",
+    "tildify": "^1.2.0"
   },
   "main": "completer.js",
   "scripts": {
@@ -14,8 +13,5 @@
     "uninstall": "tabtab uninstall --name edam --auto",
     "test": "npm link"
   },
-  "preferGlobal": true,
-  "peerDependencies": {
-    "edam": "^0.0.5"
-  }
+  "preferGlobal": true
 }

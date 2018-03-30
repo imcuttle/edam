@@ -1,0 +1,9 @@
+{
+  "extends": [".edamrc2"],
+  "source": "npm",
+  alias: {
+    "react": "facebook/react",
+    "vue": "vue",
+    "file": "./package.json"
+  }
+}

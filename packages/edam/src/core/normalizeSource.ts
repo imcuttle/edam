@@ -35,6 +35,33 @@ export function normalizeSourceObject(
   return source
 }
 
+function parseNpm(source: string): any {
+  let version = ''
+  if (/^(.+)@([^@]*)$/.test(source)) {
+    let matchedSource = RegExp.$1
+    version = RegExp.$2
+
+    source = matchedSource
+  }
+
+  return {
+    type: 'npm',
+    url: source,
+    version
+  }
+}
+
+function parseGit(source: string): any {
+  const parsed = parseGitUrl(source)
+  source = parsed.url.replace(/(\.git)?$/, '.git')
+
+  return {
+    type: 'git',
+    url: <string>source,
+    checkout: parsed.checkout
+  }
+}
+
 export default function normalizeSource(
   source: Source | string,
   options?: Options
@@ -43,6 +70,10 @@ export default function normalizeSource(
 
   if (_.isObject(source)) {
     return normalizeSourceObject(<Source>source, options)
+  }
+
+  if (!_.isString(source)) {
+    return source
   }
 
   let result: Source
@@ -56,18 +87,10 @@ export default function normalizeSource(
   }
   if (['npm'].includes(prefix)) {
     source = source.substring(prefix.length + 1)
+    return parseNpm(source)
   }
 
-  if (isGitUrl(source)) {
-    const parsed = parseGitUrl(source)
-    source = parsed.url.replace(/(\.git)?$/, '.git')
-
-    result = {
-      type: 'git',
-      url: <string>source,
-      checkout: parsed.checkout
-    }
-  } else if (
+  if (
     ((filename = resolve(source, { ...options, safe: true })),
     fs.isFile(filename))
   ) {
@@ -75,20 +98,10 @@ export default function normalizeSource(
       type: 'file',
       url: filename
     }
+  } else if (isGitUrl(source)) {
+    result = parseGit(source)
   } else {
-    let version = ''
-    if (/^(.+)@([^@]*)$/.test(source)) {
-      let matchedSource = RegExp.$1
-      version = RegExp.$2
-
-      source = matchedSource
-    }
-
-    result = {
-      type: 'npm',
-      url: source,
-      version
-    }
+    result = parseNpm(source)
   }
 
   debug('source parsed: %o', result)

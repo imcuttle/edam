@@ -22,19 +22,19 @@ const flags = [
   {
     name: 'cache-dir',
     type: 'boolean',
-    desc: 'sss',
+    desc: 'cache-dir',
     default: tildify(constant.DEFAULT_CACHE_DIR)
   },
   {
     name: 'no-cache',
     type: 'boolean',
-    desc: 'sss',
+    desc: 'noCache',
     default: false
   },
   {
     name: 'update-notify',
     type: 'boolean',
-    desc: 'sss',
+    desc: 'update-notify',
     default: true
   },
   {
@@ -120,7 +120,7 @@ ${generateFlagHelp(flags, '      ')}
   {
     flags: generateFlagData(flags),
     autoHelp: false,
-    description: `${c.cyan.bold(pkg.description)} ${c.gray(pkg.version)}`
+    description: `${c.cyan.bold(require('../package.json').description)} ${c.gray(pkg.version)}`
   }
 )
 
