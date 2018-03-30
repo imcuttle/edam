@@ -230,10 +230,10 @@ ${generateFlagHelp(flags, '      ')}
     })
     .then(function () {
       if (config.updateNotify) {
-        updateNotify({ pkg })
+        const notifier = updateNotify({ pkg })
         const upt = updateNotify.update
         if (upt) {
-          updateNotify.notify({
+          notifier.notify({
             message:
             'Update available ' +
             c.dim(upt.current) +
