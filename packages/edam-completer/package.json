@@ -13,5 +13,9 @@
     "install": "tabtab install --name edam --completer edam-completer",
     "uninstall": "tabtab uninstall --name edam --auto",
     "test": "npm link"
+  },
+  "preferGlobal": true,
+  "peerDependencies": {
+    "edam": "^0.0.5"
   }
 }
