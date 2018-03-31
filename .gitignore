@@ -6,3 +6,4 @@ coverage/
 *debug.log
 /packages/.cache/
 .DS_Store
+/packages/edam/src/__tests__/fixture/compiler/date
