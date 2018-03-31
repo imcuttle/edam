@@ -1,6 +1,6 @@
 {
   "name": "edam-cli",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "dependencies": {
     "chalk": "^2.3.2",
     "edam": "^0.0.10",
