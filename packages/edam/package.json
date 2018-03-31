@@ -8,6 +8,9 @@
     "changelog": "conventional-changelog -p angular -i ../../CHANGELOG.md -s -r 0 && git add ../../CHANGELOG.md"
   },
   "author": "imcuttle",
+  "files": [
+    "dist/**"
+  ],
   "dependencies": {
     "await-event-emitter": "^1.1.1",
     "chalk": "^2.3.2",
