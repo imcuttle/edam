@@ -40,6 +40,8 @@ const inquirer = require('inquirer')
 const tildify = require('tildify')
 // const debug = require('debug')('edam:core')
 
+require('util.promisify')
+
 function throwEdamError(err, message) {
   if (err && err.id === '') {
     throw err
