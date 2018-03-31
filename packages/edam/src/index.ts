@@ -4,7 +4,7 @@
  * @date: 2018/1/26
  * @description:
  */
-
+import 'util.promisify'
 import normalizeConfig from './core/normalizeConfig'
 import { EdamConfig, Source } from './types/Options'
 import { Track } from './core/extendsConfig'
@@ -40,7 +40,6 @@ const inquirer = require('inquirer')
 const tildify = require('tildify')
 // const debug = require('debug')('edam:core')
 
-require('util.promisify')
 
 function throwEdamError(err, message) {
   if (err && err.id === '') {
