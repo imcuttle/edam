@@ -14,11 +14,12 @@ export default async function mockPrompts(
   promptValues = {},
   output?: string
 ): Promise<FileProcessor> {
-  const em: Edam = new Edam({ userc: false, yes: true })
+  const em: Edam = new Edam({ userc: false, yes: true, storePrompts: false })
   em.config.output = output
   em.once('prompt:after', variables => {
     variables.assign(promptValues)
   })
+
   if (typeof template === 'string') {
     return await em.process(template)
   }
