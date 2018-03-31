@@ -32,7 +32,8 @@
     "semver": "^5.5.0",
     "tildify": "^1.2.0",
     "update-notifier": "^2.4.0",
-    "url-join": "^4.0.0"
+    "url-join": "^4.0.0",
+    "util.promisify": "^1.0.0"
   },
   "devDependencies": {
     "bdd-stdin": "^0.2.0"

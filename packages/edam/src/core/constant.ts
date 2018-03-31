@@ -7,6 +7,7 @@
 import * as nps from 'path'
 
 const yarnInstall = require('../lib/yarnInstall')
+require('util.promisify')
 const parseGitConfig = require('parse-git-config')
 const gitConfigPath = require('git-config-path')
 
