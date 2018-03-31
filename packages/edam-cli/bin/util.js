@@ -14,20 +14,21 @@ exports.generateFlagHelp = function generateFlagHelp(flags = []) {
   const ui = cliui()
   let maxNameLen = 0
   let maxDescLen = 0
+  let rightMax = 0
   let list = flags.map(({ name, alias, desc = '', default: _d }) => {
     name = (alias ? `-${alias}, ` : '') + `--${name}`
     maxNameLen = Math.max(maxNameLen, name.length)
-
     maxDescLen = Math.max.apply(
       null,
       [maxDescLen].concat(desc.split('\n').map(x => x.length))
     )
-
-    return [name, desc, _d != null ? `[default: ${_d}]` : '']
+    _d = _d != null ? `[default: ${_d}]` : ''
+    rightMax = Math.max(_d.length, rightMax)
+    return [name, desc, _d]
   })
 
   // 50 is gussed align right chars width
-  maxDescLen = Math.min(maxDescLen, CLI_WIDTH - (maxNameLen + 11) - 50)
+  maxDescLen = Math.min(maxDescLen, CLI_WIDTH - (maxNameLen + 11) - (rightMax + 11))
   // align
   list.map(arr => {
     ui.div(
@@ -42,7 +43,9 @@ exports.generateFlagHelp = function generateFlagHelp(flags = []) {
       },
       {
         text: c.keyword('lightgrey')(arr[2]),
-        align: 'right'
+        width: rightMax,
+        padding: [0, 0, 0, 6]
+        // align: 'right'
       }
     )
   })

@@ -3,11 +3,11 @@
   "version": "0.0.10",
   "dependencies": {
     "chalk": "^2.3.2",
-    "cli-width": "^2.2.0",
     "edam": "^0.0.10",
     "meow": "^4.0.0",
     "ora": "^2.0.0",
     "tildify": "^1.2.0",
+    "ttys": "^0.0.3",
     "update-notifier": "^2.4.0"
   },
   "bin": {
