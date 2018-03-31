@@ -8,9 +8,11 @@ import fileSystem from '../../lib/fileSystem'
 import { Edam } from '../../index'
 import * as nps from 'path'
 import * as _ from 'lodash'
-import toArray from '../../lib/toArray'
-
 import * as mm from 'micromatch'
+
+const tildify = require('tildify')
+
+const debug = require('debug')('edam:filter')
 
 export default async function filter(/*options*/) {
   const edam = <Edam>this
@@ -25,8 +27,8 @@ export default async function filter(/*options*/) {
       }
       const compiler = edam.compiler
       let { root, ignore } = templateConfig
-      if (!fileSystem.existsSync(root)) {
-        throw new Error(`templateConfig.root "${root}" is not found`)
+      if (!fileSystem.isDirectory(root)) {
+        throw new Error(`templateConfig.root ${tildify(root)} is illegal, maybe it is not existed or is file path.`)
       }
 
       if (_.isFunction(ignore)) {
@@ -37,6 +39,7 @@ export default async function filter(/*options*/) {
         filter: [`!${edam.templateConfigPath}`]
       })
 
+      debug('assets files: %O', files)
       files = mm(files.map(f => nps.relative(root, f)), ['*'], {
         ignore: ignore,
         dot: true,
@@ -44,9 +47,11 @@ export default async function filter(/*options*/) {
       }).map(f => nps.join(root, f))
 
       // deep read dir and filter
+      debug('assets filter files: %O', files)
       await Promise.all(
         files.map(async function(file) {
-          compiler.assets[nps.relative(root, file)] = {
+          const name = nps.relative(root, file)
+          compiler.assets[name] = {
             value: await fileSystem.readFile(file, { encoding: 'utf8' })
           }
         })

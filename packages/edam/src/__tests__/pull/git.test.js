@@ -22,27 +22,27 @@ describe('git', function() {
     nps.join(constant.DEFAULT_CACHE_DIR, sourceFilenamify(source))
   )
 
-  it('should clone works on simple case', async () => {
-    expect(
-      await gitPull(source, constant.DEFAULT_CACHE_DIR, {
-        cacheDir: true,
-        pull: {
-          npmClient: 'npm',
-          git: 'clone'
-        }
-      })
-    ).toBe(nps.join(output, 'clone', filenamify(source.url)))
-
-    expect(
-      await gitPull(source, constant.DEFAULT_CACHE_DIR, {
-        cacheDir: false,
-        pull: {
-          npmClient: 'npm',
-          git: 'clone'
-        }
-      })
-    ).toBe(nps.join(output, 'clone', filenamify(source.url)))
-  })
+  // it('should clone works on simple case', async () => {
+  //   expect(
+  //     await gitPull(source, constant.DEFAULT_CACHE_DIR, {
+  //       cacheDir: true,
+  //       pull: {
+  //         npmClient: 'npm',
+  //         git: 'clone'
+  //       }
+  //     })
+  //   ).toBe(nps.join(output, 'clone', filenamify(source.url)))
+  //
+  //   expect(
+  //     await gitPull(source, constant.DEFAULT_CACHE_DIR, {
+  //       cacheDir: false,
+  //       pull: {
+  //         npmClient: 'npm',
+  //         git: 'clone'
+  //       }
+  //     })
+  //   ).toBe(nps.join(output, 'clone', filenamify(source.url)))
+  // })
 
   it('should download works on simple case', async () => {
     expect(

@@ -1,13 +1,13 @@
 #!/usr/bin/env node
 /* eslint-disable indent */
 const c = require('chalk')
-const constant = require('../dist/core/constant').default
+const constant = require('edam/dist/core/constant').default
 
 const generateFlagData = require('./util').generateFlagData
 const generateFlagHelp = require('./util').generateFlagHelp
 
 const meow = require('meow')
-const pkg = require('../package.json')
+const pkg = require('edam/package.json')
 const tildify = require('tildify')
 const updateNotify = require('update-notifier')
 
@@ -21,7 +21,7 @@ const flags = [
   },
   {
     name: 'cache-dir',
-    type: 'boolean',
+    type: 'string',
     desc: 'Appoint to the cache where to store. It should be a directory path.',
     default: tildify(constant.DEFAULT_CACHE_DIR)
   },
@@ -96,6 +96,7 @@ const flags = [
   },
   {
     name: 'silent',
+    alias: 's',
     type: 'boolean',
     desc: 'Just shut up.',
     default: false
@@ -118,8 +119,8 @@ ${generateFlagHelp(flags, '      ')}
   {
     flags: generateFlagData(flags),
     autoHelp: false,
-    description: `🚀 ${c.cyan.bold(
-      require('../package.json').description
+    description: `💥 ${c.cyan.bold(
+      pkg.description
     )} ${c.gray(pkg.version)}`
   }
 )
@@ -162,12 +163,15 @@ ${generateFlagHelp(flags, '      ')}
     }
   )
 
-  const edam = require('../dist').default
-  const Edam = require('../dist').Edam
+  // console.log(flags.silent)
+
+  const edam = require('../../edam/dist/index').default
+  const Edam = require('../../edam/dist/index').Edam
   // default
   if (config.cacheDir === tildify(Edam.constants.DEFAULT_CACHE_DIR)) {
     config.cacheDir = Edam.constants.DEFAULT_CACHE_DIR
   }
+
 
   let spinner = require('ora')()
   const em = edam(config, {
@@ -198,12 +202,12 @@ ${generateFlagHelp(flags, '      ')}
         // console.log(process._getActiveHandles())
         // console.log(process._getActiveRequests().length)
 
-        spinner.start(`Pulling template from ${source.type}: ${source.url}`)
+        !em.config.silent && spinner.start(`Pulling template from ${source.type}: ${source.url}`)
       }
     })
     .once('pull:after', async templateConfigPath => {
-      spinner.succeed(
-        `Done Pull. template path: "${tildify(templateConfigPath)}"`
+      em.logger.success(
+        `Pull done! template path: "${tildify(templateConfigPath)}"`
       )
     })
 
@@ -212,8 +216,8 @@ ${generateFlagHelp(flags, '      ')}
       // spinner.start('Writing to file...')
     })
     .once('post', output => {
-      spinner.succeed(
-        `Done! the output: "${tildify(output)}" is waiting for you`
+      em.logger.success(
+        `Generate done! the output: "${tildify(output)}" is waiting for you`
       )
     })
 

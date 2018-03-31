@@ -11,6 +11,7 @@ import toArray from '../../lib/toArray'
 import { Hook, default as TemplateConfig } from '../../types/TemplateConfig'
 import { dirname, resolve } from 'path'
 const npmInstall = require('../../lib/yarnInstall')
+const debug = require('debug')('edam:adaptor')
 
 export default async function filter(/*options*/) {
   const edam = <Edam>this
@@ -21,18 +22,17 @@ export default async function filter(/*options*/) {
 
     const compiler = edam.compiler
     const variables = edam.compiler.variables
+
+    debug('compiler preset loaders %O', compiler.loaders)
+    debug('compiler preset mappers %O', compiler.mappers)
+    debug('input mappers %O', mappers)
     getExtendsMerge({ concatKeys: ['mappers'] })(compiler, {
       loaders,
-      mappers
+      mappers: mappers || []
     })
-    _.each(hooks, (hook, key) => {
-      toArray(hook).forEach(hook => {
-        compiler.addHook(key, <Hook>hook, {
-          type: 'on',
-          silent: edam.config.silent
-        })
-      })
-    })
+
+    debug('compiler merged loaders %O', compiler.loaders)
+    debug('compiler merged mappers %O', compiler.mappers)
 
     if (templateConfig.usefulHook) {
       const {
@@ -55,10 +55,20 @@ export default async function filter(/*options*/) {
             cwd: resolve(output)
           })
         }, {
-          type: 'once'
+          type: 'once',
+          silent: edam.config.silent
         })
       }
     }
+
+    _.each(hooks, (hook, key) => {
+      toArray(hook).forEach(hook => {
+        compiler.addHook(key, <Hook>hook, {
+          type: 'on',
+          silent: edam.config.silent
+        })
+      })
+    })
 
     variables.assign(templateConfig.variables)
   })

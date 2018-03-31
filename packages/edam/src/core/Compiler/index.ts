@@ -17,6 +17,7 @@ import VariablesImpl from './Variables'
 import hookify from './hookify'
 import matchMeta from './matchMeta'
 import parseQueryString from '../../lib/parseQueryString'
+import DefaultLogger from '../DefaultLogger'
 
 const debug = require('debug')('edam:Compiler')
 
@@ -26,7 +27,7 @@ export type Asset = {
 }
 
 export default class Compiler extends AwaitEventEmitter {
-  public logger: Logger
+  public logger: Logger = new DefaultLogger()
   public root: string = ''
   public hookCwd: string = process.cwd()
   public removeHook(hookName: string, hook?: Function) {

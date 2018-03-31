@@ -13,7 +13,8 @@ describe('normalizeConfig', function() {
       await normalize(
         {
           extends: './fixture/loadConfig/a/.errorrc',
-          output: ''
+          output: '',
+          userc: false
         },
         {
           cwd: __dirname
@@ -31,7 +32,8 @@ describe('normalizeConfig', function() {
         {
           extends: './fixture/loadConfig/a/.errorrc',
           source: './a',
-          output: ''
+          output: '',
+          userc: false
         },
         {
           cwd: __dirname
@@ -54,7 +56,8 @@ describe('normalizeConfig', function() {
           'github': 'github:tele/rele',
           'file': './fixture/source'
         },
-        source: 'react'
+        source: 'react',
+        userc: false
       },
       {
         cwd: __dirname

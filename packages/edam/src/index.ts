@@ -250,7 +250,7 @@ export class Edam extends AwaitEventEmitter {
 
   public async run(source?: Source): Promise<FileProcessor> {
     await this.ready(source)
-    this.checkConfig()
+    await this.checkConfig()
     await this.pull()
     return await this.process()
   }

@@ -68,7 +68,6 @@ export default class FileProcessor extends TreeProcessor {
   }
 
   public get(name: string): State {
-    name = nps.normalize(name)
     return this.tree[name]
   }
   public match(m: string | string[]): string[] {
@@ -77,7 +76,6 @@ export default class FileProcessor extends TreeProcessor {
   }
   public delete(paths: string | string[]): State | State[] {
     const fileStates = toArray(paths).map((path: string) => {
-      path = nps.normalize(path)
       const state = this.tree[path]
       delete this.tree[path]
       return state
@@ -94,8 +92,6 @@ export default class FileProcessor extends TreeProcessor {
   }
 
   private _move(path: string, to: string) {
-    path = nps.normalize(path)
-    to = nps.normalize(to)
     debug('move from %s to %s', path, to)
     const state = <State>this.delete(path)
     if (state) {
@@ -105,8 +101,6 @@ export default class FileProcessor extends TreeProcessor {
   }
 
   private _copy(path: string, to: string) {
-    path = nps.normalize(path)
-    to = nps.normalize(to)
     debug('cp from %s to %s', path, to)
     const state = <State>this.get(path)
     if (state) {
@@ -128,7 +122,6 @@ export default class FileProcessor extends TreeProcessor {
     dest: string,
     action: Function
   ): FileProcessor {
-    dest = nps.normalize(dest)
     debug('move input: %o, %s', m, dest)
     toArray(m).forEach(eachm => {
       const paths = this.match(<string>eachm)
@@ -177,7 +170,6 @@ export default class FileProcessor extends TreeProcessor {
   }
 
   public new(path: string, file: State): FileProcessor {
-    path = nps.normalize(path)
     this.tree[path] = file
     return this
   }

@@ -7,13 +7,10 @@
     "prepublish": "npm run dist",
     "changelog": "conventional-changelog -p angular -i ../../CHANGELOG.md -s -r 0 && git add ../../CHANGELOG.md"
   },
-  "preferGlobal": true,
   "author": "imcuttle",
   "dependencies": {
     "await-event-emitter": "^1.1.1",
     "chalk": "^2.3.2",
-    "cli-width": "^2.2.0",
-    "cliui": "^4.0.0",
     "cosmiconfig": "4.0.0",
     "cross-spawn": "^6.0.5",
     "debug": "^3.1.0",
@@ -26,7 +23,6 @@
     "meow": "4.0.0",
     "micromatch": "^3.1.10",
     "mkdirp": "^0.5.1",
-    "ora": "^2.0.0",
     "p-reduce": "^1.0.0",
     "parse-git-config": "^2.0.1",
     "parse-github-url": "^1.0.2",
@@ -41,9 +37,6 @@
   "devDependencies": {
     "bdd-stdin": "^0.2.0"
   },
-  "bin": {
-    "edam": "./bin/edam.js"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/imcuttle/edam.git"
@@ -56,23 +49,7 @@
   "main": "dist/index.js",
   "keywords": [],
   "license": "MIT",
-  "tabtab": {
-    "nvm": [
-      "help",
-      "use",
-      "install",
-      "uninstall",
-      "run",
-      "current",
-      "ls",
-      "ls-remote"
-    ],
-    "use": [
-      "stable",
-      "default",
-      "iojs",
-      "v5.11.0",
-      "v6.0.0"
-    ]
+  "engines": {
+    "node": ">=6"
   }
 }
