@@ -1,4 +1,19 @@
 <a name="0.0.8"></a>
+## [0.0.8](https://github.com/imcuttle/edam/compare/v0.0.9...v0.0.8) (2018-03-31)
+
+
+### Bug Fixes
+
+* use deepclone allow dynamic template config ([8865fef](https://github.com/imcuttle/edam/commit/8865fef))
+
+
+
+<a name="0.0.9"></a>
+## [0.0.9](https://github.com/imcuttle/edam/compare/v0.0.8...v0.0.9) (2018-03-31)
+
+
+
+<a name="0.0.8"></a>
 ## [0.0.8](https://github.com/imcuttle/edam/compare/v0.0.7...v0.0.8) (2018-03-31)
 
 
