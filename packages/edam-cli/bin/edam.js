@@ -16,13 +16,13 @@ const flags = [
     name: 'help',
     alias: 'h',
     type: 'boolean',
-    desc: 'Show the help document.',
+    desc: 'Shows the help document.',
     default: null
   },
   {
     name: 'cache-dir',
     type: 'string',
-    desc: 'Appoint to the cache where to store. It should be a directory path.',
+    desc: 'Appoints to the cache where to store. It should be a directory path.',
     default: tildify(constant.DEFAULT_CACHE_DIR)
   },
   {
@@ -34,7 +34,7 @@ const flags = [
   {
     name: 'update-notify',
     type: 'boolean',
-    desc: 'Notifies the latest upgrade information like npm',
+    desc: 'Notifies the latest upgrade information like npm.',
     default: true
   },
   {
@@ -86,7 +86,8 @@ const flags = [
     name: 'output',
     alias: 'o',
     type: 'string',
-    desc: 'The output directory.'
+    desc: 'The output directory.',
+    default: tildify(process.cwd())
   },
   {
     name: 'overwrite',
@@ -156,7 +157,7 @@ ${generateFlagHelp(flags, '      ')}
       },
       yes: flags.yes,
       silent: flags.silent,
-      output: flags.output || process.cwd(),
+      output: flags.output,
       source: cli.input[0],
       // overwrite: flags.overwrite,
       storePrompts: !flags.noStore
@@ -171,6 +172,9 @@ ${generateFlagHelp(flags, '      ')}
   if (config.cacheDir === tildify(Edam.constants.DEFAULT_CACHE_DIR)) {
     config.cacheDir = Edam.constants.DEFAULT_CACHE_DIR
   }
+  if (config.output === tildify(process.cwd())) {
+    config.output = process.cwd()
+  }
 
 
   let spinner = require('ora')()
@@ -182,11 +186,11 @@ ${generateFlagHelp(flags, '      ')}
   Object.assign(em.logger, {
     _log() {
       spinner.color = 'cyan'
-      spinner.text = format.apply(null, arguments)
+      spinner.info(format.apply(null, arguments))
     },
     _warn() {
       spinner.color = 'yellow'
-      spinner.text = format.apply(null, arguments)
+      spinner.warn(format.apply(null, arguments))
     },
     _success() {
       spinner.succeed(format.apply(null, arguments))

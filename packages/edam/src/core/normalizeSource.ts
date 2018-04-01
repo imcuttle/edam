@@ -11,7 +11,6 @@ import * as nps from 'path'
 import * as _ from 'lodash'
 import { Source } from '../types/Options'
 import resolve from '../lib/resolve'
-const semver = require('semver')
 const debug = require('debug')('edam:normalizeSource')
 
 export type Options = {

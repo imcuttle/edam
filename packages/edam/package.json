@@ -7,6 +7,13 @@
     "prepublish": "npm run dist",
     "changelog": "conventional-changelog -p angular -i ../../CHANGELOG.md -s -r 0 && git add ../../CHANGELOG.md"
   },
+  "description": "💥 The multifunctional scaffold generator.",
+  "main": "dist/index.js",
+  "keywords": [
+    "scaffold",
+    "generator",
+    "edam"
+  ],
   "author": "imcuttle",
   "files": [
     "dist/**"
@@ -48,9 +55,6 @@
     "url": "https://github.com/imcuttle/edam/issues"
   },
   "homepage": "https://github.com/imcuttle/edam#readme",
-  "description": "The multifunctional scaffold generater",
-  "main": "dist/index.js",
-  "keywords": [],
   "license": "MIT",
   "engines": {
     "node": ">=6"

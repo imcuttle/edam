@@ -15,9 +15,21 @@ install:
   - npm install
   - npm run bootstrap
 
-before_script:
-  - npm install codecov
-script:
-  - npm test -- --coverage
-after_script:
-  - codecov --token=$CODECOV_TOKEN
+jobs:
+  include:
+    - stage: Document deploy
+      allow_failure: true
+      script: npm run site:build
+      deploy:
+        edge:
+          branch: v1.8.47
+        provider: pages
+        skip_cleanup: true
+        github_token: ${GH_TOKEN} # Set in travis-ci.org dashboard
+        local_dir: public
+
+    - stage: Unit testing
+      before_script: npm install codecov
+      script: npm test -- --coverage
+      after_script: codecov --token=$CODECOV_TOKEN
+
