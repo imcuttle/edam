@@ -11,7 +11,11 @@ const fs = require('fs')
 const cwd = join(__dirname, '..')
 
 const exec = function(argString) {
-  return spawn.sync('./edam.js', argString.split(' '), { cwd })
+  const sp = spawn.sync('./edam.js', argString.split(' '), { cwd })
+  console.log('arguments', argString)
+  console.log('sp.stderr', sp.stderr)
+  console.log('sp.error', sp.error)
+  return sp
 }
 
 describe('main.spec', function() {
