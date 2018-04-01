@@ -1,4 +1,24 @@
 <a name="0.0.10"></a>
+## [0.0.10](https://github.com/imcuttle/edam/compare/v0.0.11...v0.0.10) (2018-04-01)
+
+
+### Bug Fixes
+
+* source alias ([b147604](https://github.com/imcuttle/edam/commit/b147604))
+
+
+
+<a name="0.0.11"></a>
+## [0.0.11](https://github.com/imcuttle/edam/compare/v0.0.10...v0.0.11) (2018-03-31)
+
+
+### Bug Fixes
+
+* edam-cli layout ([5a315aa](https://github.com/imcuttle/edam/commit/5a315aa))
+
+
+
+<a name="0.0.10"></a>
 ## [0.0.10](https://github.com/imcuttle/edam/compare/v0.0.10-0...v0.0.10) (2018-03-31)
 
 
