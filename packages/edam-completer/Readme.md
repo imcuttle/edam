@@ -2,4 +2,4 @@
 
 edam auto completer
 
-![./demo.svg](#)
+![](./demo.svg)
