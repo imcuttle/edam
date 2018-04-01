@@ -201,7 +201,7 @@ ${generateFlagHelp(flags, '      ')}
     }
   })
   em
-    .once('pull:before', async source => {
+    .once('pull:before', source => {
       if (source && ['npm', 'git'].includes(source.type)) {
         // console.log(process._getActiveHandles())
         // console.log(process._getActiveRequests().length)
@@ -209,7 +209,7 @@ ${generateFlagHelp(flags, '      ')}
         !em.config.silent && spinner.start(`Pulling template from ${source.type}: ${source.url}`)
       }
     })
-    .once('pull:after', async templateConfigPath => {
+    .once('pull:after', templateConfigPath => {
       em.logger.success(
         `Pull done! template path: "${tildify(templateConfigPath)}"`
       )

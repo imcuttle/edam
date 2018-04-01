@@ -10,6 +10,7 @@ import sourceFilenamify from '../../core/sourceFilenamify'
 import * as nps from 'path'
 import { fileSystem } from '../../lib'
 
+jest.setTimeout(60000) // 60s
 describe('npm', function() {
   let name = 'git-range-files'
   let source = {
