@@ -19,6 +19,7 @@
     "dist/**"
   ],
   "dependencies": {
+    "@moyuyc/parse-git-config": "^2.0.1",
     "await-event-emitter": "^1.1.1",
     "chalk": "^2.3.2",
     "cosmiconfig": "4.0.0",
@@ -34,7 +35,6 @@
     "micromatch": "^3.1.10",
     "mkdirp": "^0.5.1",
     "p-reduce": "^1.0.0",
-    "parse-git-config": "^2.0.1",
     "parse-github-url": "^1.0.2",
     "pify": "^3.0.0",
     "resolve": "^1.6.0",
@@ -43,8 +43,7 @@
     "tildify": "^1.2.0",
     "untildify": "^3.0.2",
     "update-notifier": "^2.4.0",
-    "url-join": "^4.0.0",
-    "util.promisify": "^1.0.0"
+    "url-join": "^4.0.0"
   },
   "devDependencies": {
     "bdd-stdin": "^0.2.0"

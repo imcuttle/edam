@@ -7,7 +7,7 @@
 import * as nps from 'path'
 
 const yarnInstall = require('../lib/yarnInstall')
-const parseGitConfig = require('parse-git-config')
+const parseGitConfig = require('@moyuyc/parse-git-config')
 const gitConfigPath = require('git-config-path')
 
 function gitUserInfo(): { name: string, email: string } {

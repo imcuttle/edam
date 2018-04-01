@@ -4,7 +4,6 @@
  * @date: 2018/1/26
  * @description:
  */
-import 'util.promisify'
 import normalizeConfig from './core/normalizeConfig'
 import { EdamConfig, Source } from './types/Options'
 import { Track } from './core/extendsConfig'
