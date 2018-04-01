@@ -13,7 +13,7 @@ const cwd = join(__dirname, '..')
 const exec = function(argString) {
   const sp = spawn.sync('./edam.js', argString.split(' '), { cwd })
   console.log('arguments', argString)
-  console.log('sp.stderr', sp.stderr)
+  console.log('sp.stderr', sp.stderr.toString())
   console.log('sp.error', sp.error)
   return sp
 }
