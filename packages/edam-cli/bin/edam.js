@@ -120,7 +120,7 @@ ${generateFlagHelp(flags, '      ')}
   {
     flags: generateFlagData(flags),
     autoHelp: false,
-    description: `💥 ${c.cyan.bold(
+    description: ` ${c.cyan.bold(
       pkg.description
     )} ${c.gray(pkg.version)}`
   }
