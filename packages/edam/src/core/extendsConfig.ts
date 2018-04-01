@@ -4,7 +4,7 @@
  * @date 2018/3/24
  * @description
  */
-import {default as normalizeSource, Options} from './normalizeSource'
+import { default as normalizeSource, Options } from './normalizeSource'
 import { EdamConfig } from '../types/Options'
 import toArray from '../lib/toArray'
 import extendsMerge from './extendsMerge'
@@ -14,6 +14,7 @@ import * as preduce from 'p-reduce'
 import * as nps from 'path'
 import resolve from '../lib/resolve'
 
+const untildify = require('untildify')
 const debug = require('debug')('edam:extendsConfig')
 
 export type Track = {
@@ -34,18 +35,20 @@ export async function innerExtendsConfig(
     config.output = nps.resolve(options.cwd, config.output)
   }
 
-  if (config.source) {
-    let s = normalizeSource(config.source, options)
-    if (s.type === 'file') {
-      config.source = s.url
-    }
-  }
+  // Ignore normalize source here
+  // maybe is alias
+  // if (config.source) {
+  //   let s = normalizeSource(config.source, options)
+  //   if (s.type === 'file') {
+  //     config.source = s.url
+  //   }
+  // }
 
   if (config.plugins) {
     const plugins = (config.plugins = toArray(config.plugins))
     config.plugins = <[Function, any]>plugins.map(p => {
       function getPlugin(p) {
-        const res = resolve(p, { ...options, safe: false })
+        const res = resolve(p, { ...options, safe: false, global: true })
         debug('get Plugin: %s -> %s', p, res)
         return require(res)
       }
@@ -62,7 +65,7 @@ export async function innerExtendsConfig(
     const extendsArray = (config.extends = toArray(config.extends))
     const configList = await Promise.all(
       extendsArray.map(source => {
-        return loadConfig(source, { ...options, filename: true })
+        return loadConfig(untildify(source), { ...options, filename: true })
       })
     )
     extendConfig = await preduce(

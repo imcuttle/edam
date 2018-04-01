@@ -8,13 +8,16 @@ import * as resolve from 'resolve'
 import * as nps from 'path'
 import { Options } from '../core/normalizeSource'
 
+const globalModulePath = require('global-modules')
+
 export default function cusResolve(
   id,
-  options: Options & { safe?: boolean }
+  options: Options & { safe?: boolean, global?: boolean }
 ) {
   options = Object.assign({
     cwd: process.cwd(),
-    safe: true
+    safe: true,
+    global: false
   }, options)
   const opt = {
     basedir: options.cwd,
@@ -23,13 +26,18 @@ export default function cusResolve(
   try {
     return resolve.sync(id, opt)
   } catch (err) {
-    if (options.safe && err.code === 'MODULE_NOT_FOUND') {
-      // 'react' -> './react'
-      if (!nps.isAbsolute(id) && !id.trimLeft().startsWith('.')) {
-        return cusResolve(`./${id}`, options)
+    if (err.code === 'MODULE_NOT_FOUND') {
+      if (options.global) {
+        return cusResolve(id, { ...options, cwd: globalModulePath, global: false })
       }
-      return false
+      if (options.safe) {
+        // 'react' -> './react'
+        if (!nps.isAbsolute(id) && !id.trimLeft().startsWith('.')) {
+          return cusResolve(`./${id}`, options)
+        }
+        return false
+      }
+      throw err
     }
-    throw err
   }
 }

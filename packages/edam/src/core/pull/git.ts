@@ -118,13 +118,14 @@ module.exports = async function gitPull(
     return where
   }
   async function gitCloneSource() {
+    debug('gitCloneSource: target is %s', target)
     if (!cacheDir) {
       await fileSystem.cleanDir(target)
     } else if (fileSystem.existsSync(join(target, '.git'))) {
       // cached
       try {
-        await checkout(source.checkout || 'master', { targetPath: target })
         await pullForce(target)
+        await checkout(source.checkout || 'master', { targetPath: target })
       } catch (err) {
         throw new Error(err.message + '\n running in ' + tildify(target))
       }

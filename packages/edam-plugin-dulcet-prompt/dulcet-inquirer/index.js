@@ -79,10 +79,6 @@ function emitServer({
   })
 
   app.get('/when', function(req, res) {
-    // const { name } = req.query
-    // const item = .find(function(x) {
-    //   return x.name === name
-    // })
     const passedList = []
     const failedList = []
     whenPrompts.forEach(function(item) {
@@ -106,7 +102,7 @@ function emitServer({
   })
 
   app.get('/set', function(req, res) {
-    const { name, value } = req.query
+    const { name, value } = JSON.parse(req.query._)
     const prompt = prompts.find(x => x.name === name)
     if (prompt && typeof prompt.validate === 'function') {
       const msg = getErrorMsg(promptValues[name], value)
@@ -142,11 +138,28 @@ function emitServer({
   return emitter
 }
 
+/* eslint-disable */
+function adaptor(prompt) {
+  prompt = { ...prompt }
+  switch (prompt.type) {
+    case 'confirm':
+      prompt.type = 'checkbox'
+      prompt.transformType = 'confirm'
+      prompt.value = [prompt.value]
+      prompt.options = [
+        { label: 'Yes?', value: true }
+      ]
+      break
+  }
+  return prompt
+}
+
 // NOTE: don't supports transformer
 const inquirer = co.wrap(function*(
   prompts,
   { yes, port, templatePath, tplData } = {}
 ) {
+  prompts = prompts.map(adaptor)
   const withoutWhenPrompts = []
   const whenPrompts = []
   const promptsForRender = []

@@ -35,13 +35,19 @@
     if (['radio', 'checkbox'].includes(p.type)) {
       var _default = Array.isArray(p.default) ? p.default : [p.default]
       var arr = (p.options || []).map(function (op) {
-        var checked = _default.includes(op)
+        var label = op
+        var value = op
+        if (op.hasOwnProperty('value')) {
+          value = op.value
+          label = op.label || op.value
+        }
+        var checked = _default.includes(value)
         var className = p.type + '-inline'
         if (p.style === 'block') {
           className = ''
         }
         var s = `<label class="${className}">
-  <input ${disabled} type="${p.type}" ${checked ? 'checked=""' : ''} name="${p.name}" value="${op.toString()}"/>${op.toString()}
+  <input ${disabled} type="${p.type}" ${checked ? 'checked=""' : ''} data-transform-type="${p.transformType || ''}" name="${p.name}" value="${value.toString()}"/>${label.toString()}
 </label>`
         if (p.style === 'block') {
           s = `<div class="${p.type}">${s}</div>`
@@ -175,6 +181,7 @@
     di.ele.addEventListener('change', function (evt) {
       if (evt.target && evt.target.tagName && evt.target.tagName.toLowerCase() === 'input') {
         var t = evt.target
+        var tType = evt.target.getAttribute('data-transform-type')
         var val = evt.target.value
 
         if (t.type === 'checkbox') {
@@ -186,7 +193,25 @@
             })
         }
 
-        $.get('/set', { name: t.name, value: val }, function (data) {
+        function transform(val, tran) {
+          if (Array.isArray(val)) {
+            return val.map(tran)
+          }
+          else {
+            return tran(val)
+          }
+        }
+
+        switch (tType) {
+          case 'confirm':
+            val = transform(val, function (v) {
+              return v === true || v === 'true'
+            })
+            val = val[0] || false
+            break
+        }
+
+        $.get('/set', { _: JSON.stringify({ name: t.name, value: val }) }, function (data) {
           action(data)
         }, 'json')
       }

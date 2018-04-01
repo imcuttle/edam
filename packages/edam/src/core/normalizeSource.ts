@@ -12,6 +12,7 @@ import * as _ from 'lodash'
 import { Source } from '../types/Options'
 import resolve from '../lib/resolve'
 const debug = require('debug')('edam:normalizeSource')
+const untildify = require('untildify')
 
 export type Options = {
   cwd?: string
@@ -90,7 +91,7 @@ export default function normalizeSource(
   }
 
   if (
-    ((filename = resolve(source, { ...options, safe: true })),
+    ((filename = resolve(untildify(source), { ...options, safe: true })),
     fs.isFile(filename))
   ) {
     result = {

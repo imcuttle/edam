@@ -63,6 +63,9 @@
     "node": ">=6"
   },
   "jest": {
+    "testPathIgnorePatterns": [
+      ".cache"
+    ],
     "transform": {
       "^.+\\.jsx?$": "babel-jest",
       "^.+\\.tsx?$": "ts-jest"

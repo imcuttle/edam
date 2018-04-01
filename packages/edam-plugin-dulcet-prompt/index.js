@@ -14,5 +14,4 @@ module.exports = function dulcetPrompt({ port, silent } = {}) {
   edam.prompt = function(prompts, { context, yes } = {}) {
     return inquirer(prompts, { yes })
   }
-
 }
