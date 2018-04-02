@@ -83,7 +83,7 @@ function emitServer({
     const failedList = []
     whenPrompts.forEach(function(item) {
       if (item.when(store)) {
-        if (!store[item.name]) {
+        if (!store.hasOwnProperty(item.name)) {
           store[item.name] = item.default
         }
         passedList.push(item)
@@ -115,7 +115,9 @@ function emitServer({
       }
       return
     }
+    // console.log('set:before', store)
     store[name] = value
+    // console.log('set:after', store)
     pass(res, 'passed', name)
   })
 
@@ -182,7 +184,7 @@ const inquirer = co.wrap(function*(
   }
 
   port = yield getPort(port)
-  // Delcet Inquirer
+  // Dulcet Inquirer
   const emitter = emitServer({
     port,
     prompts,
@@ -200,6 +202,7 @@ const inquirer = co.wrap(function*(
       // })
     })
     emitter.once('done', function(store) {
+      // console.log('done', store)
       app._server && app._server.close()
       resolve(store)
     })
