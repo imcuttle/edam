@@ -1,5 +1,5 @@
-<a name="0.0.10"></a>
-## [0.0.10](https://github.com/imcuttle/edam/compare/v0.0.11...v0.0.10) (2018-04-01)
+<a name="0.0.12"></a>
+## [0.0.12](https://github.com/imcuttle/edam/compare/v0.0.11...v0.0.12) (2018-04-01)
 
 
 ### Bug Fixes
