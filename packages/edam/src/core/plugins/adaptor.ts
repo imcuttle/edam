@@ -48,13 +48,14 @@ export default async function filter(/*options*/) {
       }
       if (installDependencies || installDevDependencies) {
         compiler.addHook('post', async function (output) {
-          edam.logger.log('Installing packages after generated!')
+          await edam.emit('install:packages:before')
           await npmInstall({
             production: installDependencies && !installDevDependencies,
             dev: !installDependencies && installDevDependencies,
             stdio: 'pipe',
             cwd: resolve(output)
           })
+          await edam.emit('install:packages:after')
         }, {
           type: 'once',
           silent: edam.config.silent

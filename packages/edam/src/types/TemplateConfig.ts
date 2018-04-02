@@ -38,14 +38,6 @@ export type Mapper = {
   loader: Loader
 }
 
-// export type Dynamic
-export type FileMatcher =
-  | Matcher
-  | {
-      when?: (vars: Variables) => boolean
-      test: Matcher
-    }
-
 export default interface TemplateConfig {
   prompts?: Array<Prompt>
 

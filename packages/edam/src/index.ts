@@ -92,13 +92,13 @@ export class Edam extends AwaitEventEmitter {
     symbolic(this.compiler, 'root', [this, ['templateConfig', 'root']])
   }
 
-  private async normalizeConfig(): Promise<Edam> {
+  private async normalizeConfig(): Promise<EdamConfig> {
     await this.emit('normalizeConfig:before', this.config, this.options)
     const { track, config } = await normalizeConfig(this.config, this.options)
     this.config = config
     this.track = track
     await this.emit('normalizeConfig:after', this.config)
-    return this
+    return this.config
   }
 
   public use(

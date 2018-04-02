@@ -186,7 +186,7 @@ ${generateFlagHelp(flags, '      ')}
   Object.assign(em.logger, {
     _log() {
       spinner.color = 'cyan'
-      spinner.info(format.apply(null, arguments))
+      spinner.text = format.apply(null, arguments)
     },
     _warn() {
       spinner.color = 'yellow'
@@ -201,7 +201,7 @@ ${generateFlagHelp(flags, '      ')}
     }
   })
   em
-    .once('pull:before', source => {
+    .on('pull:before', source => {
       if (source && ['npm', 'git'].includes(source.type)) {
         // console.log(process._getActiveHandles())
         // console.log(process._getActiveRequests().length)
@@ -209,10 +209,16 @@ ${generateFlagHelp(flags, '      ')}
         !em.config.silent && spinner.start(`Pulling template from ${source.type}: ${source.url}`)
       }
     })
-    .once('pull:after', templateConfigPath => {
+    .on('pull:after', templateConfigPath => {
       em.logger.success(
         `Pull done! template path: "${tildify(templateConfigPath)}"`
       )
+    })
+    .on('install:packages:before', () => {
+      spinner.start('Installing packages after generating...')
+    })
+    .on('install:packages:after', () => {
+      spinner.succeed('Install packages after generating succeed.')
     })
 
   em.compiler

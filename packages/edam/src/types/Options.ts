@@ -1,6 +1,5 @@
 import { Plugin } from '../core/plugins'
 
-export type LogLevel = 'debug' | 'warn' | 'error' | 'log'
 export type Source = {
   type: 'file' | 'git' | 'npm'
   url: string
