@@ -27,7 +27,7 @@ it('should passed options works', async function() {
   ]
   const tree = await compiler.run()
   expect(tree['test.js'].output).toBe(
-    `var a = '123';
+    `var a = '<%= v %>';
 if (a === '123') {
     console.log(1);
 }\n`.trimLeft()
@@ -37,10 +37,14 @@ if (a === '123') {
 it('should passed filePath works', async function() {
   compiler.mappers = [
     {
-      test: '*',
-      loader: [[require('./'), { filePath: __dirname, semi: true }]]
+      test: '*.js',
+      loader: [
+        'LoDash',
+        [require('./'), { filePath: __dirname, semi: true }]
+      ]
     }
   ]
+  compiler.variables.set('v', '123')
   const tree = await compiler.run()
   expect(tree['test.js'].output).toBe(
     `var a = '123';
