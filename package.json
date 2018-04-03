@@ -63,6 +63,7 @@
     "node": ">=6"
   },
   "jest": {
+    "testEnvironment": "node",
     "testPathIgnorePatterns": [
       ".cache"
     ],
