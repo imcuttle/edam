@@ -6,7 +6,7 @@
  * @description
  */
 import { mockPrompts } from '../../index'
-import { join, relative } from 'path'
+import { join, relative, normalize } from 'path'
 import fileSystem from '../../lib/fileSystem'
 
 async function readdirDeep(dest) {
@@ -28,12 +28,11 @@ describe('functional', function() {
 
     expect(Object.keys(ft.tree)).toEqual(
       expect.arrayContaining([
-        '.gitignore',
-        'imignored/keep.module.js',
-        'index.js'
+        normalize('.gitignore'),
+        normalize('imignored/keep.module.js'),
+        normalize('index.js')
       ])
     )
-    expect(ft.tree).toMatchSnapshot()
   })
 
   it('should functional output', async function() {
@@ -47,9 +46,9 @@ describe('functional', function() {
 
     expect(Object.keys(fp.tree)).toEqual(
       expect.arrayContaining([
-        '.gitignore',
-        'imignored/keep.module.js',
-        'index.js'
+        normalize('.gitignore'),
+        normalize('imignored/keep.module.js'),
+        normalize('index.js')
       ])
     )
     expect(await fp.writeToFile()).toBeTruthy()
@@ -58,9 +57,9 @@ describe('functional', function() {
       await readdirDeep(join(outputRoot, 'functional'))
     ).toEqual(
       expect.arrayContaining([
-        '.gitignore',
-        'imignored/keep.module.js',
-        'index.js'
+        normalize('.gitignore'),
+        normalize('imignored/keep.module.js'),
+        normalize('index.js')
       ])
     )
 

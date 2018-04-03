@@ -90,7 +90,7 @@ describe('normalizeSource', function () {
       }, { cwd: '/a/b' })
     ).toEqual({
       type: 'file',
-      url: '/a/b/a'
+      url: nps.join('/a/b/a')
     })
 
     expect(

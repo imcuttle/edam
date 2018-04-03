@@ -5,7 +5,7 @@
  * @description
  */
 import FileProcessor from '../core/TreeProcessor/FileProcessor'
-import { join, relative } from 'path'
+import { join, relative, normalize } from 'path'
 import fileSystem from '../lib/fileSystem'
 const mkdirp = require('mkdirp')
 
@@ -52,10 +52,10 @@ describe('FileProcessor', function() {
     expect(files.length).toBe(4)
     expect(files).toEqual(
       expect.arrayContaining([
-        'pull/git.ts',
-        'pull/file.ts',
-        'pull/npm.ts',
-        'push/git.ts'
+        normalize('pull/git.ts'),
+        normalize('pull/file.ts'),
+        normalize('pull/npm.ts'),
+        normalize('push/git.ts')
       ])
     )
   })
@@ -68,12 +68,12 @@ describe('FileProcessor', function() {
     expect(files.length).toBe(6)
     expect(files).toEqual(
       expect.arrayContaining([
-        'pull/git.ts',
-        'pull/file.ts',
-        'pull/npm.ts',
-        'push/git.ts',
-        'root.txt',
-        'root-clone.txt'
+        normalize('pull/git.ts'),
+        normalize('pull/file.ts'),
+        normalize('pull/npm.ts'),
+        normalize('push/git.ts'),
+        normalize('root.txt'),
+        normalize('root-clone.txt')
       ])
     )
   })
@@ -82,11 +82,11 @@ describe('FileProcessor', function() {
     fp.move('pull/*', 'x')
     expect(Object.keys(fp.tree)).toEqual(
       expect.arrayContaining([
-        'x/git.ts',
-        'x/file.ts',
-        'x/npm.ts',
-        'push/git.ts',
-        'root.txt'
+        normalize('x/git.ts'),
+        normalize('x/file.ts'),
+        normalize('x/npm.ts'),
+        normalize('push/git.ts'),
+        normalize('root.txt')
       ])
     )
   })
@@ -95,11 +95,11 @@ describe('FileProcessor', function() {
     fp.move('pull/**', 'x')
     expect(Object.keys(fp.tree)).toEqual(
       expect.arrayContaining([
-        'x/git.ts',
-        'x/file.ts',
-        'x/npm.ts',
-        'push/git.ts',
-        'root.txt'
+        normalize('x/git.ts'),
+        normalize('x/file.ts'),
+        normalize('x/npm.ts'),
+        normalize('push/git.ts'),
+        normalize('root.txt')
       ])
     )
   })
@@ -109,11 +109,11 @@ describe('FileProcessor', function() {
     fp.move('root.txt', 'xyz.ts')
     expect(Object.keys(fp.tree)).toEqual(
       expect.arrayContaining([
-        'pull/git.ts',
-        'pull/file.ts',
-        'x.ts',
-        'push/git.ts',
-        'xyz.ts'
+        normalize('pull/git.ts'),
+        normalize('pull/file.ts'),
+        normalize('x.ts'),
+        normalize('push/git.ts'),
+        normalize('xyz.ts')
       ])
     )
   })
@@ -123,13 +123,13 @@ describe('FileProcessor', function() {
     fp.copy('root.txt', 'xyz.ts')
     expect(Object.keys(fp.tree)).toEqual(
       expect.arrayContaining([
-        'pull/git.ts',
-        'pull/file.ts',
-        'pull/npm.ts',
-        'x.ts',
-        'push/git.ts',
-        'xyz.ts',
-        'root.txt'
+        normalize('pull/git.ts'),
+        normalize('pull/file.ts'),
+        normalize('pull/npm.ts'),
+        normalize('x.ts'),
+        normalize('push/git.ts'),
+        normalize('xyz.ts'),
+        normalize('root.txt')
       ])
     )
 
@@ -142,8 +142,8 @@ describe('FileProcessor', function() {
 
     expect(Object.keys(fp.tree)).toEqual(
       expect.arrayContaining([
-        'push/git.ts',
-        'root.txt'
+        normalize('push/git.ts'),
+        normalize('root.txt')
       ])
     )
   })

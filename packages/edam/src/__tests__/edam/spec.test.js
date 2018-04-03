@@ -22,6 +22,5 @@ describe('spec', function() {
     )
 
     expect(Object.keys(ft.tree).length).toBe(3)
-    expect(ft.tree).toMatchSnapshot()
   })
 })

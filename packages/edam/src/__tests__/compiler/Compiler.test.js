@@ -10,7 +10,6 @@ import DefaultLogger from '../../core/DefaultLogger'
 import { join } from 'path'
 import fileSystem from '../../lib/fileSystem'
 
-
 describe('Compiler', function() {
   let cer,
     cwd = join(__dirname, '../fixture')
@@ -27,61 +26,64 @@ describe('Compiler', function() {
       name: 'pig'
     })
   })
-  it('should Compiler hook worker instance of function', () => {
-    const h = cer.addHook('hook', 'echo abc')
-    expect(h).toBeInstanceOf(Function)
-  })
 
-  it('should Compiler hook worker on script once', async () => {
-    const date = new Date().getTime()
-    cer.addHook(
-      'hook',
-      'echo $HOOK_PARAMS && echo $HOOK_PARAMS ' + date + ' > compiler/date',
-      { type: 'once' }
-    )
-    const params = ['2222', ['2', '23']]
-    await cer.emit.apply(cer, ['hook'].concat(params))
-    await cer.emit('hook', 'hhh')
+  if (process.platform !== 'win32') {
+    it('should Compiler hook worker instance of function', () => {
+      const h = cer.addHook('hook', 'echo abc')
+      expect(h).toBeInstanceOf(Function)
+    })
 
-    expect(
-      await fileSystem.readFile(join(cwd, 'compiler/date'), {
-        encoding: 'utf8'
-      })
-    ).toBe(JSON.stringify(params) + ' ' + date + '\n')
-  })
+    it('should Compiler hook worker on script once', async () => {
+      const date = new Date().getTime()
+      cer.addHook(
+        'hook',
+        'echo $HOOK_PARAMS && echo $HOOK_PARAMS ' + date + ' > compiler/date',
+        { type: 'once' }
+      )
+      const params = ['2222', ['2', '23']]
+      await cer.emit.apply(cer, ['hook'].concat(params))
+      await cer.emit('hook', 'hhh')
 
-  it('should Compiler hook worker on script always', async () => {
-    const date = new Date().getTime()
-    const h = cer.addHook(
-      'hook',
-      'echo $HOOK_PARAMS && echo $HOOK_PARAMS ' + date + ' > compiler/date',
-      { type: 'on' }
-    )
-    let params = ['2222', ['2', '23']]
-    await cer.emit.apply(cer, ['hook'].concat(params))
-    expect(
-      await fileSystem.readFile(join(cwd, 'compiler/date'), {
-        encoding: 'utf8'
-      })
-    ).toBe(JSON.stringify(params) + ' ' + date + '\n')
+      expect(
+        await fileSystem.readFile(join(cwd, 'compiler/date'), {
+          encoding: 'utf8'
+        })
+      ).toBe(JSON.stringify(params) + ' ' + date + '\n')
+    })
 
-    params = ['abc']
-    await cer.emit.apply(cer, ['hook'].concat(params))
-    expect(
-      await fileSystem.readFile(join(cwd, 'compiler/date'), {
-        encoding: 'utf8'
-      })
-    ).toBe(JSON.stringify(params) + ' ' + date + '\n')
+    it('should Compiler hook worker on script always', async () => {
+      const date = new Date().getTime()
+      const h = cer.addHook(
+        'hook',
+        'echo $HOOK_PARAMS && echo $HOOK_PARAMS ' + date + ' > compiler/date',
+        { type: 'on' }
+      )
+      let params = ['2222', ['2', '23']]
+      await cer.emit.apply(cer, ['hook'].concat(params))
+      expect(
+        await fileSystem.readFile(join(cwd, 'compiler/date'), {
+          encoding: 'utf8'
+        })
+      ).toBe(JSON.stringify(params) + ' ' + date + '\n')
 
-    cer.removeHook('hook', h)
-    params = ['abc', 'xxx']
-    await cer.emit.apply(cer, ['hook'].concat(params))
-    expect(
-      await fileSystem.readFile(join(cwd, 'compiler/date'), {
-        encoding: 'utf8'
-      })
-    ).not.toBe(JSON.stringify(params) + ' ' + date + '\n')
-  })
+      params = ['abc']
+      await cer.emit.apply(cer, ['hook'].concat(params))
+      expect(
+        await fileSystem.readFile(join(cwd, 'compiler/date'), {
+          encoding: 'utf8'
+        })
+      ).toBe(JSON.stringify(params) + ' ' + date + '\n')
+
+      cer.removeHook('hook', h)
+      params = ['abc', 'xxx']
+      await cer.emit.apply(cer, ['hook'].concat(params))
+      expect(
+        await fileSystem.readFile(join(cwd, 'compiler/date'), {
+          encoding: 'utf8'
+        })
+      ).not.toBe(JSON.stringify(params) + ' ' + date + '\n')
+    })
+  }
 
   it("should compiler's loader works normal", async function() {
     cer.mappers = [
@@ -170,13 +172,13 @@ describe('Compiler', function() {
     )
   })
 
-  it('should loaders works on outside options', async function () {
+  it('should loaders works on outside options', async function() {
     cer.mappers = [
       {
         test: '*',
         loader: [
           [
-            function () {
+            function() {
               const options = this.options
               return 'options:' + options.name
             },
@@ -210,11 +212,11 @@ describe('Compiler', function() {
     )
   })
 
-  it('should loaders works on inline options', async function () {
+  it('should loaders works on inline options', async function() {
     cer.loaders = {
-      'cus': [
+      cus: [
         [
-          function () {
+          function() {
             const options = this.options
             return 'options:' + options.name
           },
@@ -249,11 +251,11 @@ describe('Compiler', function() {
     )
   })
 
-  it('should loaders works on assets loaders', async function () {
+  it('should loaders works on assets loaders', async function() {
     cer.loaders = {
-      'cus': [
+      cus: [
         [
-          function () {
+          function() {
             const options = this.options
             return 'options:' + options.name
           },
@@ -287,5 +289,4 @@ describe('Compiler', function() {
       })
     )
   })
-
 })
