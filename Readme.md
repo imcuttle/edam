@@ -5,6 +5,9 @@
 
 💥 The multifunctional scaffold generator.
 
+## Processing
+![](./_site/doc/imgs/edam-process.svg)
+
 ## Awesome 😎
 ### Core
 - [edam](./packages/edam) - The core package of edam.

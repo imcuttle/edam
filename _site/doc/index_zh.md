@@ -11,7 +11,4 @@ article p img {
 
 ![](./imgs/edam-intro.svg)
 
-## Processing
-![](./imgs/edam-process.svg)
-
 @../../Readme.md@
