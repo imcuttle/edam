@@ -5,7 +5,7 @@
  * @description
  */
 import * as nps from 'path'
-import normalizeConfig from 'edam/src/core/normalizeConfig'
+import normalizeConfig from '../../core/normalizeConfig'
 
 it('inferrable-configuration test', async () => {
   expect(
