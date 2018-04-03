@@ -17,7 +17,7 @@ it('inferrable-configuration test', async () => {
     )).config
   ).toEqual(
     expect.objectContaining({
-      plugins: [[require('edam'), {}]],
+      plugins: [[require('./foo/edamrc'), {}]],
       output: nps.join(__dirname, './par/output'),
       storePrompts: false,
       alias: {

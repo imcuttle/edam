@@ -3,5 +3,5 @@
   alias: {
     "bar": "npm:bar"
   },
-  plugins: ['edam']
+  plugins: ['../foo/edamrc']
 }
