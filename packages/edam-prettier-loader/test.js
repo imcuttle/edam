@@ -10,7 +10,7 @@ const compiler = new Compiler()
 compiler.assets = {
   'test.js': {
     value: `
-  var a = '123'
+  var a = '<%= v %>'
   if (a === '123') {
     console.log(1)
   } 
