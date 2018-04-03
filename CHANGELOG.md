@@ -1,3 +1,13 @@
+<a name="0.0.13"></a>
+## [0.0.13](https://github.com/imcuttle/edam/compare/v0.0.12...v0.0.13) (2018-04-02)
+
+
+### Bug Fixes
+
+* edam-plugin-dulcet-prompt when bug ([48fc9c4](https://github.com/imcuttle/edam/commit/48fc9c4))
+
+
+
 <a name="0.0.12"></a>
 ## [0.0.12](https://github.com/imcuttle/edam/compare/v0.0.11...v0.0.12) (2018-04-01)
 
