@@ -41,7 +41,6 @@ export default async function normalizeConfig(
       yes: false,
       silent: false,
       extends: [],
-      // plugins: [],
       alias: {},
       cacheDir: true,
       updateNotify: true
@@ -82,6 +81,7 @@ export default async function normalizeConfig(
   if (!mergedConfig.plugins) {
     mergedConfig.plugins = []
   }
+
   // normalize source
   _.each(mergedConfig.alias, (val, key) => {
     mergedConfig.alias[key] = normalizeSource(mergedConfig.alias[key], options)
