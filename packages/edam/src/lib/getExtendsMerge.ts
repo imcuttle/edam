@@ -16,10 +16,13 @@ export default function getExtendsMerge(
       key
     ) {
       if (
-        _.isArray(sourceVal) &&
         (option.concatKeys === '*' || option.concatKeys.includes(key))
       ) {
-        return _.uniq((extendsVal || []).concat(sourceVal))
+        return _.uniq((extendsVal || []).concat(sourceVal || []))
+      }
+
+      if (Array.isArray(extendsVal)) {
+        return extendsVal
       }
     })
   }

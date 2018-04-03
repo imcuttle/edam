@@ -1,0 +1,9 @@
+{
+  "name": "edam-examples",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {},
+  "dependencies": {
+    "edam": "^0.0.14"
+  }
+}

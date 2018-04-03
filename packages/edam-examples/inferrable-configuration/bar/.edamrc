@@ -1,0 +1,7 @@
+{
+  extends: ["../edam.config.js", '../foo/edamrc.js'],
+  alias: {
+    "bar": "npm:bar"
+  },
+  plugins: ['edam']
+}

@@ -343,9 +343,9 @@ export class Edam extends AwaitEventEmitter {
 function edam(config: EdamConfig, options: Options): Edam {
   return new Edam(config, options)
 }
-
 export { default as mockPrompts } from './mockPrompts'
 export { default as Compiler } from './core/Compiler/index'
 export { default as FileProcessor } from './core/TreeProcessor/FileProcessor'
-
+Object.assign(edam, Edam)
 export default edam
+

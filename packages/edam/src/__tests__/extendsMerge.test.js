@@ -35,25 +35,30 @@ describe('extendsMerge', function() {
   })
 
   it('should extends works on spec config', function() {
-    const extended = _extends(source, {
-      extends: ['./a', './b', 'p'],
-      source: 'react',
-      alias: {
-        react: 'github.com/facebook/react',
-        jest: 'facebook/jest/master'
+    const extended = _extends(
+      source,
+      {
+        extends: ['./a', './b', 'p'],
+        source: 'react',
+        alias: {
+          react: 'github.com/facebook/react',
+          jest: 'facebook/jest/master'
+        },
+        cacheDir: '../.cache'
       },
-      cacheDir: '../.cache'
-    }, {
-      extends: ['./d', './a', './b', '../c'],
-      source: 'babel',
-      alias: {
-        react: 'github.com/facebook/react/master',
-        babel: 'babel/babel'
+      {
+        extends: ['./d', './a', './b', '../c'],
+        source: 'babel',
+        alias: {
+          react: 'github.com/facebook/react/master',
+          babel: 'babel/babel'
+        },
+        logLevel: 'warn'
       },
-      logLevel: 'warn'
-    }, {
-      extends: ['e']
-    })
+      {
+        extends: ['e']
+      }
+    )
 
     expect(extended).toEqual({
       extends: ['e', './d', './a', './b', '../c', 'p'],
@@ -68,12 +73,17 @@ describe('extendsMerge', function() {
     })
   })
 
-  it('should works for concat array', function () {
+  it('should works for concat array', function() {
     const f = () => {}
     expect(
-      _extends({}, { extends: [1, 2, {}, f] }, { extends: [f, 3, 2] })
+      _extends(
+        {},
+        { plugins: [1, 2], extends: [1, 2, {}, f] },
+        { plugins: [3, 4], extends: [f, 3, 2] }
+      )
     ).toEqual({
-      extends: [f, 3, 2, 1, {}]
+      extends: [f, 3, 2, 1, {}],
+      plugins: [3, 4]
     })
   })
 })

@@ -1,0 +1,19 @@
+{
+  "name": "par",
+  "version": "0.0.1",
+  "private": true,
+  "dependencies": {
+
+  },
+  "edam": {
+    "extends": [
+      "../foo/edamrc.js",
+      "../bar/.edamrc"
+    ],
+    "alias": {
+      "par": "npm:par"
+    },
+    "output": "./output",
+    "storePrompts": false
+  }
+}
