@@ -10,6 +10,8 @@ title: "特性"
 </style>
 # 特性
 
+![](./imgs/features.svg)
+
 ## 可推理的配置
 
 如 .babelrc 一般，edam 能够从 `process.cwd()` 寻找edam配置，并且依次向父亲寻找。（使用[cosmiconfig](https://github.com/davidtheclark/cosmiconfig)）。

@@ -8,4 +8,10 @@ article p img {
   margin: auto;
 }
 </style>
+
+![](./imgs/edam-intro.svg)
+
+## Processing
+![](./imgs/edam-process.svg)
+
 @../../Readme.md@
