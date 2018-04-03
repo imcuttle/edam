@@ -6,7 +6,7 @@
  * @description
  */
 import { mockPrompts } from '../../index'
-import { join, relative } from 'path'
+import { join, relative, normalize } from 'path'
 import fileSystem from '../../lib/fileSystem'
 
 async function readdirDeep(dest) {
@@ -17,7 +17,7 @@ describe('functional', function() {
   const tplPath = join(__dirname, '../fixture/edam')
   const outputRoot = join(__dirname, '../fixture/edam-output')
 
-  it('should functional output', async function () {
+  it('should functional output', async function() {
     const fp = await mockPrompts(
       join(tplPath, 'move_copy'),
       {
@@ -27,12 +27,15 @@ describe('functional', function() {
     )
 
     expect(Object.keys(fp.tree).length).toBe(4)
-    expect(await fp.writeToFile()).toBeTruthy()
-    expect(await readdirDeep(join(outputRoot, 'move_copy'))).toEqual(expect.arrayContaining([
-      '.gitignore_move',
-      '.gitignore_move_clone',
-      'imignored/keep.module.js',
-      'index.js'
-    ]))
+    expect(await readdirDeep(join(outputRoot, 'move_copy'))).toEqual(
+      expect.arrayContaining(
+        [
+          '.gitignore_move',
+          '.gitignore_move_clone',
+          'imignored/keep.module.js',
+          'index.js'
+        ].map(normalize)
+      )
+    )
   })
 })
