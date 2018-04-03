@@ -16,6 +16,16 @@ describe('loadConfig', function () {
     })
   })
 
+  it('should load json5 file 2', async function () {
+    expect(
+      await loadConfig('fixture/loadConfig/.jsonrc', { cwd: __dirname })
+    ).toEqual({
+      'name': 'fixture',
+      'version': '0.0.1',
+      x: ['222']
+    })
+  })
+
   it('should load js file', async function () {
     expect(
       await loadConfig('fixture/loadConfig/file.js', { cwd: __dirname })

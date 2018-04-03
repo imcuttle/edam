@@ -1,0 +1,12 @@
+// JSON5
+{
+  "name": "fixture",
+  x: [
+    // '123'
+    '222'
+  ],
+  "version": "0.0.1",
+//  "dependencies": {
+
+//  }
+}

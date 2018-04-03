@@ -5,7 +5,7 @@ const JSON5 = require('json5')
 const cosmiconfig = require('cosmiconfig')
 const nps = require('path')
 const fileSystem = require('./fileSystem').default
-const explorer = cosmiconfig('edam')
+const explorer = cosmiconfig('edam', { rcStrictJson: true })
 
 const debug = require('debug')('edam:loadConfig')
 
