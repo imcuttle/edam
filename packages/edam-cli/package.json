@@ -1,9 +1,9 @@
 {
   "name": "edam-cli",
-  "version": "0.0.14",
+  "version": "0.0.15",
   "dependencies": {
     "chalk": "^2.3.2",
-    "edam": "^0.0.14",
+    "edam": "^0.0.15",
     "meow": "^4.0.0",
     "ora": "^2.0.0",
     "tildify": "^1.2.0",

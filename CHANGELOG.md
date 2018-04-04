@@ -1,3 +1,13 @@
+<a name="0.0.14"></a>
+## [0.0.14](https://github.com/imcuttle/edam/compare/v0.0.13...v0.0.14) (2018-04-03)
+
+
+### Bug Fixes
+
+* json5 parse ([ecdb4d5](https://github.com/imcuttle/edam/commit/ecdb4d5))
+
+
+
 <a name="0.0.13"></a>
 ## [0.0.13](https://github.com/imcuttle/edam/compare/v0.0.12...v0.0.13) (2018-04-02)
 
