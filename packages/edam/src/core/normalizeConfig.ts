@@ -19,6 +19,7 @@ import toArray from '../lib/toArray'
 import resolve from '../lib/resolve'
 import fileSystem from '../lib/fileSystem'
 import parseQueryString from '../lib/parseQueryString'
+import {platform} from "os";
 
 const tildify = require('tildify')
 const debug = require('debug')('edam:normalizeConfig')
@@ -48,6 +49,10 @@ export default async function normalizeConfig(
     looseConfig
   )
 
+  // if (!looseConfig.plugins || !looseConfig.plugins.length) {
+  //   delete looseConfig.plugins
+  // }
+
   const coreSpecial = {
     userc: looseConfig.userc,
     yes: looseConfig.yes,
@@ -74,10 +79,12 @@ export default async function normalizeConfig(
         track
       )
       debug('rc merged config: %O', mergedRcConfig)
+      debug('mergedConfig config before: %O', mergedConfig)
       mergedConfig = extendsMerge({}, mergedRcConfig, mergedConfig)
     }
   }
 
+  debug('merged config after: %O', mergedConfig)
   if (!mergedConfig.plugins) {
     mergedConfig.plugins = []
   }

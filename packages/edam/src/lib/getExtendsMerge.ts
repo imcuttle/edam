@@ -24,9 +24,9 @@ export default function getExtendsMerge(
       if (Array.isArray(extendsVal)) {
         return extendsVal
       }
-      // if (Array.isArray(sourceVal)) {
-      //   return sourceVal
-      // }
+      if (Array.isArray(sourceVal)) {
+        return sourceVal
+      }
     })
   }
 }

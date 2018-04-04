@@ -139,7 +139,7 @@ ${generateFlagHelp(flags, '      ')}
       if (flags[name]) {
         flags[name] = flags[name].split(',')
       } else {
-        flags[name] = []
+        flags[name] = null
       }
     }
   })
@@ -165,7 +165,6 @@ ${generateFlagHelp(flags, '      ')}
   )
 
   // console.log(flags.silent)
-
   const edam = require('../../edam/dist/index').default
   const Edam = require('../../edam/dist/index').Edam
   // default
