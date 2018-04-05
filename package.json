@@ -6,7 +6,7 @@
   "private": true,
   "scripts": {
     "test": "jest",
-    "precommit": "lint-staged --debug",
+    "precommit": "lint-staged",
     "commitmsg": "commitlint -e $GIT_PARAMS",
     "dev": "lerna run --parallel dev",
     "bootstrap": "lerna bootstrap",
