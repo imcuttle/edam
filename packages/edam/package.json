@@ -20,7 +20,7 @@
   ],
   "dependencies": {
     "@moyuyc/parse-git-config": "^2.0.1",
-    "await-event-emitter": "^1.1.1",
+    "await-event-emitter": "^1.1.2",
     "chalk": "^2.3.2",
     "cosmiconfig": "4.0.0",
     "cross-spawn": "^6.0.5",
