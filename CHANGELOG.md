@@ -1,3 +1,15 @@
+<a name="0.0.15"></a>
+## [0.0.15](https://github.com/imcuttle/edam/compare/v0.0.14...v0.0.15) (2018-04-04)
+
+
+### Bug Fixes
+
+* inferred plugins ([f38c33f](https://github.com/imcuttle/edam/commit/f38c33f))
+* plugins inferred ([ebcc524](https://github.com/imcuttle/edam/commit/ebcc524))
+* plugins inferred ([a721207](https://github.com/imcuttle/edam/commit/a721207))
+
+
+
 <a name="0.0.14"></a>
 ## [0.0.14](https://github.com/imcuttle/edam/compare/v0.0.13...v0.0.14) (2018-04-03)
 
