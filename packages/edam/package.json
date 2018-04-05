@@ -1,6 +1,6 @@
 {
   "name": "edam",
-  "version": "0.0.16",
+  "version": "0.0.17",
   "scripts": {
     "dist": "rimraf dist && tsc",
     "dev": "npm run dist -- -w",
