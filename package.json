@@ -6,14 +6,14 @@
   "private": true,
   "scripts": {
     "test": "jest",
-    "precommit": "lint-staged",
+    "precommit": "lint-staged --debug",
     "commitmsg": "commitlint -e $GIT_PARAMS",
     "dev": "lerna run --parallel dev",
     "bootstrap": "lerna bootstrap",
+    "prerelease": "npm test && lerna run changelog",
     "release": "lerna publish",
     "site": "picidae start -c _site/picidae.config.js",
-    "site:build": "picidae build -f --source-map -c _site/picidae.config.js",
-    "prerelease": "lerna run changelog"
+    "site:build": "picidae build -f --source-map -c _site/picidae.config.js"
   },
   "keywords": [
     "imcuttle",

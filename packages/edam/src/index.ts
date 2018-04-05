@@ -34,11 +34,11 @@ import * as _ from 'lodash'
 import symbolic from './lib/symbolic'
 import { store, get } from './core/storePrompts'
 import fileSystem from './lib/fileSystem'
+import {yarnInstall} from "./lib";
 
 const inquirer = require('inquirer')
 const tildify = require('tildify')
 // const debug = require('debug')('edam:core')
-
 
 function throwEdamError(err, message) {
   if (err && err.id === '') {
@@ -173,7 +173,12 @@ export class Edam extends AwaitEventEmitter {
           cacheDir: this.config.cacheDir
         })
       }
-      this.compiler.variables.merge({ _: context })
+      this.compiler.variables.merge({
+        _: {
+          ...context,
+          install: yarnInstall
+        }
+      })
       await this.emit('prompt:after', this.compiler.variables)
     } catch (err) {
       throwEdamError(err, 'Error occurs when prompting \n')
@@ -320,7 +325,7 @@ export class Edam extends AwaitEventEmitter {
         })
       }
     })
-    fp.remove(this.templateConfig.remove)
+    // fp.remove(this.templateConfig.remove)
     return fp
   }
 
@@ -348,4 +353,3 @@ export { default as Compiler } from './core/Compiler/index'
 export { default as FileProcessor } from './core/TreeProcessor/FileProcessor'
 Object.assign(edam, Edam)
 export default edam
-

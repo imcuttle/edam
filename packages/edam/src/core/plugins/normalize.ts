@@ -65,7 +65,7 @@ export default async function normalize(
   templateConfig.mappers = await dynamicGet<any>(templateConfig.mappers, [data])
   templateConfig.move = await dynamicGet<any>(templateConfig.move, [data])
   templateConfig.copy = await dynamicGet<any>(templateConfig.copy, [data])
-  templateConfig.remove = await dynamicGet<any>(templateConfig.remove, [data])
+  // templateConfig.remove = await dynamicGet<any>(templateConfig.remove, [data])
   templateConfig.usefulHook = await dynamicGet<any>(templateConfig.usefulHook, [
     data
   ])

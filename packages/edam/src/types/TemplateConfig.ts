@@ -54,7 +54,7 @@ export default interface TemplateConfig {
 
   move?: {}
   copy?: {}
-  remove?: string[]
+  // remove?: string[]
 
   usefulHook: {
     gitInit?: boolean
