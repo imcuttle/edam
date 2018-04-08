@@ -175,6 +175,7 @@ export class Edam extends AwaitEventEmitter {
       }
       this.compiler.variables.merge({
         _: {
+          ..._,
           ...context,
           install: yarnInstall
         }
