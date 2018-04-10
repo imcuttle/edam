@@ -1,3 +1,13 @@
+<a name="0.0.18"></a>
+## [0.0.18](https://github.com/imcuttle/edam/compare/v0.0.17...v0.0.18) (2018-04-08)
+
+
+### Performance Improvements
+
+* context add loadsh ([f344c3a](https://github.com/imcuttle/edam/commit/f344c3a))
+
+
+
 <a name="0.0.17"></a>
 ## [0.0.17](https://github.com/imcuttle/edam/compare/v0.0.16...v0.0.17) (2018-04-05)
 
