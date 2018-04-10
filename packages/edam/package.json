@@ -1,6 +1,6 @@
 {
   "name": "edam",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "scripts": {
     "dist": "rimraf dist && tsc",
     "dev": "npm run dist -- -w",
@@ -45,7 +45,7 @@
     "untildify": "^3.0.2",
     "update-notifier": "^2.4.0",
     "url-join": "^4.0.0",
-    "walli": "0.0.4"
+    "walli": "0.0.5"
   },
   "devDependencies": {
     "bdd-stdin": "^0.2.0"
