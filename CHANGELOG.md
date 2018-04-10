@@ -1,3 +1,13 @@
+<a name="0.1.0"></a>
+# [0.1.0](https://github.com/imcuttle/edam/compare/v0.0.18...v0.1.0) (2018-04-10)
+
+
+### Performance Improvements
+
+* use walli ([dc64a1e](https://github.com/imcuttle/edam/commit/dc64a1e))
+
+
+
 <a name="0.0.18"></a>
 ## [0.0.18](https://github.com/imcuttle/edam/compare/v0.0.17...v0.0.18) (2018-04-08)
 
