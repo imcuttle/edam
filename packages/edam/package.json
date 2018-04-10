@@ -4,9 +4,10 @@
   "scripts": {
     "dist": "rimraf dist && tsc",
     "dev": "npm run dist -- -w",
-    "prepublish": "npm run dist",
+    "prepublishOnly": "npm run dist",
     "changelog": "conventional-changelog -p angular -i ../../CHANGELOG.md -s -r 0 && git add ../../CHANGELOG.md"
   },
+  "typings": "dist/index.d.ts",
   "description": "💥 The multifunctional scaffold generator.",
   "main": "dist/index.js",
   "keywords": [
@@ -43,7 +44,8 @@
     "tildify": "^1.2.0",
     "untildify": "^3.0.2",
     "update-notifier": "^2.4.0",
-    "url-join": "^4.0.0"
+    "url-join": "^4.0.0",
+    "walli": "0.0.4"
   },
   "devDependencies": {
     "bdd-stdin": "^0.2.0"

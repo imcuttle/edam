@@ -5,7 +5,7 @@
  * @description:
  */
 import normalizeConfig from './core/normalizeConfig'
-import { EdamConfig, Source } from './types/Options'
+import {edam as edamType, EdamConfig, Source} from './types/Options'
 import { Track } from './core/extendsConfig'
 import { Options } from './core/normalizeSource'
 import { AwaitEventEmitter, Logger, PromptProcess } from './types/core'
@@ -245,12 +245,17 @@ export class Edam extends AwaitEventEmitter {
       )
     }
 
-    if (!['npm', 'yarn'].includes(normalized.pull.npmClient)) {
-      throw new EdamError(
-        `config.pull.npmClient allows the value which is one of 'npm' | 'yarn'. but ${
-          normalized.pull.npmClient
-        }`
-      )
+    // if (!['npm', 'yarn'].includes(normalized.pull.npmClient)) {
+    //   throw new EdamError(
+    //     `config.pull.npmClient allows the value which is one of 'npm' | 'yarn'. but ${
+    //       normalized.pull.npmClient
+    //     }`
+    //   )
+    // }
+
+    const unlawfulString = edamType.toUnlawfulString(normalized)
+    if (unlawfulString) {
+      throw new EdamError(unlawfulString)
     }
   }
 

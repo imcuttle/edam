@@ -2,7 +2,7 @@
   "extends": "./loadConfig/a/.circlerc",
   "source": "edam.rc",
   "alias": {
-    "edam": "edam",
+    "edam": 'npm:edam',
     "edam-github": {
       type: "git",
       url: "abc"

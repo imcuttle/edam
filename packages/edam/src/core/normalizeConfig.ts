@@ -4,7 +4,7 @@
  * @date 2018/3/23
  * @description
  */
-import { EdamConfig } from '../types/Options'
+import { edam as edamType, EdamConfig } from '../types/Options'
 import { default as normalizeSource, Options } from './normalizeSource'
 import { load } from '../lib/loadConfig'
 import extendsMerge from './extendsMerge'
@@ -19,7 +19,7 @@ import toArray from '../lib/toArray'
 import resolve from '../lib/resolve'
 import fileSystem from '../lib/fileSystem'
 import parseQueryString from '../lib/parseQueryString'
-import {platform} from "os";
+import { platform } from 'os'
 
 const tildify = require('tildify')
 const debug = require('debug')('edam:normalizeConfig')

@@ -1,5 +1,69 @@
 import { Plugin } from '../core/plugins'
 
+import {
+  util,
+  leq,
+  oneOf,
+  string,
+  boolean,
+  object,
+  array,
+  eq,
+  function_,
+  any,
+  LooseEqual
+} from 'walli'
+
+const { createVerifiableClass } = util
+
+// console.log(util)
+
+const strictSource = createVerifiableClass({
+  _check(req: any) {
+    return leq({
+      type: oneOf(['file', 'git', 'npm']),
+      url: string(),
+      checkout: string().optional(),
+      version: string().optional()
+    })._check(req)
+  },
+  getDisplayName() {
+    return 'strictSource'
+  }
+})
+
+const source = createVerifiableClass({
+  _check(req: any) {
+    return oneOf([strictSource(), string()])._check(req)
+  },
+  getDisplayName() {
+    return 'source'
+  }
+})
+
+export const rc: LooseEqual = leq({
+  source: source().optional(),
+  cacheDir: oneOf([boolean(), string()]).optional(),
+  alias: object(source()).optional(),
+  extends: oneOf([string(), array(string())]).optional(),
+  output: string().optional(),
+  plugins: array(eq([function_(), any()])).optional(),
+  pull: leq({
+    npmClient: oneOf(['yarn', 'npm']).optional(),
+    git: oneOf(['clone', 'download']).optional()
+  }).optional(),
+  storePrompts: boolean().optional()
+})
+
+export const edam = rc.assign(
+  leq({
+    name: string().optional(),
+    updateNotify: boolean().optional(),
+    yes: boolean().optional(),
+    silent: boolean().optional()
+  })
+)
+
 export type Source = {
   type: 'file' | 'git' | 'npm'
   url: string
