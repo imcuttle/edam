@@ -25,7 +25,7 @@ const strictSource = createVerifiableClass({
       url: string(),
       checkout: string().optional(),
       version: string().optional()
-    })._check(req)
+    }).check(req)
   },
   getDisplayName() {
     return 'strictSource'
@@ -34,7 +34,7 @@ const strictSource = createVerifiableClass({
 
 const source = createVerifiableClass({
   _check(req: any) {
-    return oneOf([strictSource(), string()])._check(req)
+    return oneOf([strictSource(), string()]).check(req)
   },
   getDisplayName() {
     return 'source'

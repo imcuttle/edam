@@ -165,8 +165,8 @@ ${generateFlagHelp(flags, '      ')}
   )
 
   // console.log(flags.silent)
-  const edam = require('../../edam/dist/index').default
-  const Edam = require('../../edam/dist/index').Edam
+  const edam = require('edam').default
+  const Edam = require('edam').Edam
   // default
   if (config.cacheDir === tildify(Edam.constants.DEFAULT_CACHE_DIR)) {
     config.cacheDir = Edam.constants.DEFAULT_CACHE_DIR
