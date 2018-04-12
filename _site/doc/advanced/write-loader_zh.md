@@ -8,5 +8,9 @@ order: 3
 - loaders 形如
 
 {
-  loaderName: 'sss'
+  loaderName: [
+    [
+      require('./aaa'), {}
+    ]
+  ]
 }
