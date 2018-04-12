@@ -1,6 +1,5 @@
 /**
  * @file main.spec
- * @author Cuttle Cong
  * @date 2018/3/31
  * @description
  */

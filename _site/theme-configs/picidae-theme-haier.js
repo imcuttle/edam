@@ -43,7 +43,7 @@ module.exports = {
         en: 'Advanced',
         zh: '进阶学习'
       },
-      url: '/advanced/write-a-template'
+      url: '/advanced/process'
     },
     // spec
     'i18n', 'search', 'github'

@@ -8,7 +8,7 @@
 import * as _ from 'lodash'
 import * as nps from 'path'
 
-import { Hook, Loader, Mapper, StrictLoader } from '../../types/TemplateConfig'
+import {Hook, Loader, Mapper, StrictLoader, StrictLoaderWithOption} from '../../types/TemplateConfig'
 import * as pReduce from 'p-reduce'
 import { AwaitEventEmitter, Logger, Tree } from '../../types/core'
 import toArray from '../../lib/toArray'
@@ -89,10 +89,12 @@ export default class Compiler extends AwaitEventEmitter {
     [path: string]: Asset
   } = {}
   public loaders: {
-    [loaderId: string]: Array<StrictLoader>
+    [loaderId: string]: Array<StrictLoader | StrictLoaderWithOption>
   } = {
     module: require('./loaders/module'),
-    LoDash: require('./loaders/lodash')
+    LoDash: [
+      [require('./loaders/lodash'), {}]
+    ]
   }
   public mappers: Array<Mapper> = [
     {
