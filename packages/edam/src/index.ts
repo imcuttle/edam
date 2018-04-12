@@ -5,7 +5,7 @@
  * @description:
  */
 import normalizeConfig from './core/normalizeConfig'
-import {edam as edamType, EdamConfig, Source} from './types/Options'
+import { edam as edamType, EdamConfig, Source } from './types/Options'
 import { Track } from './core/extendsConfig'
 import { Options } from './core/normalizeSource'
 import { AwaitEventEmitter, Logger, PromptProcess } from './types/core'
@@ -34,11 +34,11 @@ import * as _ from 'lodash'
 import symbolic from './lib/symbolic'
 import { store, get } from './core/storePrompts'
 import fileSystem from './lib/fileSystem'
-import {yarnInstall} from "./lib";
+import { yarnInstall } from './lib'
 
 const inquirer = require('inquirer')
 const tildify = require('tildify')
-// const debug = require('debug')('edam:core')
+const debug = require('debug')('edam:core')
 
 function throwEdamError(err, message) {
   if (err && err.id === '') {
@@ -136,6 +136,9 @@ export class Edam extends AwaitEventEmitter {
   public prompt: Function = prompt
 
   private async _promptPrivate(prompts = this.templateConfig.prompts) {
+    if (!prompts) {
+      prompts = []
+    }
     try {
       const context = {
         ...this.constants.DEFAULT_CONTEXT,
@@ -292,13 +295,13 @@ export class Edam extends AwaitEventEmitter {
   ): Promise<FileProcessor> {
     // preset plugins only do something about template
     await this.registerPlugins(plugins)
-
+    debug('templatePath: %s', templateConfigPath)
     let templateConfig =
       (await getTemplateConfig.apply(
         this,
         [require(templateConfigPath), [this, this]]
       )) || {}
-
+    debug('templateConfig: \n%O', templateConfig)
     // The below process would update templateConfig
     // So we requires clone
     templateConfig = _.cloneDeep(templateConfig)
