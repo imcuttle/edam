@@ -104,12 +104,14 @@ hooks: {
 一些常用的 hook 快捷方式
 
 * gitInit
+
   是否 `git init`
 
   * type: `boolean`
   * default: `false`
 
 * installDependencies
+
   是否安装 `package.json` 中的 Dependencies
   使用 `npm` 或 `yarn` 由用户配置中的 `pull.npmClient` 指定
 
@@ -117,6 +119,7 @@ hooks: {
   * default: `false`
 
 * installDevDependencies
+
   是否安装 `package.json` 中的 Dev Dependencies
 
   * type: `boolean`

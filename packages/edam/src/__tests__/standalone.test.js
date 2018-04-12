@@ -35,4 +35,8 @@ describe('standalone', function() {
       .catch(console.error)
       .then(done)
   })
+
+  it('should stringMacthcing', function() {
+    expect('abc').toEqual(expect.stringMatching('bc'))
+  })
 })
