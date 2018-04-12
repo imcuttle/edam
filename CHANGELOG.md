@@ -1,3 +1,13 @@
+<a name="0.2.1"></a>
+## [0.2.1](https://github.com/imcuttle/edam/compare/v0.2.0...v0.2.1) (2018-04-12)
+
+
+### Bug Fixes
+
+* loaders support Options ([4211807](https://github.com/imcuttle/edam/commit/4211807))
+
+
+
 <a name="0.2.0"></a>
 # [0.2.0](https://github.com/imcuttle/edam/compare/v0.1.2...v0.2.0) (2018-04-11)
 
