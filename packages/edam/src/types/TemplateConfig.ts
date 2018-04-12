@@ -38,22 +38,24 @@ export type Mapper = {
   loader: Loader
 }
 
+export type Dynamic<T> = (answer: object) => T | Promise<T>
+
 export default interface TemplateConfig {
   prompts?: Array<Prompt>
 
   hooks?: {
     [hookName: string]: Array<Hook> | Hook
-  }
-  ignore?: Array<string>
+  } | Dynamic<object>
+  ignore?: string[] | Dynamic<string[]>
   variables?: Variables
-  root?: string
+  root?: string | Dynamic<string>
   loaders?: {
     [loaderId: string]: Array<StrictLoader>
   }
   mappers?: Array<Mapper>
 
-  move?: {}
-  copy?: {}
+  move?: Dynamic<object> | object
+  copy?: Dynamic<object> | object
   // remove?: string[]
 
   usefulHook: {

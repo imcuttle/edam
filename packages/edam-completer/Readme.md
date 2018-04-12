@@ -5,3 +5,10 @@
 Edam cli auto completer
 
 ![](./demo.svg)
+
+## Usage
+
+```bash
+npm install -g edam-cli
+npm install -g edam-completer
+```
