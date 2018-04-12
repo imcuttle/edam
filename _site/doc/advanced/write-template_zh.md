@@ -123,3 +123,9 @@ hooks: {
   * default: `false`
 
 或者 `(answers) => ({})`
+
+## 尾声
+
+官方已经有的一个模板 repo: [edam-vendor](https://github.com/imcuttle/edam-vendor) 可以参考。
+
+利用不同的分支进行管理。
