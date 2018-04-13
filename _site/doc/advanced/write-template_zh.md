@@ -33,12 +33,14 @@ order: 2
 
 用户输入值的交互定义
 
-* type: `[]`  
+* type: `[]`
+
   参考[inquirer.js](https://github.com/SBoudrias/Inquirer.js/)
 
 ### root
 
 * type: `string`
+
   模板文件夹的目录，默认为 `./template`
   或者 `answer => './template'`
 
@@ -47,12 +49,14 @@ order: 2
 忽略哪些文件
 
 * type: `string[]`
+
   或者 `(answers) => []`
 
 ### variables
 
 * type `{}`
 * example
+
   ```javascript
   {
     date: new Date(),
