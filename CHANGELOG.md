@@ -1,3 +1,8 @@
+<a name="0.3.1"></a>
+## [0.3.1](https://github.com/imcuttle/edam/compare/v0.3.0...v0.3.1) (2018-04-14)
+
+
+
 <a name="0.3.0"></a>
 # [0.3.0](https://github.com/imcuttle/edam/compare/v0.2.3...v0.3.0) (2018-04-14)
 
