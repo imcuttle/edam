@@ -150,7 +150,8 @@ export class Edam extends AwaitEventEmitter {
       if (this.config.storePrompts && this.config.cacheDir) {
         let oldPromptValues = await get({
           source: <Source>this.config.source,
-          cacheDir: this.config.cacheDir
+          cacheDir: this.config.cacheDir,
+          prompts
         })
 
         oldPromptValues &&
@@ -172,7 +173,7 @@ export class Edam extends AwaitEventEmitter {
       this.compiler.variables.setStore(promptValues)
 
       if (this.config.storePrompts && this.config.cacheDir) {
-        await store(promptValues, {
+        await store(promptValues, prompts, {
           source: <Source>this.config.source,
           cacheDir: this.config.cacheDir
         })

@@ -9,6 +9,7 @@ import { Source } from '../types/Options'
 import * as nps from 'path'
 import fileSystem from '../lib/fileSystem'
 import EdamError from './EdamError'
+import { Prompt } from '../types/TemplateConfig'
 const tildify = require('tildify')
 const mkdirp = require('mkdirp')
 const debug = require('debug')('edam:storePrompts')
@@ -44,6 +45,7 @@ async function _store(cacheDir: string, source, promptValues) {
 
 export async function store(
   promptValues: object,
+  prompts: Prompt[],
   {
     source,
     cacheDir
@@ -55,21 +57,41 @@ export async function store(
   if (!cacheDir) {
     return
   }
-  debug('(store): promptValues %O', promptValues)
+  const deniesStoreNames = prompts.filter(x => !!x.deniesStore).map(x => x.name)
+  promptValues = { ...promptValues }
+  deniesStoreNames.forEach(name => {
+    if (promptValues.hasOwnProperty(name)) {
+      delete promptValues[name]
+    }
+  })
+  debug(
+    '(store): promptValues %O, deniesStoreNames: %O',
+    promptValues,
+    deniesStoreNames
+  )
   await _store(<string>cacheDir, source, promptValues)
 }
 
 export async function get({
   source,
+  prompts = [],
   cacheDir
 }: {
   source?: Source
+  prompts?: Prompt[]
   cacheDir?: string | boolean
 } = {}) {
   if (!cacheDir) {
     return
   }
-  const old = (await _get(<string>cacheDir))[source.url]
+  let old = (await _get(<string>cacheDir))[source.url]
+  old = { ...old }
+  const deniesStoreNames = prompts.filter(x => !!x.deniesStore).map(x => x.name)
+  deniesStoreNames.forEach(name => {
+    if (old.hasOwnProperty(name)) {
+      delete old[name]
+    }
+  })
   debug('(get): promptValues %O', old)
   return old
 }

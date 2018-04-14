@@ -8,8 +8,9 @@ export interface Prompt {
   when?: (vars: Variables) => boolean
   name: string
   type: PromptType
-  options?: Array<any>
-  transform?: Function
+  choices?: Array<any>
+  transform?: Function,
+  deniesStore?: boolean
 }
 
 export type Hook = string | Function
