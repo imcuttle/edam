@@ -1,9 +1,9 @@
 {
   "name": "edam-completer",
-  "version": "0.2.3",
+  "version": "0.3.0",
   "dependencies": {
     "co": "^4.6.0",
-    "edam": "^0.2.3",
+    "edam": "^0.3.0",
     "tabtab": "^2.2.2",
     "tildify": "^1.2.0"
   },

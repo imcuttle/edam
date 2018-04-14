@@ -1,3 +1,13 @@
+<a name="0.2.3"></a>
+## [0.2.3](https://github.com/imcuttle/edam/compare/v0.2.2...v0.2.3) (2018-04-14)
+
+
+### Bug Fixes
+
+* edam-completer bin ([482d122](https://github.com/imcuttle/edam/commit/482d122))
+
+
+
 <a name="0.2.2"></a>
 ## [0.2.2](https://github.com/imcuttle/edam/compare/v0.2.1...v0.2.2) (2018-04-12)
 
