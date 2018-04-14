@@ -17,7 +17,7 @@ module.exports = function(/*options*/) {
       {
         name: 'value',
         type: 'input',
-        default: () => 'default_val'
+        default: '${baseName}'
       }
     ],
     variables: {

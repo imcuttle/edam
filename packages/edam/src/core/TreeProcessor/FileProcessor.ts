@@ -42,6 +42,10 @@ export default class FileProcessor extends TreeProcessor {
       overwrite: false
     }
   ): Promise<boolean> {
+    if (!filepath) {
+      filepath = this.dest
+    }
+
     await pify(mkdirp)(filepath)
     if (option.clean) {
       await pify(rimraf)(filepath)

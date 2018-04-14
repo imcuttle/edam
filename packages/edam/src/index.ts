@@ -143,7 +143,8 @@ export class Edam extends AwaitEventEmitter {
       const context = {
         ...this.constants.DEFAULT_CONTEXT,
         absoluteDir: this.config.output,
-        dirName: this.config.output && nps.dirname(this.config.output)
+        dirName: this.config.output && nps.dirname(this.config.output),
+        baseName: nps.basename(this.config.output)
       }
 
       if (this.config.storePrompts && this.config.cacheDir) {

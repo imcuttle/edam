@@ -39,7 +39,7 @@ describe('functional', function() {
     const fp = await mockPrompts(
       join(tplPath, 'functional'),
       {
-        value: 'ojbk'
+        // value: 'ojbk'
       },
       join(outputRoot, 'functional')
     )
@@ -51,7 +51,7 @@ describe('functional', function() {
         normalize('index.js')
       ])
     )
-    expect(await fp.writeToFile()).toBeTruthy()
+    expect(await fp.writeToFile(null, { overwrite: true })).toBeTruthy()
 
     expect(
       await readdirDeep(join(outputRoot, 'functional'))
@@ -62,6 +62,9 @@ describe('functional', function() {
         normalize('index.js')
       ])
     )
+    expect(
+      require(join(outputRoot, 'functional', 'index.js'))
+    ).toBe('functional')
 
     await fileSystem.cleanDir(join(outputRoot, 'functional'))
   })
