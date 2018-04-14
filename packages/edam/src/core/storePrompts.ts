@@ -39,7 +39,22 @@ async function _get(cacheDir: string) {
 async function _store(cacheDir: string, source, promptValues) {
   const filename = getFilename(cacheDir)
   const old = await _get(cacheDir)
-  old[source.url] = promptValues
+
+  let key = ''
+  switch (source.type) {
+    case 'git':
+      key = source.url + '?checkout=' + source.checkout
+      break
+    case 'npm':
+      key = source.url
+      break
+    case 'file':
+      key = source.url
+      break
+    default:
+      key = source.url
+  }
+  old[key] = promptValues
   await fileSystem.writeFile(filename, JSON.stringify(old))
 }
 
