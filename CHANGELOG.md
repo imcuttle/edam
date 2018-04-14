@@ -1,3 +1,13 @@
+<a name="0.3.0"></a>
+# [0.3.0](https://github.com/imcuttle/edam/compare/v0.2.3...v0.3.0) (2018-04-14)
+
+
+### Performance Improvements
+
+* supports `baseName` value ([b7e8a88](https://github.com/imcuttle/edam/commit/b7e8a88))
+
+
+
 <a name="0.2.3"></a>
 ## [0.2.3](https://github.com/imcuttle/edam/compare/v0.2.2...v0.2.3) (2018-04-14)
 
