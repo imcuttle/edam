@@ -7,6 +7,9 @@
     "tabtab": "^2.2.2",
     "tildify": "^1.2.0"
   },
+  "bin": {
+    "edam-completer": "completer.js"
+  },
   "main": "completer.js",
   "scripts": {
     "install": "tabtab install --name edam --completer edam-completer",
