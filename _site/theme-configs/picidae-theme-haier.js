@@ -46,7 +46,7 @@ module.exports = {
       url: '/advanced/process'
     },
     // spec
-    'i18n', 'search', 'github'
+    'i18n', /*'search', */'github'
   ],
   // repository: 'picidaejs/picidae-theme-haier',
   repository: {
