@@ -1,3 +1,18 @@
+<a name="0.3.2"></a>
+## [0.3.2](https://github.com/imcuttle/edam/compare/v0.3.1...v0.3.2) (2018-04-14)
+
+
+### Bug Fixes
+
+* store prmopts when type equals git ([341c0d2](https://github.com/imcuttle/edam/commit/341c0d2))
+
+
+### Performance Improvements
+
+* prompt supports 'deniesStore' field ([d6968bb](https://github.com/imcuttle/edam/commit/d6968bb))
+
+
+
 <a name="0.3.1"></a>
 ## [0.3.1](https://github.com/imcuttle/edam/compare/v0.3.0...v0.3.1) (2018-04-14)
 
