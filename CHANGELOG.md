@@ -1,3 +1,13 @@
+<a name="0.3.3-0"></a>
+## [0.3.3-0](https://github.com/imcuttle/edam/compare/v0.3.2...v0.3.3-0) (2018-04-26)
+
+
+### Bug Fixes
+
+* prompt when field not work ([16fa53c](https://github.com/imcuttle/edam/commit/16fa53c))
+
+
+
 <a name="0.3.2"></a>
 ## [0.3.2](https://github.com/imcuttle/edam/compare/v0.3.1...v0.3.2) (2018-04-14)
 
