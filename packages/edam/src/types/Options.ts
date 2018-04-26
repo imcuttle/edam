@@ -78,7 +78,7 @@ export interface RCOptions {
   // alias the source
   alias?: object
   // the wanted extend edam configuration file path (relative or absolute)
-  extends?: string | Array<string>
+  extends?: string | string[]
   output?: string
   plugins?: Array<Plugin>
   pull?: {

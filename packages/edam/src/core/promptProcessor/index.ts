@@ -53,6 +53,7 @@ export default async function prompt(
         transformer,
         validate
       } = prompt
+      delete prompt.when
       delete prompt.transformer
       delete prompt.validate
       if (yes && prompt.yes !== false) {
