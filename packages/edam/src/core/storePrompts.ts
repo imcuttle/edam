@@ -36,11 +36,9 @@ async function _get(cacheDir: string) {
     )
   }
 }
-async function _store(cacheDir: string, source, promptValues) {
-  const filename = getFilename(cacheDir)
-  const old = await _get(cacheDir)
 
-  let key = ''
+function getKeyBySource(source: Source) {
+  let key
   switch (source.type) {
     case 'git':
       key = source.url + '?checkout=' + source.checkout
@@ -54,6 +52,13 @@ async function _store(cacheDir: string, source, promptValues) {
     default:
       key = source.url
   }
+  return key
+}
+
+async function _store(cacheDir: string, source, promptValues) {
+  const filename = getFilename(cacheDir)
+  const old = await _get(cacheDir)
+  let key = getKeyBySource(source)
   old[key] = promptValues
   await fileSystem.writeFile(filename, JSON.stringify(old))
 }
@@ -99,7 +104,7 @@ export async function get({
   if (!cacheDir) {
     return
   }
-  let old = (await _get(<string>cacheDir))[source.url]
+  let old = (await _get(<string>cacheDir))[getKeyBySource(source)]
   old = { ...old }
   const deniesStoreNames = prompts.filter(x => !!x.deniesStore).map(x => x.name)
   deniesStoreNames.forEach(name => {
