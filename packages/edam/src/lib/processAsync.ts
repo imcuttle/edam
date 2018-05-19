@@ -12,7 +12,7 @@ function processAsync(process, cmd: string = '', cb) {
   }
 
   process.on('error', function(err) {
-    cb() && cb(err)
+    cb && cb(err)
   })
 
   let stderr = ''
