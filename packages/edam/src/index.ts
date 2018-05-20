@@ -182,7 +182,11 @@ export class Edam extends AwaitEventEmitter {
         _: {
           ..._,
           ...context,
-          install: yarnInstall
+          install: (deps, opts) =>
+            yarnInstall(deps, {
+              ...opts,
+              respectNpm5: this.config.pull.npmClient === 'npm'
+            })
         }
       })
       await this.emit('prompt:after', this.compiler.variables)
