@@ -49,10 +49,7 @@ export default async function prompt(
       }
 
       let value
-      const {
-        transformer,
-        validate
-      } = prompt
+      const { transformer, validate } = prompt
       delete prompt.when
       delete prompt.transformer
       delete prompt.validate
@@ -65,9 +62,19 @@ export default async function prompt(
         value = await transformer(value, set, context)
       }
 
-      if (_.isFunction(validate) && !await validate(value, set, context)) {
-        this.logger.warn('validate %s failed, so the value "%s" is ignored.', prompt.name, value)
-        return set
+      if (_.isFunction(validate)) {
+        let message = await validate(value, set, context)
+        if (typeof message === 'string') {
+          value = prompt.default
+          this.logger &&
+            this.logger.warn(
+              'validate %s failed, error message: %s, so the value "%s" fallback to default value.',
+              prompt.name,
+              message,
+              value
+            )
+          return set
+        }
       }
 
       Object.assign(set, {

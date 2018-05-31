@@ -49,22 +49,6 @@ describe('npm', function() {
     // await fileSystenpmm.cleanDir(output)
   })
 
-  it('should npm pull universal package when use `npm` and nocache', async () => {
-    expect(
-      await npmPull(
-        source,
-        constant.DEFAULT_CACHE_DIR,
-        {
-          cacheDir: false,
-          pull: {
-            npmClient: 'npm'
-          }
-        }
-      )
-    ).toBe(output)
-    expect(version()).toBe('1.0.1')
-  })
-
   afterAll(async function () {
     await fileSystem.cleanDir(this.constants.DEFAULT_CACHE_DIR)
   })

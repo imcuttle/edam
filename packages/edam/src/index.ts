@@ -144,7 +144,7 @@ export class Edam extends AwaitEventEmitter {
         ...this.constants.DEFAULT_CONTEXT,
         absoluteDir: this.config.output,
         dirName: this.config.output && nps.dirname(this.config.output),
-        baseName: nps.basename(this.config.output)
+        baseName: this.config.output && nps.basename(this.config.output)
       }
 
       if (this.config.storePrompts && this.config.cacheDir) {
@@ -165,7 +165,7 @@ export class Edam extends AwaitEventEmitter {
       }
 
       await this.emit('prompt:before', prompts, context)
-      const promptValues = await this.prompt(prompts, {
+      const promptValues = await this.prompt.call(this, prompts, {
         yes: this.config.yes,
         context,
         promptProcess: this.promptProcess

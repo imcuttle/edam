@@ -18,6 +18,12 @@ module.exports = {
     {
       name: 'value',
       type: 'input',
+      validate: (val) => {
+        console.error('validate', val)
+        if (val === 'error') {
+          return 'should be error message here!'
+        }
+      },
       default: () => 'default_val'
     }
   ],
