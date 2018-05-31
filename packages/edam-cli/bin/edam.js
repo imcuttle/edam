@@ -41,8 +41,8 @@ const flags = [
     name: 'extends',
     type: 'string',
     desc:
-      'Extends external edam configuration files.  ' +
-      'eg. --extends="./.edamrc,../.edamrc"',
+    'Extends external edam configuration files.  ' +
+    'eg. --extends="./.edamrc,../.edamrc"',
     default: null
   },
   {
@@ -86,8 +86,8 @@ const flags = [
     name: 'output',
     alias: 'o',
     type: 'string',
-    desc: 'The output directory.',
-    default: tildify(process.cwd())
+    desc: 'The output directory.'
+    // default: tildify(process.cwd())
   },
   {
     name: 'overwrite',
@@ -124,7 +124,7 @@ ${generateFlagHelp(flags, '      ')}
       pkg.description
     )} ${c.gray(pkg.version)}`
   }
-)
+  )
 
 ;(function() {
   if (cli.flags.help) {
@@ -133,7 +133,7 @@ ${generateFlagHelp(flags, '      ')}
   }
 
   const flags = cli.flags
-  // parse array input
+    // parse array input
   ;['extends', 'plugins'].forEach(name => {
     if (!Array.isArray(flags[name])) {
       if (flags[name]) {
@@ -171,9 +171,9 @@ ${generateFlagHelp(flags, '      ')}
   if (config.cacheDir === tildify(Edam.constants.DEFAULT_CACHE_DIR)) {
     config.cacheDir = Edam.constants.DEFAULT_CACHE_DIR
   }
-  if (config.output === tildify(process.cwd())) {
-    config.output = process.cwd()
-  }
+  // if (config.output === tildify(process.cwd())) {
+  //   config.output = process.cwd()
+  // }
 
 
   let spinner = require('ora')()
@@ -252,13 +252,13 @@ ${generateFlagHelp(flags, '      ')}
         if (upt) {
           notifier.notify({
             message:
-              'Update available ' +
-              c.dim(upt.current) +
-              c.reset(' → ') +
-              c.green(upt.latest) +
-              ' \nRun ' +
-              c.cyan('npm install edam@latest -g') +
-              ' to update'
+            'Update available ' +
+            c.dim(upt.current) +
+            c.reset(' → ') +
+            c.green(upt.latest) +
+            ' \nRun ' +
+            c.cyan('npm install edam@latest -g') +
+            ' to update'
           })
         }
       }
