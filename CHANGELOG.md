@@ -1,3 +1,19 @@
+<a name="0.3.6"></a>
+## [0.3.6](https://github.com/imcuttle/edam/compare/v0.3.5...v0.3.6) (2018-05-20)
+
+
+
+<a name="0.3.5"></a>
+## [0.3.5](https://github.com/imcuttle/edam/compare/v0.3.4...v0.3.5) (2018-05-20)
+
+
+### Bug Fixes
+
+* install in context pm inherred by config ([1961268](https://github.com/imcuttle/edam/commit/1961268))
+* processAsync ([7352ec8](https://github.com/imcuttle/edam/commit/7352ec8))
+
+
+
 <a name="0.3.4"></a>
 ## [0.3.4](https://github.com/imcuttle/edam/compare/v0.3.4-0...v0.3.4) (2018-05-18)
 
