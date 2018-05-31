@@ -37,7 +37,7 @@ prettier config file path
 // template config file
 module.exports = {
   // ...
-  mappers: {
+  mappers: [{
     test: '*.{jsx,js}',
     loader: [
       'LoDash', // preset loader
@@ -48,6 +48,6 @@ module.exports = {
         }
       ]
     ]
-  }
+  }]
 }
 ```
