@@ -41,6 +41,7 @@ export async function innerExtendsConfig(
   track?: Track
 ): Promise<EdamConfig> {
   let extendConfig: EdamConfig
+  config = _.cloneDeep(config)
   debug('config %O', config)
 
   if (typeof config.output === 'string') {

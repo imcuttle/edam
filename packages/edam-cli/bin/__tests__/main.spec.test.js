@@ -23,9 +23,9 @@ const exec = function(argString, { cwd = gCwd } = {}) {
 
 describe('main.spec', function() {
 
-  afterEach(function () {
-    rimraf.sync(join(__dirname, 'fixture/output'))
-  })
+  // beforeEach(function () {
+  //   rimraf.sync(join(__dirname, 'fixture/output'))
+  // })
 
   it('should `--help` flag works', async () => {
     const sp = exec('--help')

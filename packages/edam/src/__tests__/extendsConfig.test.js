@@ -66,7 +66,7 @@ describe('extendsConfig', function() {
         'react-a': 'aa',
         react: 'b.react',
         'b.react': 'b.react.origin',
-        json5: 'json5'
+        json5: require.resolve('json5')
       }
     })
   })
@@ -102,7 +102,7 @@ describe('extendsConfig', function() {
         'react-a': 'aa',
         react: 'b.react',
         'b.react': 'b.react.origin',
-        rc: 'rc'
+        rc: require.resolve('rc')
       }
     })
     expect(Object.keys(track)).toEqual([

@@ -53,8 +53,8 @@ describe('normalizeConfig', function() {
         alias: {
           'react-a': 'aa',
           'b.react': 'b.react.origin',
-          'github': 'github:tele/rele',
-          'file': './fixture/source'
+          github: 'github:tele/rele',
+          file: './fixture/source'
         },
         source: 'react',
         userc: false
@@ -75,15 +75,12 @@ describe('normalizeConfig', function() {
         output: nps.resolve(__dirname, './fixture/loadConfig/a'),
         extends: ['./fixture/loadConfig/a/.edamrc', './b/.edamrc', './rc'],
         source: {
-          type: 'npm',
-          url: 'b.react',
-          version: ''
+          type: 'file',
+          url: require.resolve('react')
         },
-        plugins: [
-          [{}, {}]
-        ],
+        plugins: [[{}, {}]],
         alias: {
-          'file': {
+          file: {
             type: 'file',
             url: nps.join(__dirname, 'fixture/source/package.json')
           },
@@ -106,7 +103,7 @@ describe('normalizeConfig', function() {
             type: 'file',
             url: require.resolve('json5')
           },
-          'github': {
+          github: {
             type: 'git',
             url: 'https://github.com/tele/rele.git',
             checkout: 'master'
@@ -123,7 +120,7 @@ describe('normalizeConfig', function() {
         alias: {
           'react-a': 'aa',
           'b.react': 'b.react.origin',
-          'github': 'github:tele/rele'
+          github: 'github:tele/rele'
         },
         source: 'react',
         output: '',
@@ -138,9 +135,8 @@ describe('normalizeConfig', function() {
       expect.objectContaining({
         // extends: ['./loadConfig/a/.edamrc', './b/.edamrc', './rc'],
         source: {
-          type: 'npm',
-          url: 'b.react',
-          version: ''
+          type: 'file',
+          url: require.resolve('react')
         },
         alias: expect.objectContaining({
           edam: {
@@ -172,7 +168,7 @@ describe('normalizeConfig', function() {
             type: 'file',
             url: require.resolve('json5')
           },
-          'github': {
+          github: {
             type: 'git',
             url: 'https://github.com/tele/rele.git',
             checkout: 'master'
@@ -190,7 +186,7 @@ describe('normalizeConfig', function() {
         alias: {
           'react-a': 'aa',
           'b.react': 'b.react.origin',
-          'github': 'github:tele/rele'
+          github: 'github:tele/rele'
         },
         source: 'github?checkout=dev',
         userc: true
@@ -214,7 +210,7 @@ describe('normalizeConfig', function() {
             url: 'abc.git',
             checkout: 'master'
           },
-          'github': {
+          github: {
             type: 'git',
             url: 'https://github.com/tele/rele.git',
             checkout: 'master'
@@ -231,7 +227,7 @@ describe('normalizeConfig', function() {
         alias: {
           'react-a': 'aa',
           'b.react': 'b.react.origin',
-          'github': 'github:tele/rele'
+          github: 'github:tele/rele'
         },
         output: '',
         source: 'github:tele/abcrele?checkout=dev',
