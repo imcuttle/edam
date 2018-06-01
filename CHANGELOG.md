@@ -1,3 +1,13 @@
+<a name="1.1.1"></a>
+## [1.1.1](https://github.com/imcuttle/edam/compare/v1.1.0...v1.1.1) (2018-06-01)
+
+
+### Performance Improvements
+
+* **edam-cli:** allow to run command 'edam' without '-o, --output' ([550667e](https://github.com/imcuttle/edam/commit/550667e))
+
+
+
 <a name="1.1.0"></a>
 # [1.1.0](https://github.com/imcuttle/edam/compare/v1.0.2...v1.1.0) (2018-06-01)
 
