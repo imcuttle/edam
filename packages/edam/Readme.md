@@ -4,7 +4,6 @@
 
 💥 The multifunctional scaffold generator.
 
-
 ## Options
 - [RCOptions & EdamConfig](./src/types/Options.ts)
 - [TemplateConfig](./src/types/TemplateConfig.ts)
