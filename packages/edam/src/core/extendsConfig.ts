@@ -23,6 +23,18 @@ export type Track = {
     value?: any
   }
 }
+
+function toNormalizedFileSource(source, options) {
+  if (!source) {
+    return source
+  }
+  let s = normalizeSource(source, options)
+  if (s.type === 'file') {
+    return s.url
+  }
+  return source
+}
+
 export async function innerExtendsConfig(
   config: EdamConfig,
   options: Options,
@@ -35,14 +47,13 @@ export async function innerExtendsConfig(
     config.output = nps.resolve(options.cwd, config.output)
   }
 
-  // Ignore normalize source here
-  // maybe is alias
-  // if (config.source) {
-  //   let s = normalizeSource(config.source, options)
-  //   if (s.type === 'file') {
-  //     config.source = s.url
-  //   }
-  // }
+  // source and alias could be relative path
+  config.source = toNormalizedFileSource(config.source, options)
+  if (config.alias) {
+    _.each(config.alias, (val, key) => {
+      config.alias[key] = toNormalizedFileSource(val, options)
+    })
+  }
 
   if (config.plugins) {
     const plugins = (config.plugins = toArray(config.plugins))

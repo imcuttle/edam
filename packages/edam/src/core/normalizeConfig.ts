@@ -4,7 +4,7 @@
  * @date 2018/3/23
  * @description
  */
-import { edam as edamType, EdamConfig } from '../types/Options'
+import { EdamConfig } from '../types/Options'
 import { default as normalizeSource, Options } from './normalizeSource'
 import { load } from '../lib/loadConfig'
 import extendsMerge from './extendsMerge'

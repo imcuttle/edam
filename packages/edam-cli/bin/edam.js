@@ -164,16 +164,15 @@ ${generateFlagHelp(flags, '      ')}
     }
   )
 
-  // console.log(flags.silent)
   const edam = require('edam').default
   const Edam = require('edam').Edam
   // default
   if (config.cacheDir === tildify(Edam.constants.DEFAULT_CACHE_DIR)) {
     config.cacheDir = Edam.constants.DEFAULT_CACHE_DIR
   }
-  // if (config.output === tildify(process.cwd())) {
-  //   config.output = process.cwd()
-  // }
+  if (config.output === '') {
+    delete config.output
+  }
 
 
   let spinner = require('ora')()
