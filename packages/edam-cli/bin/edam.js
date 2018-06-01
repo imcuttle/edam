@@ -22,7 +22,8 @@ const flags = [
   {
     name: 'cache-dir',
     type: 'string',
-    desc: 'Appoints to the cache where to store. It should be a directory path.',
+    desc:
+      'Appoints to the cache where to store. It should be a directory path.',
     default: tildify(constant.DEFAULT_CACHE_DIR)
   },
   {
@@ -41,8 +42,8 @@ const flags = [
     name: 'extends',
     type: 'string',
     desc:
-    'Extends external edam configuration files.  ' +
-    'eg. --extends="./.edamrc,../.edamrc"',
+      'Extends external edam configuration files.  ' +
+      'eg. --extends="./.edamrc,../.edamrc"',
     default: null
   },
   {
@@ -54,7 +55,8 @@ const flags = [
   {
     name: 'pull.npmClient',
     type: 'string',
-    desc: 'Appoints to the command when installing package form npmjs.com. [npm|yarn]',
+    desc:
+      'Appoints to the command when installing package form npmjs.com. [npm|yarn]',
     default: 'npm'
   },
   {
@@ -66,7 +68,8 @@ const flags = [
   {
     name: 'userc',
     type: 'boolean',
-    desc: 'Edam can deduce the configuration file from current work directory like `.babelrc`.',
+    desc:
+      'Edam can deduce the configuration file from current work directory like `.babelrc`.',
     default: true
   },
   {
@@ -120,12 +123,9 @@ ${generateFlagHelp(flags, '      ')}
   {
     flags: generateFlagData(flags),
     autoHelp: false,
-    description: ` ${c.cyan.bold(
-      pkg.description
-    )} ${c.gray(pkg.version)}`
+    description: ` ${c.cyan.bold(pkg.description)} ${c.gray(pkg.version)}`
   }
-  )
-
+)
 ;(function() {
   if (cli.flags.help) {
     cli.showHelp()
@@ -133,7 +133,7 @@ ${generateFlagHelp(flags, '      ')}
   }
 
   const flags = cli.flags
-    // parse array input
+  // parse array input
   ;['extends', 'plugins'].forEach(name => {
     if (!Array.isArray(flags[name])) {
       if (flags[name]) {
@@ -174,7 +174,6 @@ ${generateFlagHelp(flags, '      ')}
     delete config.output
   }
 
-
   let spinner = require('ora')()
   const em = edam(config, {
     cwd: process.cwd()
@@ -204,7 +203,8 @@ ${generateFlagHelp(flags, '      ')}
         // console.log(process._getActiveHandles())
         // console.log(process._getActiveRequests().length)
 
-        !em.config.silent && spinner.start(`Pulling template from ${source.type}: ${source.url}`)
+        !em.config.silent &&
+          spinner.start(`Pulling template from ${source.type}: ${source.url}`)
       }
     })
     .on('pull:after', templateConfigPath => {
@@ -232,7 +232,16 @@ ${generateFlagHelp(flags, '      ')}
   //
   let code = 0
   em
-    .run()
+    .ready()
+    .then(() => {
+      if (!em.config.output) {
+        em.config.output = process.cwd()
+      }
+
+      return em.checkConfig()
+    })
+    .then(() => em.pull())
+    .then(() => em.process())
     .then(function(fp) {
       return fp.writeToFile(void 0, { overwrite: flags.overwrite })
     })
@@ -251,13 +260,13 @@ ${generateFlagHelp(flags, '      ')}
         if (upt) {
           notifier.notify({
             message:
-            'Update available ' +
-            c.dim(upt.current) +
-            c.reset(' → ') +
-            c.green(upt.latest) +
-            ' \nRun ' +
-            c.cyan('npm install edam@latest -g') +
-            ' to update'
+              'Update available ' +
+              c.dim(upt.current) +
+              c.reset(' → ') +
+              c.green(upt.latest) +
+              ' \nRun ' +
+              c.cyan('npm install edam@latest -g') +
+              ' to update'
           })
         }
       }
