@@ -1,5 +1,16 @@
 <a name="1.0.0"></a>
-# [1.0.0](https://github.com/imcuttle/edam/compare/v1.0.1...v1.0.0) (2018-05-31)
+# [1.0.0](https://github.com/imcuttle/edam/compare/v1.0.2...v1.0.0) (2018-06-01)
+
+
+### Bug Fixes
+
+* **edam:** normalize `source` and `alias` which are relative path ([8e7d546](https://github.com/imcuttle/edam/commit/8e7d546))
+* **edam-cli:** output could be null ([22ffe67](https://github.com/imcuttle/edam/commit/22ffe67))
+
+
+
+<a name="1.0.2"></a>
+## [1.0.2](https://github.com/imcuttle/edam/compare/v1.0.1...v1.0.2) (2018-05-31)
 
 
 
