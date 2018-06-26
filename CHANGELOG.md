@@ -1,3 +1,13 @@
+<a name="2.0.0"></a>
+# [2.0.0](https://github.com/imcuttle/edam/compare/v1.1.2...v2.0.0) (2018-06-26)
+
+
+### Performance Improvements
+
+* **edam:** cancel Variables' shallow function getter ([9d18ca7](https://github.com/imcuttle/edam/commit/9d18ca7))
+
+
+
 <a name="1.1.2"></a>
 ## [1.1.2](https://github.com/imcuttle/edam/compare/v1.1.1...v1.1.2) (2018-06-01)
 
