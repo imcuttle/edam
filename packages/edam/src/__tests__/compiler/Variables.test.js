@@ -33,60 +33,10 @@ describe('Variables', function() {
     expect(await store.get('val')).toEqual('abc')
   })
 
-  it('should Variables run in dynamic val sync once', async function() {
-    function dynamic() {
-      return 'abc'
-    }
-    const spied = spy(dynamic)
-    store.set('val', spied)
-    expect(await spied.callCount).toBe(0)
-    expect(await store.get('val')).toBe('abc')
-    expect(await spied.callCount).toBe(1)
-    expect(await store.get('val')).toBe('abc')
-    expect(await spied.callCount).toBe(1)
-  })
-
-  it('should Variables run in dynamic val async once', async function() {
-    async function dynamic() {
-      return new Promise(resolve => setTimeout(resolve, 1000, 'abc'))
-    }
-    const spied = spy(dynamic)
-    store.set('val', spied)
-    expect(await spied.callCount).toBe(0)
-    expect(await store.get('val')).toBe('abc')
-    expect(await spied.callCount).toBe(1)
-    expect(await store.get('val')).toBe('abc')
-    expect(await spied.callCount).toBe(1)
-  })
-
-  it('should Variables run in dynamic val async always', async function() {
-    let spied
-    async function dynamic(vc) {
-      if (spied.callCount === 3) {
-        vc.once()
-      } else {
-        vc.always()
-      }
-      return new Promise(resolve => setTimeout(resolve, 1000, 'abc'))
-    }
-    spied = spy(dynamic)
-    store.set('val', spied)
-    expect(await spied.callCount).toBe(0)
-    expect(await store.get('val')).toBe('abc')
-    expect(await spied.callCount).toBe(1)
-    expect(await store.get('val')).toBe('abc')
-    expect(await spied.callCount).toBe(2)
-
-    expect(await store.get()).toEqual({ val: 'abc' })
-
-    expect(await store.get('val')).toBe('abc')
-    expect(await spied.callCount).toBe(3)
-  })
-
   it('should Variables run well about `setStore` api', async function() {
     store.setStore({
       a: {},
-      f: () => 'f'
+      f: 'f'
     })
 
     expect(await store.get()).toEqual({ a: {}, f: 'f' })
@@ -95,30 +45,32 @@ describe('Variables', function() {
   it('should Variables run well about `assign` api', async function() {
     store.assign({
       a: { a: 'xx' },
-      f: () => 'f'
+      f: 'f'
     })
 
     expect(await store.get()).toEqual({ a: { a: 'xx' }, f: 'f' })
 
+    const fn = () => 'fff'
     store.assign({
       a: { b: '' },
-      f: () => 'fff'
+      f: fn
     })
-    expect(await store.get()).toEqual({ a: { b: '' }, f: 'fff' })
+    expect(await store.get()).toEqual({ a: { b: '' }, f: fn })
   })
 
   it('should Variables run well about `merge` api', async function() {
     store.merge({
       a: { a: 'xx' },
-      f: () => 'f'
+      f: 'f'
     })
 
     expect(await store.get()).toEqual({ a: { a: 'xx' }, f: 'f' })
 
+    const fn = () => 'fff'
     store.merge({
       a: { b: '' },
-      f: () => 'fff'
+      f: fn
     })
-    expect(await store.get()).toEqual({ a: { b: '', a: 'xx' }, f: 'fff' })
+    expect(await store.get()).toEqual({ a: { b: '', a: 'xx' }, f: fn })
   })
 })

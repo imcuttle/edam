@@ -9,11 +9,11 @@ const pReduce = require('p-reduce')
  * @description
  */
 
-export type VariablesController = {
-  always: Function
-  once: Function
-  _type: 'once' | 'always'
-}
+// export type VariablesController = {
+//   always: Function
+//   once: Function
+//   _type: 'once' | 'always'
+// }
 
 export default class VariablesStore {
   public store: Variables = {}
@@ -46,26 +46,25 @@ export default class VariablesStore {
       return variable
     }
 
-    let rlt: Variable = variable
-    if (_.isFunction(variable)) {
-      const vCenter: VariablesController = {
-        _type: 'once',
-        once() {
-          this._type = 'once'
-        },
-        always() {
-          this._type = 'always'
-        }
-      }
-      rlt = await variable(vCenter)
-      if (vCenter._type === 'once') {
-        this.set(key, rlt)
-      }
-    } else {
-      this.set(key, rlt)
-    }
+    // if (_.isFunction(variable)) {
+    //   const vCenter: VariablesController = {
+    //     _type: 'once',
+    //     once() {
+    //       this._type = 'once'
+    //     },
+    //     always() {
+    //       this._type = 'always'
+    //     }
+    //   }
+    //   rlt = await variable(vCenter)
+    //   if (vCenter._type === 'once') {
+    //     this.set(key, rlt)
+    //   }
+    // } else {
+    //   this.set(key, rlt)
+    // }
 
-    return rlt
+    return variable
   }
 
   public async get(key?: string | string[]): Promise<Variables | Variable> {
