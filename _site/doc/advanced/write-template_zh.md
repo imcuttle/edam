@@ -36,6 +36,26 @@ order: 2
 * type: `[]`
 
   参考[inquirer.js](https://github.com/SBoudrias/Inquirer.js/)
+  
+### process
+
+`edam >= 2.0.1`  返回除去 `prompts` 配置以外的所有配置项
+
+* type: `function`
+
+如：
+```javascript
+{
+  process(answer) {
+    return {
+      ignore: [],
+      root: 'anc'
+    }
+  }
+}
+```
+
+
 
 ### root
 

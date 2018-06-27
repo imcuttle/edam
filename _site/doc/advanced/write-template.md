@@ -30,6 +30,24 @@ Allows exporting config object directly, or callable.
 `module.exports = { /*config*/ }`
 `module.exports = edam => ({ /*config*/ })`
 
+### process
+
+`edam >= 2.0.1`  Returns the object which excludes `prompts`.
+
+* type: `function`
+
+Eg：
+```javascript
+{
+  process(answer) {
+    return {
+      ignore: [],
+      root: 'anc'
+    }
+  }
+}
+```
+
 ### prompts
 
 User's interaction definition.
