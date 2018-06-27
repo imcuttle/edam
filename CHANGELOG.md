@@ -1,3 +1,13 @@
+<a name="2.0.1"></a>
+## [2.0.1](https://github.com/imcuttle/edam/compare/v2.0.0...v2.0.1) (2018-06-27)
+
+
+### Performance Improvements
+
+* **edam:** template config append `process` ([03d8253](https://github.com/imcuttle/edam/commit/03d8253))
+
+
+
 <a name="2.0.0"></a>
 # [2.0.0](https://github.com/imcuttle/edam/compare/v1.1.2...v2.0.0) (2018-06-26)
 
