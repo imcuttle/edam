@@ -6,8 +6,8 @@ import {
   oneOf,
   string,
   boolean,
-  object,
-  array,
+  objectOf,
+  arrayOf,
   eq,
   function_,
   any,
@@ -22,9 +22,9 @@ const strictSource = createVerifiableClass({
   _check(req: any) {
     return leq({
       type: oneOf(['file', 'git', 'npm']),
-      url: string(),
-      checkout: string().optional(),
-      version: string().optional()
+      url: string,
+      checkout: string.optional,
+      version: string.optional
     }).check(req)
   },
   getDisplayName() {
@@ -34,7 +34,7 @@ const strictSource = createVerifiableClass({
 
 const source = createVerifiableClass({
   _check(req: any) {
-    return oneOf([strictSource(), string()]).check(req)
+    return oneOf([strictSource(), string]).check(req)
   },
   getDisplayName() {
     return 'source'
@@ -42,25 +42,25 @@ const source = createVerifiableClass({
 })
 
 export const rc: LooseEqual = leq({
-  source: source().optional(),
-  cacheDir: oneOf([boolean(), string()]).optional(),
-  alias: object(source()).optional(),
-  extends: oneOf([string(), array(string())]).optional(),
-  output: string().optional(),
-  plugins: array(eq([function_(), any()])).optional(),
+  source: source().optional,
+  cacheDir: oneOf([boolean, string]).optional,
+  alias: objectOf(source()).optional,
+  extends: oneOf([string, arrayOf(string)]).optional,
+  output: string.optional,
+  plugins: arrayOf(eq([function_, any])).optional,
   pull: leq({
-    npmClient: oneOf(['yarn', 'npm']).optional(),
-    git: oneOf(['clone', 'download']).optional()
-  }).optional(),
-  storePrompts: boolean().optional()
+    npmClient: oneOf(['yarn', 'npm']).optional,
+    git: oneOf(['clone', 'download']).optional
+  }).optional,
+  storePrompts: boolean.optional
 })
 
 export const edam = rc.assign(
   leq({
-    name: string().optional(),
-    updateNotify: boolean().optional(),
-    yes: boolean().optional(),
-    silent: boolean().optional()
+    name: string.optional,
+    updateNotify: boolean.optional,
+    yes: boolean.optional,
+    silent: boolean.optional
   })
 )
 

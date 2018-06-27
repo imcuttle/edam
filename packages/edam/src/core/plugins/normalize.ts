@@ -37,6 +37,12 @@ export default async function normalize(
 ) {
   await this.emit('normalize:templateConfig:before', templateConfig)
   const data = await this.compiler.variables.get()
+
+  if (typeof templateConfig.process === 'function') {
+    const processedConfig = await templateConfig.process(data)
+    Object.assign(templateConfig, processedConfig)
+  }
+
   templateConfig.root = await dynamicGet<string>(templateConfig.root, [data])
   if (!templateConfig.root) {
     templateConfig.root = './template'

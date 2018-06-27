@@ -1,6 +1,8 @@
 export type AsyncOrSync<T> = Promise<T> | T
 export type PromptType = 'checkbox' | 'radio' | 'input' | 'suggest'
 
+import * as w from 'walli'
+
 export interface Prompt {
   message: string
   default?: any
@@ -41,8 +43,17 @@ export type Mapper = {
 
 export type Dynamic<T> = (answer: object) => T | Promise<T>
 
+// export const templateConfigType = w.leq({
+//
+// })
+
 export default interface TemplateConfig {
   prompts?: Array<Prompt>
+
+  /**
+   * answers => ({ hooks, ignore, ...(exclude prompts) })
+   */
+  process?: Function
 
   hooks?: {
     [hookName: string]: Array<Hook> | Hook
