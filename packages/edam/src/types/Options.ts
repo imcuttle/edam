@@ -55,7 +55,7 @@ export const rc: LooseEqual = leq({
   storePrompts: boolean.optional
 })
 
-export const edam = rc.assign(
+export const edam: LooseEqual = rc.assign(
   leq({
     name: string.optional,
     updateNotify: boolean.optional,
