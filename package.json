@@ -5,9 +5,10 @@
   "main": "index.js",
   "private": true,
   "scripts": {
-    "test": "jest",
+    "test": "npm run dist && jest",
     "precommit": "lint-staged",
     "commitmsg": "commitlint -e $GIT_PARAMS",
+    "dist": "lerna run --parallel dist",
     "dev": "lerna run --parallel dev",
     "bootstrap": "lerna bootstrap",
     "prerelease": "npm test && lerna run changelog",
