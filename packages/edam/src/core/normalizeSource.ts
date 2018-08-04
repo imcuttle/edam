@@ -26,6 +26,19 @@ function tran(ref, name, fn) {
   }
 }
 
+function parsePureGitUrl(source: string) {
+  const parsed = parseGitUrl(source)
+  return parsed.url.replace(/(\.git)?$/, '.git')
+}
+
+function parseGit(source: string): any {
+  return {
+    type: 'git',
+    url: <string>parsePureGitUrl(source),
+    checkout: parseGitUrl(source).checkout
+  }
+}
+
 export function normalizeSourceObject(
   source: Source,
   options?: Options
@@ -35,7 +48,7 @@ export function normalizeSourceObject(
     source.url = nps.resolve(cwd, source.url)
   }
   if (source.type === 'git') {
-    source.url = source.url.replace(/(\.git)?$/, '.git')
+    source.url = parsePureGitUrl(source.url)
     if (!source.checkout) {
       source.checkout = 'master'
     }
@@ -69,17 +82,6 @@ function parseNpm(source: string): any {
     type: 'npm',
     url: source,
     version
-  }
-}
-
-function parseGit(source: string): any {
-  const parsed = parseGitUrl(source)
-  source = parsed.url.replace(/(\.git)?$/, '.git')
-
-  return {
-    type: 'git',
-    url: <string>source,
-    checkout: parsed.checkout
   }
 }
 

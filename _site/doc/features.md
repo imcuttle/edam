@@ -33,13 +33,28 @@ It's awesome that edam supports `extends` field like [`tsconfig.json`](http://ww
 {
   extends: ['../.edamrc']
   alias: {
-    edam: 'imcuttle/edam'
+    edam: {
+      type: 'git',
+      url: 'imcuttle/edam',
+      config: {
+        output: "./here"
+      }
+      // The config has higher priority when source equals `edam`
+      // Support fields: cacheDir / output / plugins / storePrompts / pull
+      // version >= 2.2
+    }
   }
 }
-// root/tpl/.edamrc 等同于
+// root/tpl/.edamrc 
 {
   alias: {
-    edam: 'imcuttle/edam',
+    edam: {
+      type: 'git',
+      url: 'imcuttle/edam',
+      config: {
+        output: "./here"
+      }
+    },
     react: 'facebook/react'
   },
   plugins: ['edam-plugin-dulcet-prompt']

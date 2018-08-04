@@ -33,13 +33,28 @@ title: "特性"
 {
   extends: ['../.edamrc']
   alias: {
-    edam: 'imcuttle/edam'
+    edam: {
+      type: 'git',
+      url: 'imcuttle/edam',
+      config: {
+        output: "./here"
+      }
+      // 优先级更高，在 source 选中 edam 时候，config 会生效
+      // 支持属性: cacheDir / output / plugins / storePrompts / pull
+      // >= 2.1.0
+    }
   }
 }
 // root/tpl/.edamrc 等同于
 {
   alias: {
-    edam: 'imcuttle/edam',
+    edam: {
+      type: 'git',
+      url: 'imcuttle/edam',
+      config: {
+        output: "./here"
+      }
+    },
     react: 'facebook/react'
   },
   plugins: ['edam-plugin-dulcet-prompt']
