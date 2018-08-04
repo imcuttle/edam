@@ -73,7 +73,9 @@
       "^.+\\.jsx?$": "babel-jest",
       "^.+\\.tsx?$": "ts-jest"
     },
-    "testMatch": ["**/?(*.)+(spec|test).{t,j}s?(x)"],
+    "testMatch": [
+      "**/?(*.)+(spec|test).{t,j}s?(x)"
+    ],
     "moduleFileExtensions": [
       "ts",
       "tsx",

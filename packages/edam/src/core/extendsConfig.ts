@@ -29,10 +29,28 @@ function toNormalizedFileSource(source, options) {
     return source
   }
   let s = normalizeSource(source, options)
-  if (s.type === 'file') {
-    return s.url
-  }
+  // if (s.type === 'file') {
+  //   return s.url
+  // }
   return source
+}
+
+export function normalizePlugins(plugins, options: Options) {
+  plugins = toArray(plugins)
+  return <[Function, any]>plugins.map(p => {
+    function getPlugin(p) {
+      const res = resolve(p, { ...options, safe: false, global: true })
+      debug('get Plugin: %s -> %s', p, res)
+      return require(res)
+    }
+
+    if (_.isString(p)) {
+      return [getPlugin(p), {}]
+    } else if (_.isArray(p) && _.isString(p[0])) {
+      return [getPlugin(p[0]), p[1]]
+    }
+    return p
+  })
 }
 
 export async function innerExtendsConfig(
@@ -49,29 +67,15 @@ export async function innerExtendsConfig(
   }
 
   // source and alias could be relative path
-  config.source = toNormalizedFileSource(config.source, options)
+  config.source = normalizeSource(config.source, options)
   if (config.alias) {
     _.each(config.alias, (val, key) => {
-      config.alias[key] = toNormalizedFileSource(val, options)
+      config.alias[key] = normalizeSource(val, options)
     })
   }
 
   if (config.plugins) {
-    const plugins = (config.plugins = toArray(config.plugins))
-    config.plugins = <[Function, any]>plugins.map(p => {
-      function getPlugin(p) {
-        const res = resolve(p, { ...options, safe: false, global: true })
-        debug('get Plugin: %s -> %s', p, res)
-        return require(res)
-      }
-
-      if (_.isString(p)) {
-        return [getPlugin(p), {}]
-      } else if (_.isArray(p) && _.isString(p[0])) {
-        return [getPlugin(p[0]), p[1]]
-      }
-      return p
-    })
+    config.plugins = normalizePlugins(config.plugins, options)
   }
   if (config.extends) {
     const extendsArray = (config.extends = toArray(config.extends))

@@ -202,7 +202,8 @@ describe('normalizeConfig', function() {
         source: {
           type: 'git',
           url: 'https://github.com/tele/rele.git',
-          checkout: 'dev'
+          checkout: 'dev',
+          config: {}
         },
         alias: expect.objectContaining({
           'edam-github': {

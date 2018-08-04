@@ -11,7 +11,15 @@
       "../bar/.edamrc"
     ],
     "alias": {
-      "par": "npm:par"
+      "par": "npm:par",
+      "standalone.config": {
+        "type": "file",
+        "url": "./cwd",
+        "config": {
+          "output": "./abc/output",
+          "storePrompts": true
+        }
+      }
     },
     "output": "./output",
     "storePrompts": false

@@ -26,12 +26,7 @@ describe('extendsConfig', function() {
   })
 
   it('should works on chain extends', async function() {
-    const plugins = [
-      function () {
-
-      },
-      'abc'
-    ]
+    const plugins = [function() {}, 'abc']
 
     const { config, track } = await extendsConfig(
       {
@@ -40,9 +35,7 @@ describe('extendsConfig', function() {
           'react-a': 'aa',
           'b.react': 'b.react.origin'
         },
-        plugins: [
-          plugins
-        ]
+        plugins: [plugins]
       },
       {
         cwd: __dirname
@@ -57,16 +50,33 @@ describe('extendsConfig', function() {
 
     expect(config).toEqual({
       extends: ['./fixture/loadConfig/a/.edamrc', './b/.edamrc', './rc'],
-      source: 'a.edamrc',
-      plugins: [
-        plugins
-      ],
+      source: {
+        type: 'npm',
+        url: 'a.edamrc',
+        version: ''
+      },
+      plugins: [plugins],
       output: nps.resolve(__dirname, 'fixture/loadConfig/a'),
       alias: {
-        'react-a': 'aa',
-        react: 'b.react',
-        'b.react': 'b.react.origin',
-        json5: require.resolve('json5')
+        'react-a': {
+          type: 'npm',
+          url: 'aa',
+          version: ''
+        },
+        react: {
+          type: 'npm',
+          url: 'b.react',
+          version: ''
+        },
+        'b.react': {
+          type: 'npm',
+          url: 'b.react.origin',
+          version: ''
+        },
+        json5: {
+          type: 'file',
+          url: require.resolve('json5')
+        }
       }
     })
   })
@@ -75,9 +85,7 @@ describe('extendsConfig', function() {
     const { config, track } = await extendsConfig(
       {
         extends: ['./fixture/loadConfig/a/.circlerc'],
-        plugins: [
-          [{}, { a: 'psource' }]
-        ],
+        plugins: [[{}, { a: 'psource' }]],
         alias: {
           'react-a': 'aa',
           'b.react': 'b.react.origin'
@@ -94,15 +102,32 @@ describe('extendsConfig', function() {
         './rc',
         '.edamrc'
       ],
-      plugins: [
-        [{}, { a: 'psource' }]
-      ],
-      source: 'a.edamrc',
+      plugins: [[{}, { a: 'psource' }]],
+      source: {
+        type: 'npm',
+        url: 'a.edamrc',
+        version: ''
+      },
       alias: {
-        'react-a': 'aa',
-        react: 'b.react',
-        'b.react': 'b.react.origin',
-        rc: require.resolve('rc')
+        'react-a': {
+          type: 'npm',
+          version: '',
+          url: 'aa'
+        },
+        react: {
+          type: 'npm',
+          url: 'b.react',
+          version: ''
+        },
+        'b.react': {
+          type: 'npm',
+          url: 'b.react.origin',
+          version: ''
+        },
+        rc: {
+          type: 'file',
+          url: require.resolve('rc')
+        }
       }
     })
     expect(Object.keys(track)).toEqual([

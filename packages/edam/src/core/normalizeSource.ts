@@ -11,11 +11,19 @@ import * as nps from 'path'
 import * as _ from 'lodash'
 import { Source } from '../types/Options'
 import resolve from '../lib/resolve'
+import { normalizePlugins } from './extendsConfig'
+import parseQuery from "../lib/parseQuery";
 const debug = require('debug')('edam:normalizeSource')
 const untildify = require('untildify')
 
 export type Options = {
   cwd?: string
+}
+
+function tran(ref, name, fn) {
+  if (ref[name] != null) {
+    ref[name] = fn(ref[name])
+  }
 }
 
 export function normalizeSourceObject(
@@ -32,6 +40,19 @@ export function normalizeSourceObject(
       source.checkout = 'master'
     }
   }
+  if (source.config) {
+    tran(source.config, 'output', str => nps.resolve(cwd, str))
+    tran(source.config, 'cacheDir', cacheDir => {
+      if (_.isString(cacheDir)) {
+        return nps.resolve(cwd, cacheDir)
+      }
+      return cacheDir
+    })
+    tran(source.config, 'plugins', plugins =>
+      normalizePlugins(plugins, options)
+    )
+  }
+
   return source
 }
 
@@ -73,7 +94,7 @@ export default function normalizeSource(
   }
 
   if (!_.isString(source)) {
-    return source
+    return <Source>source
   }
 
   let result: Source
@@ -103,6 +124,16 @@ export default function normalizeSource(
   } else {
     result = parseNpm(source)
   }
+
+  let i = result.url.lastIndexOf('?')
+  if (i >= 0) {
+    result = {
+      ...parseQuery(result.url.slice(i)),
+      ...result,
+      url: result.url.slice(0, i)
+    }
+  }
+
 
   debug('source parsed: %o', result)
   return result

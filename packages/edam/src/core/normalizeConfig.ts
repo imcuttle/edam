@@ -4,7 +4,7 @@
  * @date 2018/3/23
  * @description
  */
-import { EdamConfig } from '../types/Options'
+import { EdamConfig, Source } from '../types/Options'
 import { default as normalizeSource, Options } from './normalizeSource'
 import { load } from '../lib/loadConfig'
 import extendsMerge from './extendsMerge'
@@ -95,29 +95,43 @@ export default async function normalizeConfig(
   })
 
   // Given source is alias
-  let source = mergedConfig.source
-  if (_.isString(source)) {
-    // mergedConfig.source append with querystring
-    let { query, name } = parseQueryString(source)
-    let tmpSource = name
+  if (mergedConfig.source) {
+    let sourceUrl =
+      typeof mergedConfig.source === 'string'
+        ? mergedConfig.source
+        : mergedConfig.source.url
 
-    if (tmpSource in mergedConfig.alias) {
-      source = { ...mergedConfig.alias[tmpSource], ...query }
-    } else {
-      source = normalizeSource(source, options)
+    const data = <Source>{ ...(<Source>mergedConfig.source || {}) }
+    delete data.url
+    delete data.type
+    let source: Source = <Source>mergedConfig.source
+    if (_.isString(sourceUrl)) {
+      // mergedConfig.source append with querystring
+      let tmpSource = sourceUrl
+
+      if (tmpSource in mergedConfig.alias) {
+        source = {
+          ...mergedConfig.alias[tmpSource],
+          ...data,
+          config: { ...mergedConfig.alias[tmpSource].config, ...data.config }
+        }
+      }
     }
-  } else {
-    source = normalizeSource(source, options)
-  }
 
-  mergedConfig.source = source
+    if (source.type !== 'npm') {
+      delete source.version
+    }
+    if (source.type !== 'git') {
+      delete source.checkout
+    }
+    mergedConfig.source = source
+  }
 
   // normalize cacheDir
   if (_.isString(mergedConfig.cacheDir)) {
-    mergedConfig.cacheDir = nps.resolve(
-      options.cwd,
-      <string>mergedConfig.cacheDir
-    )
+    mergedConfig.cacheDir = nps.resolve(options.cwd, <string>(
+      mergedConfig.cacheDir
+    ))
   } else if (mergedConfig.cacheDir) {
     mergedConfig.cacheDir = constant.DEFAULT_CACHE_DIR
   }
@@ -126,11 +140,18 @@ export default async function normalizeConfig(
     mergedConfig.storePrompts = true
   }
 
+  let sourceConfig = mergedConfig.source
+    ? (<Source>mergedConfig.source).config || {}
+    : {}
+  debug('sourceConfig: %O', sourceConfig)
+
   const normalized = {
     ...mergedConfig,
+    ...sourceConfig,
     pull: {
       npmClient: 'npm',
-      ...mergedConfig.pull
+      ...mergedConfig.pull,
+      ...sourceConfig.pull
     },
     ...coreSpecial
   }
