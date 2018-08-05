@@ -1,3 +1,0 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
-
-exports[`inferrable-configuration walli check 1`] = `"source: expected: oneOf([strictSource(), string]), actual: {type:'file', url:'/Users/yucong02/self/edam/packages/edam/src/__tests__/inferrable-configuration/par/cwd', config:{alias:{}}}."`;
