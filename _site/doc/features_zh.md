@@ -52,8 +52,7 @@ title: "特性"
       type: 'git',
       url: 'imcuttle/edam',
       config: {
-        output: "./he  ● inferrable-configuration walli check
-re"
+        output: "./here"
       }
     },
     react: 'facebook/react'
