@@ -9,6 +9,7 @@
     "precommit": "lint-staged",
     "commitmsg": "commitlint -e $GIT_PARAMS",
     "dist": "lerna run --parallel dist",
+    "run-link": "lerna exec --scope=edam-cli -- npm link",
     "dev": "lerna run --parallel dev",
     "bootstrap": "lerna bootstrap",
     "prerelease": "npm test && lerna run changelog",

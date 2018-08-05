@@ -25,12 +25,12 @@ const sourceConfig = createVerifiableClass<Equal>(
     _check(req: any) {
       return eq({
         cacheDir: oneOf([boolean, string]).optional,
-        output: string,
+        output: string.optional,
         plugins: arrayOf(eq([function_, any])).optional,
         storePrompts: boolean.optional,
         pull: leq({
-          npmClient: oneOf(['yarn', 'npm']),
-          git: oneOf(['clone', 'download'])
+          npmClient: oneOf(['yarn', 'npm']).options,
+          git: oneOf(['clone', 'download']).options
         }).optional
       }).check(req)
     },
