@@ -20,10 +20,10 @@ module.exports = [
   },
   {
     name: 'gender',
-    type: 'radio',
+    type: 'list',
     message: 'Your gender',
     default: 'F',
-    options: ['M', 'F']
+    choices: ['M', 'F']
   },
   {
     name: 'age',
@@ -43,7 +43,7 @@ module.exports = [
     type: 'checkbox',
     message: 'Your hobbies',
     default: ['Play', 'Eat'],
-    options: ['Play', 'Eat', 'Sleep']
+    choices: ['Play', 'Eat', 'Sleep']
   },
   {
     name: 'movies',
@@ -51,7 +51,7 @@ module.exports = [
     style: 'block',
     message: 'Your Movies',
     default: ['egg', 'pig'],
-    options: ['adam', 'egg', 'pig']
+    choices: ['adam', 'egg', 'pig']
   },
   {
     name: 'reason_of_adam',
