@@ -1,3 +1,14 @@
+<a name="2.1.3"></a>
+## [2.1.3](https://github.com/imcuttle/edam/compare/v2.1.2...v2.1.3) (2018-08-10)
+
+
+### Bug Fixes
+
+* edam check allow config ([4720a16](https://github.com/imcuttle/edam/commit/4720a16))
+* **dulcet-prompt:** be compatible with edam ([b5f4d6a](https://github.com/imcuttle/edam/commit/b5f4d6a))
+
+
+
 <a name="2.1.2"></a>
 ## [2.1.2](https://github.com/imcuttle/edam/compare/v2.1.1...v2.1.2) (2018-08-05)
 
