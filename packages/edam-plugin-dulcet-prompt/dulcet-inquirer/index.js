@@ -148,9 +148,13 @@ function adaptor(prompt) {
       prompt.type = 'checkbox'
       prompt.transformType = 'confirm'
       prompt.value = [prompt.value]
-      prompt.options = [
+      prompt.choices = [
         { label: 'Yes?', value: true }
       ]
+      break
+    case 'list':
+      prompt.type = 'radio'
+      prompt.transformType = 'list'
       break
   }
   return prompt

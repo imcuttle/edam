@@ -30,17 +30,9 @@
   </div>
 </div>
 <script>
-  function mapType(type) {
-    switch (type) {
-      case 'list':
-        return 'radio';
-      default:
-        return type;
-    }
-  }
   function renderEachPrompt(p) {
     var disabled = p._hasWhen ? ' disabled ' : ''
-    if (['list', 'checkbox'].includes(p.type)) {
+    if (['radio', 'checkbox'].includes(p.type)) {
       var _default = Array.isArray(p.default) ? p.default : [p.default]
       var arr = (p.choices || []).map(function (op) {
         var label = op
@@ -50,16 +42,15 @@
           label = op.label || op.value
         }
         var checked = _default.includes(value)
-        var mappedType = mapType(p.type)
-        var className = mappedType + '-inline'
+        var className = p.type + '-inline'
         if (p.style === 'block') {
           className = ''
         }
         var s = `<label class="${className}">
-  <input ${disabled} type="${mappedType}" ${checked ? 'checked=""' : ''} data-transform-type="${p.transformType || ''}" name="${p.name}" value="${value.toString()}"/>${label.toString()}
+  <input ${disabled} type="${p.type}" ${checked ? 'checked=""' : ''} data-transform-type="${p.transformType || ''}" name="${p.name}" value="${value.toString()}"/>${label.toString()}
 </label>`
         if (p.style === 'block') {
-          s = `<div class="${mappedType}">${s}</div>`
+          s = `<div class="${p.type}">${s}</div>`
         }
         return s
       })
@@ -110,16 +101,16 @@
           break
         case 'when-passed':
           d.passed.forEach(function (name) {
-            var el = ele.querySelector(`input[name=${JSON.stringify(name)}]`)
-            if (el) {
+            var elList = ele.querySelectorAll(`input[name=${JSON.stringify(name)}]`)
+            elList.forEach(function (el) {
               el.disabled = false
-            }
+            })
           })
           d.failed.forEach(function (name) {
-            var el = ele.querySelector(`input[name=${JSON.stringify(name)}]`)
-            if (el) {
+            var elList = ele.querySelectorAll(`input[name=${JSON.stringify(name)}]`)
+            elList.forEach(function (el) {
               el.disabled = true
-            }
+            })
           })
       }
     }

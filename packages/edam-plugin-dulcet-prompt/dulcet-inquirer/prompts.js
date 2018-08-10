@@ -19,6 +19,28 @@ module.exports = [
     default: 'password'
   },
   {
+    type: 'confirm',
+    name: 'useTest',
+    message: '需要测试吗?🎈',
+    when: ({ name }) => !!name,
+    default: true
+  },
+  {
+    type: 'confirm',
+    name: 'useStyle',
+    message: '引入样式吗?🌈',
+    when: ({ name }) => !!name,
+    default: true
+  },
+  {
+    type: 'list',
+    name: 'testName',
+    message: '使用什么测试框架?🤡',
+    when: ({ useTest }) => useTest,
+    choices: ['jest', 'mocha'],
+    default: 'jest'
+  },
+  {
     name: 'gender',
     type: 'list',
     message: 'Your gender',
