@@ -8,6 +8,18 @@
 ## Processing
 ![](./_site/doc/imgs/edam-process.svg)
 
+## Why use edam?
+
+|                         | Edam  | Plop  |
+| ----------------------- | ----- | ----- |
+| Inferred Configuration  | ✅    | ❌   |
+| Storing Prompt          | ✅    | ❌   |
+| Custom Loader(prettier) | ✅    | ❌   |
+| CLI auto-completer      | ✅    | ❌   |
+| Unit Test Interface     | ✅    | ❌   |
+| Pluggable               | ✅    | ❌   |
+| Pulling from npm or git | ✅    | ❌ (The template requires installed by npm, git has not supported) |
+
 ## Awesome 😎
 ### Core
 - [edam](./packages/edam) - The core package of edam.
