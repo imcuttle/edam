@@ -1,8 +1,8 @@
 {
   "name": "edam-gh-completer",
-  "version": "2.1.3",
+  "version": "2.1.5-y.0",
   "dependencies": {
-    "edam": "^2.1.3",
+    "edam": "^2.1.5-y.0",
     "tabtab": "^2.2.2"
   },
   "main": "completer.js",
