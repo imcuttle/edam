@@ -60,11 +60,14 @@ const getList = co.wrap(function*(compl) {
   // not yet checked Config
   yield em.ready()
 
-  let list = Object.keys(em.config.alias).map(function(name) {
-    return `${name}:${em.config.alias[name].type} -> ${getDesc(em.config.alias[name])}`
-  })
+  return Object.keys(em.config.alias).map(function(name) {
+    let config = em.config.alias[name]
+    if (config.description) {
+      return `${name}:${config.description}`
+    }
 
-  return list
+    return `${name}:${config.type} -> ${getDesc(config)}`
+  })
 })
 
 // getList().then(console.log).catch(console.error)

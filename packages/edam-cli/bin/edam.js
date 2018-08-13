@@ -197,16 +197,15 @@ ${generateFlagHelp(flags, '      ')}
       spinner.fail(format.apply(null, arguments))
     }
   })
-  em
-    .on('pull:before', source => {
-      if (source && ['npm', 'git'].includes(source.type)) {
-        // console.log(process._getActiveHandles())
-        // console.log(process._getActiveRequests().length)
+  em.on('pull:before', source => {
+    if (source && ['npm', 'git'].includes(source.type)) {
+      // console.log(process._getActiveHandles())
+      // console.log(process._getActiveRequests().length)
 
-        !em.config.silent &&
-          spinner.start(`Pulling template from ${source.type}: ${source.url}`)
-      }
-    })
+      !em.config.silent &&
+        spinner.start(`Pulling template from ${source.type}: ${source.url}`)
+    }
+  })
     .on('pull:after', templateConfigPath => {
       em.logger.success(
         `Pull done! template path: "${tildify(templateConfigPath)}"`
@@ -231,15 +230,43 @@ ${generateFlagHelp(flags, '      ')}
 
   //
   let code = 0
-  em
-    .ready()
+  em.ready()
     .then(() => {
       if (!em.config.output) {
         em.config.output = process.cwd()
       }
 
-      return em.checkConfig()
+      if (
+        !em.config.source ||
+        (em.config.source && em.config.source.url === '-')
+      ) {
+        if (em.config.alias && Object.keys(em.config.alias).length) {
+          let choices = Object.keys(em.config.alias).map(name => {
+            let config = em.config.alias[name]
+            return {
+              name:
+                name +
+                c.gray(config.description ? ' - ' + config.description : ''),
+              value: config
+            }
+          })
+
+          return em.inquirer
+            .prompt([
+              {
+                type: 'list',
+                choices,
+                name: 'source',
+                message: 'Please select your preferable template.'
+              }
+            ])
+            .then(({ source }) => {
+              em.config.source = source
+            })
+        }
+      }
     })
+    .then(() => em.checkConfig())
     .then(() => em.pull())
     .then(() => em.process())
     .then(function(fp) {
