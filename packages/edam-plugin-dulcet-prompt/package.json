@@ -1,6 +1,6 @@
 {
   "name": "edam-plugin-dulcet-prompt",
-  "version": "2.1.5-y.0",
+  "version": "2.1.5-y.1",
   "dependencies": {
     "co": "^4.6.0",
     "express": "^4.16.3",
@@ -10,7 +10,7 @@
   },
   "description": "Human-friendly Prompt UI instead of cli.",
   "devDependencies": {
-    "edam": "^2.1.5-y.0"
+    "edam": "^2.1.5-y.1"
   },
   "scripts": {
     "example": "edam --extends=./example/.edamrc -o ./example/output"

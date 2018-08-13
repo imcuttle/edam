@@ -1,8 +1,8 @@
 {
   "name": "edam-prettier-loader",
-  "version": "2.1.5-y.0",
+  "version": "2.1.5-y.1",
   "dependencies": {
-    "edam": "^2.1.5-y.0",
+    "edam": "^2.1.5-y.1",
     "prettier": "^1.11.1"
   }
 }
