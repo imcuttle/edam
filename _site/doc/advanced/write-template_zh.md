@@ -109,10 +109,17 @@ hooks: {
 
 * type: `{}`
 
-```javascript
+//```javascript
 {
   'package.json.js': 'package.json',
-  'test/**': 'tests/'
+  'test/**': 'tests/',
+  // 特殊含义的占位符: [path] / [name] / [ext] / [base]
+  // 如  root/abc.js -> 
+  //   path: `root/`
+  //   name: `abc`
+  //   ext: `.js`
+  //   base: `abc.js`
+  '**/*.hbs': '[path][name].js'
 }
 ```
 

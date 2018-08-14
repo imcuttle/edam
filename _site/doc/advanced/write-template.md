@@ -102,7 +102,14 @@ Check out [Write a loader](./write-loader.md)
 ```javascript
 {
   'package.json.js': 'package.json',
-  'test/**': 'tests/'
+  'test/**': 'tests/',
+  // special placeholder: [path] / [name] / [ext] / [base]
+  // eg.  root/abc.js -> 
+  //   path: `root/`
+  //   name: `abc`
+  //   ext: `.js`
+  //   base: `abc.js`
+  '**/*.hbs': '[path][name].js'
 }
 ```
 
