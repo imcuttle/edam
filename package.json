@@ -13,7 +13,8 @@
     "dev": "lerna run --parallel dev",
     "bootstrap": "lerna bootstrap",
     "prerelease": "npm test",
-    "release": "lerna run changelog && lerna publish",
+    "release": "lerna publish",
+    "postrelease": "lerna run changelog && git commit -m \"chore: update release note\"",
     "site": "picidae start -c _site/picidae.config.js",
     "site:build": "picidae build -f --source-map -c _site/picidae.config.js"
   },
