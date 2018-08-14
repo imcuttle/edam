@@ -1,5 +1,5 @@
-<a name="2.1.5"></a>
-## [2.1.5](https://github.com/imcuttle/edam/compare/v2.2.0...v2.1.5) (2018-08-14)
+<a name="2.2.1"></a>
+## [2.2.1](https://github.com/imcuttle/edam/compare/v2.2.0...v2.2.1) (2018-08-14)
 
 
 ### Bug Fixes
