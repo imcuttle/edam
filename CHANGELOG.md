@@ -1,3 +1,14 @@
+<a name="2.3.1"></a>
+## [2.3.1](https://github.com/imcuttle/edam/compare/v2.3.0...v2.3.1) (2018-08-14)
+
+
+### Bug Fixes
+
+* **edam-cli:** update log when error occurs ([acb1a1b](https://github.com/imcuttle/edam/commit/acb1a1b))
+* **edam-cli:** update log when error occurs ([ce1949a](https://github.com/imcuttle/edam/commit/ce1949a))
+
+
+
 <a name="2.3.0"></a>
 # [2.3.0](https://github.com/imcuttle/edam/compare/v2.2.2...v2.3.0) (2018-08-14)
 
