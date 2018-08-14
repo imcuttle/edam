@@ -148,6 +148,51 @@ describe('FileProcessor', function() {
     )
   })
 
+  it('should FileProcessor supports the special placeholder', function () {
+    fp.tree['root.js'] = {
+      output: 'im root.js output'
+    }
+    fp.move('root.*', '[path][new-root][ext]')
+    expect(Object.keys(fp.tree)).toEqual(
+      expect.arrayContaining([
+        normalize('[new-root].txt'),
+        normalize('[new-root].js')
+      ])
+    )
+
+    fp.tree['new.ts'] = {
+      output: 'im root.js output'
+    }
+    fp.move('*.ts', '[path][name].jsx')
+    expect(Object.keys(fp.tree)).toEqual(
+      expect.arrayContaining([
+        normalize('new.jsx'),
+        normalize('pull/npm.ts')
+      ])
+    )
+
+    fp.tree['newNew.ts'] = {
+      output: 'im root.js output'
+    }
+    fp.tree['a/b/c.ts'] = {
+      output: 'im root.js output'
+    }
+    fp.tree['a/b/c-1.ts'] = {
+      output: 'im root.js output'
+    }
+    fp.move('**/*.ts', '[path][name].jsx')
+    expect(Object.keys(fp.tree)).toEqual(
+      expect.arrayContaining([
+        normalize('newNew.jsx'),
+        normalize('pull/npm.jsx'),
+        normalize('pull/file.jsx'),
+        normalize('pull/git.jsx'),
+        normalize('a/b/c.jsx'),
+        normalize('a/b/c-1.jsx')
+      ])
+    )
+  })
+
   // NOT Support now
   // it('should FileProcessor move works on directory', async function () {
   //   fp.move('pull/', 'x')

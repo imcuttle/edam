@@ -21,6 +21,7 @@ import * as nps from 'path'
 import fileSystem from '../../lib/fileSystem'
 import * as mm from 'micromatch'
 import DefaultLogger from '../DefaultLogger'
+import { ParsedPath } from 'path'
 const debug = require('debug')('edam:FileProcessor')
 const tildify = require('tildify')
 
@@ -127,17 +128,37 @@ export default class FileProcessor extends TreeProcessor {
     action: Function
   ): FileProcessor {
     debug('move input: %o, %s', m, dest)
-    toArray(m).forEach(eachm => {
-      const paths = this.match(<string>eachm)
+    toArray(m).forEach(eachMatcher => {
+      const paths = this.match(<string>eachMatcher)
+      // mv *.js [dir][name][ext]
+      if (/\[(root|path|name|ext)]/.test(dest)) {
+        paths.forEach(from => {
+          let pathObj = <ParsedPath & { path: string }>nps.posix.parse(from)
+          pathObj.path = pathObj.dir
+          if (pathObj.path !== '' && !pathObj.path.endsWith('/')) {
+            pathObj.path = pathObj.path + '/'
+          }
+          let realDest = dest.replace(/\[(root|path|name|ext)]/g, (_, $1) => {
+            if (typeof pathObj[$1] === 'string') {
+              return pathObj[$1]
+            }
+            return _
+          })
+
+          action(from, realDest)
+        })
+        return
+      }
+
       // mv a.js b.js
-      if (paths.length === 1 && paths[0] === eachm) {
+      if (paths.length === 1 && paths[0] === eachMatcher) {
         action(paths[0], dest)
       } else {
         // implement simply, not robustly
         // a: mv a/* b
         // b: mv a/ b
         // https://www.npmjs.com/package/micromatch#parse
-        const { nodes } = mm.parse(eachm)
+        const { nodes } = mm.parse(eachMatcher)
         let basename = ''
         let hasGlobFlag = false
         if (nodes && nodes.length) {
