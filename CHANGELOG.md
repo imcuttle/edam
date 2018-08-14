@@ -1,3 +1,14 @@
+<a name="2.2.2"></a>
+## [2.2.2](https://github.com/imcuttle/edam/compare/v2.2.1...v2.2.2) (2018-08-14)
+
+
+### Performance Improvements
+
+* **edam:** support plop 'hbs' loader ([e8aed91](https://github.com/imcuttle/edam/commit/e8aed91))
+* **edam:** support plop 'hbs' loader ([e9830ce](https://github.com/imcuttle/edam/commit/e9830ce))
+
+
+
 <a name="2.2.1"></a>
 ## [2.2.1](https://github.com/imcuttle/edam/compare/v2.2.0...v2.2.1) (2018-08-14)
 
