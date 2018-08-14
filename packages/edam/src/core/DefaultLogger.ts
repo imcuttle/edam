@@ -43,6 +43,9 @@ export default class DefaultLogger implements Logger {
   public warn = (head, ...arr) => {
     !this.silent && this._warn(head, ...arr)
   }
+  public deprecated = (...arr) => {
+    this.warn('[Deprecated]', ...arr)
+  }
   public error = (head, ...arr) => {
     this._error(head, ...arr)
   }

@@ -94,12 +94,15 @@ export default class Compiler extends AwaitEventEmitter {
     module: require('./loaders/module'),
     LoDash: [
       [require('./loaders/lodash'), {}]
+    ],
+    hbs: [
+      [require('./loaders/plopHandlebar'), {}]
     ]
   }
   public mappers: Array<Mapper> = [
     {
       test: '*',
-      loader: 'LoDash'
+      loader: ['LoDash', 'hbs']
     }
   ]
   public variables = new VariablesImpl()

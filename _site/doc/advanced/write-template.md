@@ -79,8 +79,7 @@ Files' filter
   ```javascript
   {
     date: new Date(),
-    // NOTE: returns 'abc'
-    val: () => 'abc'
+    val: 'abc'
   }
   // or
   (answers) => ({})

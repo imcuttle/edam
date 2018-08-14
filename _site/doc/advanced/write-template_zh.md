@@ -80,8 +80,7 @@ order: 2
   ```javascript
   {
     date: new Date(),
-    // 动态获取
-    val: () => 'abc'
+    val: 'abc'
   }
   // 或者
   (answers) => ({})

@@ -6,6 +6,10 @@
 
 [Document Site](http://imcuttle.github.io/edam)
 
+## Note
+
+Edam@3 will remove `Lodash` loader, and use `Handlebar`(plop like) to replace it.
+
 ## Video
 
 https://youtu.be/ApxptZf5i5I

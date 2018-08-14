@@ -17,7 +17,7 @@
 | Custom Loader(prettier) | ✅    | ❌   |
 | CLI auto-completer      | ✅    | ❌   |
 | Unit Test Interface     | ✅    | ❌   |
-| Pluggable               | ✅    | ❌   |
+| PlugAble                | ✅    | ❌   |
 | Pulling from npm or git | ✅    | ❌ (The template requires installed by npm, git has not supported) |
 
 ## Awesome 😎

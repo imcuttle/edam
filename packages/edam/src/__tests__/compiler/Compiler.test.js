@@ -19,9 +19,9 @@ describe('Compiler', function() {
       hookCwd: cwd
     })
     cer.logger = new DefaultLogger()
-    cer.loaders = {
-      LoDash: require('../../core/Compiler/loaders/lodash')
-    }
+    // cer.loaders = {
+    //   LoDash: require('../../core/Compiler/loaders/lodash')
+    // }
     cer.variables.setStore({
       name: 'pig'
     })
@@ -86,19 +86,16 @@ describe('Compiler', function() {
   }
 
   it("should compiler's loader works normal", async function() {
-    cer.mappers = [
-      {
-        test: '*.js',
-        loader: 'LoDash'
-      }
-    ]
+    cer.variables.setStore({
+      name: 'pigAbc'
+    })
     cer.assets = {
       'test.js': {
         value: 'Hello,<%= name%>'
         // load
       },
       'test.a.js': {
-        value: 'Hello,A,<%= name%>'
+        value: 'Hello,A,<%= name%> {{paramCase name}}'
         // load
       }
     }
@@ -107,14 +104,14 @@ describe('Compiler', function() {
     expect(tree).toEqual(
       expect.objectContaining({
         'test.js': expect.objectContaining({
-          output: 'Hello,pig',
+          output: 'Hello,pigAbc',
           input: 'Hello,<%= name%>',
-          loaders: 'LoDash'
+          loaders: ['LoDash', 'hbs']
         }),
         'test.a.js': expect.objectContaining({
-          input: 'Hello,A,<%= name%>',
-          output: 'Hello,A,pig',
-          loaders: 'LoDash'
+          input: 'Hello,A,<%= name%> {{paramCase name}}',
+          output: 'Hello,A,pigAbc pig-abc',
+          loaders: ['LoDash', 'hbs']
         })
       })
     )
@@ -265,12 +262,6 @@ describe('Compiler', function() {
         ]
       ]
     }
-    cer.mappers = [
-      {
-        test: '*.js',
-        loader: 'LoDash'
-      }
-    ]
 
     cer.assets = {
       'test.js': {

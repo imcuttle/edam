@@ -29,6 +29,7 @@ import { Constants } from './core/constant'
 import DefaultLogger from './core/DefaultLogger'
 import TemplateConfig from './types/TemplateConfig'
 import * as _ from 'lodash'
+import * as changeCase from 'change-case'
 import symbolic from './lib/symbolic'
 import { store, get } from './core/storePrompts'
 import fileSystem from './lib/fileSystem'
@@ -183,6 +184,7 @@ export class Edam extends AwaitEventEmitter {
       this.compiler.variables.merge({
         _: {
           ..._,
+          ...changeCase,
           ...context,
           install: (deps, opts) =>
             yarnInstall(deps, {
