@@ -276,7 +276,7 @@ ${generateFlagHelp(flags, '      ')}
       if (err && err.id === 'EDAM_ERROR') {
         spinner.fail(err.message)
       } else {
-        spinner.fail(err)
+        spinner.fail(err.stack)
       }
       code = 1
     })
