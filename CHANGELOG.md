@@ -1,3 +1,13 @@
+<a name="2.3.0"></a>
+# [2.3.0](https://github.com/imcuttle/edam/compare/v2.2.2...v2.3.0) (2018-08-14)
+
+
+### Features
+
+* **edam:** supports placeholder of dest in `move` and `copy` ([9f72ffa](https://github.com/imcuttle/edam/commit/9f72ffa))
+
+
+
 <a name="2.2.2"></a>
 ## [2.2.2](https://github.com/imcuttle/edam/compare/v2.2.1...v2.2.2) (2018-08-14)
 
