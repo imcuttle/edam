@@ -176,6 +176,10 @@ export class Edam extends AwaitEventEmitter {
           cacheDir: this.config.cacheDir
         })
       }
+
+      let respectNpm5 = this.config.pull
+        ? this.config.pull.npmClient === 'npm'
+        : true
       this.compiler.variables.merge({
         _: {
           ..._,
@@ -183,7 +187,7 @@ export class Edam extends AwaitEventEmitter {
           install: (deps, opts) =>
             yarnInstall(deps, {
               ...opts,
-              respectNpm5: this.config.pull.npmClient === 'npm'
+              respectNpm5
             })
         }
       })
@@ -224,7 +228,7 @@ export class Edam extends AwaitEventEmitter {
     }
   }
 
-  public async ready(source?: Source) {
+  public async ready(source?: Source | string) {
     this.config.source = source || this.config.source
     await this.normalizeConfig()
     await this.registerPlugins(this.config.plugins)
