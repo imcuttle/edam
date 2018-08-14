@@ -12,8 +12,8 @@
     "run-link": "lerna exec --scope=edam-cli -- npm link",
     "dev": "lerna run --parallel dev",
     "bootstrap": "lerna bootstrap",
-    "prerelease": "npm test && lerna run changelog",
-    "release": "lerna publish",
+    "prerelease": "npm test",
+    "release": "lerna run changelog && lerna publish",
     "site": "picidae start -c _site/picidae.config.js",
     "site:build": "picidae build -f --source-map -c _site/picidae.config.js"
   },

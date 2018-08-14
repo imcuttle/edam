@@ -1,4 +1,19 @@
 <a name="2.1.5"></a>
+## [2.1.5](https://github.com/imcuttle/edam/compare/v2.2.0...v2.1.5) (2018-08-14)
+
+
+
+<a name="2.2.0"></a>
+# [2.2.0](https://github.com/imcuttle/edam/compare/v2.1.5...v2.2.0) (2018-08-13)
+
+
+### Performance Improvements
+
+* **edam-cli:** supports multi-template select ([11d5a5a](https://github.com/imcuttle/edam/commit/11d5a5a))
+
+
+
+<a name="2.1.5"></a>
 ## [2.1.5](https://github.com/imcuttle/edam/compare/v2.1.5-y.1...v2.1.5) (2018-08-13)
 
 
