@@ -17,7 +17,7 @@ let hasExecuted = false
 function loDashLoader(content: string, variables): string {
   let compiler = <Compiler>this.compiler
   if (!hasExecuted) {
-    compiler.logger.deprecated('loDashLoader will be removed in edam@3, Please see for more information.')
+    compiler.logger.deprecated('loDashLoader will be removed in edam@3, Please see https://imcuttle.github.io/edam/advanced/write-loader for more information.')
     hasExecuted = true
   }
   const options = this.options

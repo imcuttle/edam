@@ -63,7 +63,21 @@ module Loader 将会输出为 `JSON.stringify(pkg, null, indent)`.
 ]
 ```
 
-用于分发文件使用哪个`loader`，默认都采用 LoDash Loader。
+用于分发文件使用哪个`loader`，默认都采用 LoDash Loader 和 hbs Loader。
+
+**注意：Edam@3 将会移除 LoDash Loader，默认引入 [Plop Handlebar](https://plopjs.com/documentation/#built-in-helpers) Loader**
+Plop Handlebar 使用 Handlebar 模板，注入了一些 helper:
+
+- camelCase: changeFormatToThis
+- snakeCase: change_format_to_this
+- dashCase/kebabCase: change-format-to-this
+- dotCase: change.format.to.this
+- pathCase: change/format/to/this
+- properCase/pascalCase: ChangeFormatToThis
+- lowerCase: change format to this
+- sentenceCase: Change format to this,
+- constantCase: CHANGE_FORMAT_TO_THIS
+- titleCase: Change Format To This
 
 介绍完 loader 相关的概念后，进入正文：书写Loader
 
