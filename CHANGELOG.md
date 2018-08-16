@@ -1,4 +1,19 @@
 <a name="2.3.2"></a>
+## [2.3.2](https://github.com/imcuttle/edam/compare/v2.3.3...v2.3.2) (2018-08-16)
+
+
+
+<a name="2.3.3"></a>
+## [2.3.3](https://github.com/imcuttle/edam/compare/v2.3.2...v2.3.3) (2018-08-16)
+
+
+### Bug Fixes
+
+* **edam-cli:** fix the helper's format log in cli ([ed757dd](https://github.com/imcuttle/edam/commit/ed757dd))
+
+
+
+<a name="2.3.2"></a>
 ## [2.3.2](https://github.com/imcuttle/edam/compare/v2.3.1...v2.3.2) (2018-08-16)
 
 
