@@ -13,11 +13,18 @@ const updateNotify = require('update-notifier')
 
 const flags = [
   {
+    name: 'version',
+    alias: 'v',
+    type: 'boolean',
+    desc: 'Shows the version of Edam.',
+    default: false
+  },
+  {
     name: 'help',
     alias: 'h',
     type: 'boolean',
     desc: 'Shows the help document.',
-    default: null
+    default: false
   },
   {
     name: 'cache-dir',
@@ -112,7 +119,7 @@ const cli = meow(
     ${c.white('Usage')}
       $ ${c.cyan.bold('edam')} ${c
     .keyword('orchid')
-    .bold('<source>')} ${c.keyword('orchid').bold('<output>')} ${c.keyword(
+    .bold('<source>')} ${c.keyword(
     'orange'
   )('[options]')}
  
@@ -123,9 +130,10 @@ ${generateFlagHelp(flags, '      ')}
   {
     flags: generateFlagData(flags),
     autoHelp: false,
-    description: ` ${c.cyan.bold(pkg.description)} ${c.gray(pkg.version)}`
+    description: ` ${c.cyan.bold(pkg.description)}`
   }
 )
+
 ;(function() {
   if (cli.flags.help) {
     cli.showHelp()

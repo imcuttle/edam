@@ -22,16 +22,21 @@ exports.generateFlagHelp = function generateFlagHelp(flags = []) {
       null,
       [maxDescLen].concat(desc.split('\n').map(x => x.length))
     )
-    _d = _d != null ? `[default: ${_d}]` : ''
+    _d = _d != null ? `[default: ${String(_d).trim()}]` : ''
     rightMax = Math.max(_d.length, rightMax)
     return [name, desc, _d]
   })
 
+  const shouldDefaultHidden = CLI_WIDTH <= 90
+
   // 50 is gussed align right chars width
-  maxDescLen = Math.min(maxDescLen, CLI_WIDTH - (maxNameLen + 11) - (rightMax + 11))
+  maxDescLen = Math.min(
+    maxDescLen,
+    CLI_WIDTH - (maxNameLen + 11) - (shouldDefaultHidden ? 0 : rightMax)
+  )
   // align
-  list.map(arr => {
-    ui.div(
+  list.forEach(arr => {
+    let children = [
       {
         text: c.keyword('plum')(arr[0]),
         width: maxNameLen + 11,
@@ -39,15 +44,17 @@ exports.generateFlagHelp = function generateFlagHelp(flags = []) {
       },
       {
         text: c.blue(arr[1]),
-        width: maxDescLen
+        width: maxDescLen,
+        padding: [0, 6, 0, 0]
       },
-      {
+      !shouldDefaultHidden && {
         text: c.keyword('lightgrey')(arr[2]),
-        width: rightMax,
-        padding: [0, 0, 0, 6]
+        width: rightMax
         // align: 'right'
       }
-    )
+    ].filter(Boolean)
+
+    ui.div.apply(ui, children)
   })
 
   return ui.toString()
