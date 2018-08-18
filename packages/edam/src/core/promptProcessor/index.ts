@@ -39,7 +39,7 @@ export default async function prompt(
         const replaceCtx = _.merge({}, set, context)
         prompt.default = prompt.default.replace(/\${(.+?)}/g, (__, key) => {
           if (_.hasIn(replaceCtx, key)) {
-            return _.get(replaceCtx, key).toString()
+            return String(_.get(replaceCtx, key))
           }
           return __
         })
