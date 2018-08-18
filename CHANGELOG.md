@@ -1,5 +1,10 @@
-<a name="2.3.2"></a>
-## [2.3.2](https://github.com/imcuttle/edam/compare/v2.3.3...v2.3.2) (2018-08-16)
+<a name="2.3.4"></a>
+## [2.3.4](https://github.com/imcuttle/edam/compare/v2.3.3...v2.3.4) (2018-08-18)
+
+
+### Bug Fixes
+
+* prompt.default placeholder replacer ([7e98544](https://github.com/imcuttle/edam/commit/7e98544))
 
 
 
