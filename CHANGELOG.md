@@ -1,3 +1,8 @@
+<a name="2.3.5"></a>
+## [2.3.5](https://github.com/imcuttle/edam/compare/v2.3.4...v2.3.5) (2018-08-21)
+
+
+
 <a name="2.3.4"></a>
 ## [2.3.4](https://github.com/imcuttle/edam/compare/v2.3.3...v2.3.4) (2018-08-18)
 
