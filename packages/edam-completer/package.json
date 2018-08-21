@@ -1,6 +1,6 @@
 {
   "name": "edam-completer",
-  "version": "2.3.6",
+  "version": "2.3.7",
   "dependencies": {
     "co": "^4.6.0",
     "edam": "^2.3.6",
