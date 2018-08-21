@@ -46,10 +46,7 @@ const getList = co.wrap(function*(compl) {
         source = tildify(source.url)
         break
     }
-    // tabtab bug
-    // command: desc :decs
-    // not works
-    return source.replace(/^.*:/, '')
+    return source
   }
   const em = edam(
     {
@@ -63,10 +60,16 @@ const getList = co.wrap(function*(compl) {
   return Object.keys(em.config.alias).map(function(name) {
     let config = em.config.alias[name]
     if (config.description) {
-      return `${name}:${config.description}`
+      return {
+        name: name,
+        description: `${config.description}`
+      }
     }
 
-    return `${name}:${config.type} -> ${getDesc(config)}`
+    return {
+      name: name,
+      description: getDesc(config)
+    }
   })
 })
 
