@@ -7,16 +7,20 @@
 const prettier = require('prettier')
 
 module.exports = function(content) {
+  const path = this.path
   const { filePath, ...options } = this.options
   if (filePath) {
     return prettier.resolveConfig(filePath).then(rcOptions => {
       return prettier.format(content, {
-        parser: 'babylon',
+        // parser: 'babylon',
         ...rcOptions,
-        ...options
+        ...options,
+        filepath: path
       })
     })
   }
 
-  return prettier.format(content, { parser: 'babylon', ...options })
+  return prettier.format(content, { /*parser: 'babylon', */...options, filepath: path })
 }
+
+module.exports.allowError = true

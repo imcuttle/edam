@@ -118,3 +118,15 @@ module.exports = function (string) {
   return new Promise(resolve => resolve(string.toUpperCase()))
 }
 ```
+
+### allowError (>=2.3.5)
+
+如果 loader 对于最终结果产生影响不大的话，使用 `allowError` 表示loader允许错误发生，不会对输出的结果产生影响
+如 `edam-prettier-loader` 只是对最终结果美化，对于最终结果没有影响
+
+//```javascript
+module.exports = function (string) {
+  return new Promise(resolve => resolve(string.toUpperCase()))
+}
+module.exports.allowError = true
+```

@@ -8,7 +8,13 @@
 import * as _ from 'lodash'
 import * as nps from 'path'
 
-import {Hook, Loader, Mapper, StrictLoader, StrictLoaderWithOption} from '../../types/TemplateConfig'
+import {
+  Hook,
+  Loader,
+  Mapper,
+  StrictLoader,
+  StrictLoaderWithOption
+} from '../../types/TemplateConfig'
 import * as pReduce from 'p-reduce'
 import { AwaitEventEmitter, Logger, Tree } from '../../types/core'
 import toArray from '../../lib/toArray'
@@ -92,12 +98,8 @@ export default class Compiler extends AwaitEventEmitter {
     [loaderId: string]: Array<StrictLoader | StrictLoaderWithOption>
   } = {
     module: require('./loaders/module'),
-    LoDash: [
-      [require('./loaders/lodash'), {}]
-    ],
-    hbs: [
-      [require('./loaders/plopHandlebar'), {}]
-    ]
+    LoDash: [[require('./loaders/lodash'), {}]],
+    hbs: [[require('./loaders/plopHandlebar'), {}]]
   }
   public mappers: Array<Mapper> = [
     {
@@ -172,10 +174,24 @@ export default class Compiler extends AwaitEventEmitter {
         }
 
         if (loader.raw === true) {
-          const buf = Buffer.isBuffer(input) ? input : new Buffer(input)
-          return await loader.apply(loaderSelf, [buf, context])
+          input = Buffer.isBuffer(input) ? input : new Buffer(input)
+        } else {
+          input = String(input)
         }
-        return await loader.apply(loaderSelf, [input.toString(), context])
+        try {
+          return await loader.apply(loaderSelf, [input, context])
+        } catch (e) {
+          if (loader.allowError === true) {
+            this.logger.warn(
+              'Error occurs when transforming content of file: `' +
+                path +
+                '`, but the loader allows error happening.\n',
+              e
+            )
+            return input
+          }
+          throw e
+        }
       },
       data.input
     )
@@ -232,8 +248,8 @@ export default class Compiler extends AwaitEventEmitter {
             ...data
           }
         } catch (err) {
-          this.logger.warn(
-            'Error occurs when transforming content of file: ' + path + '\n',
+          this.logger.error(
+            'Error occurs when transforming content of file: `' + path + '`\n',
             err
           )
 
