@@ -1,4 +1,19 @@
 <a name="2.3.6"></a>
+## [2.3.6](https://github.com/imcuttle/edam/compare/v2.3.7...v2.3.6) (2018-08-21)
+
+
+
+<a name="2.3.7"></a>
+## [2.3.7](https://github.com/imcuttle/edam/compare/v2.3.6...v2.3.7) (2018-08-21)
+
+
+### Bug Fixes
+
+* **edam-completer:** allow colon in description ([58ae574](https://github.com/imcuttle/edam/commit/58ae574))
+
+
+
+<a name="2.3.6"></a>
 ## [2.3.6](https://github.com/imcuttle/edam/compare/v2.3.5...v2.3.6) (2018-08-21)
 
 
