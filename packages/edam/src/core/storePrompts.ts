@@ -44,7 +44,7 @@ function getKeyBySource(source: Source) {
       key = source.url + '?checkout=' + source.checkout
       break
     case 'npm':
-      key = source.url
+      key = source.url + '?version=' + source.version
       break
     case 'file':
       key = source.url
