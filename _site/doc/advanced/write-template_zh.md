@@ -109,7 +109,7 @@ hooks: {
 
 * type: `{}`
 
-//```javascript
+```javascript
 {
   'package.json.js': 'package.json',
   'test/**': 'tests/',
