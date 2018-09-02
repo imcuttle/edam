@@ -233,7 +233,7 @@ export class Edam extends AwaitEventEmitter {
   public async ready(source?: Source | string) {
     this.config.source = source || this.config.source
     await this.normalizeConfig()
-    await this.registerPlugins(this.config.plugins)
+    await this.registerPlugins()
     return this
   }
 
@@ -290,9 +290,9 @@ export class Edam extends AwaitEventEmitter {
     return await fn.apply(this, [options, this])
   }
 
-  public async registerPlugins(plugins = []) {
+  public async registerPlugins(plugins = this.config.plugins) {
     try {
-      await pReduce(plugins.filter(Boolean), async (_, plugin) => {
+      await pReduce((plugins || []).filter(Boolean), async (_, plugin) => {
         await this.runPlugin(plugin)
       })
     } catch (err) {
