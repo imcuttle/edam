@@ -238,7 +238,7 @@ ${generateFlagHelp(flags, '      ')}
 
   //
   let code = 0
-  em.ready()
+  em.normalizeConfig()
     .then(() => {
       if (!em.config.output) {
         em.config.output = process.cwd()
@@ -255,7 +255,7 @@ ${generateFlagHelp(flags, '      ')}
               name:
                 name +
                 c.gray(config.description ? ' - ' + config.description : ''),
-              value: config
+              value: name
             }
           })
 
@@ -270,10 +270,13 @@ ${generateFlagHelp(flags, '      ')}
             ])
             .then(({ source }) => {
               em.config.source = source
+              // Normalize config again
+              return em.normalizeConfig()
             })
         }
       }
     })
+    .then(() => em.registerPlugins())
     .then(() => em.checkConfig())
     .then(() => em.pull())
     .then(() => em.process())
