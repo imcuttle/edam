@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="2.3.9"></a>
+## [2.3.9](https://github.com/imcuttle/edam/compare/v2.3.8...v2.3.9) (2018-09-02)
+
+
+### Bug Fixes
+
+* should normalize config again after select alias' prompts ([564fd8c](https://github.com/imcuttle/edam/commit/564fd8c))
+
+
+
+
 <a name="2.3.8"></a>
 ## [2.3.8](https://github.com/imcuttle/edam/compare/v2.3.7...v2.3.8) (2018-08-30)
 
