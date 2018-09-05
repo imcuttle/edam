@@ -68,9 +68,6 @@ export default async function prompt(
         if (typeof message === 'string') {
           throw new EdamError(`Validate ${JSON.stringify(prompt.name)} failed, error message: ${message}`)
         }
-        if (!message) {
-          throw new EdamError(`Validate ${JSON.stringify(prompt.name)} failed`)
-        }
       }
 
       Object.assign(set, {

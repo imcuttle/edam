@@ -62,8 +62,10 @@ export default class FileProcessor extends TreeProcessor {
       }
       workers.push(
         (async function write() {
-          await pify(mkdirp)(nps.dirname(filename))
-          await fileSystem.writeFile(filename, data.output)
+          if (!data.error) {
+            await pify(mkdirp)(nps.dirname(filename))
+            await fileSystem.writeFile(filename, data.output)
+          }
         })()
       )
     })
