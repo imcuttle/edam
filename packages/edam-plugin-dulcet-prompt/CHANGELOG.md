@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="2.3.12"></a>
+## [2.3.12](https://github.com/imcuttle/edam/compare/v2.3.11...v2.3.12) (2018-09-05)
+
+
+
+
+**Note:** Version bump only for package edam-plugin-dulcet-prompt
+
 <a name="2.3.11"></a>
 ## [2.3.11](https://github.com/imcuttle/edam/compare/v2.3.10...v2.3.11) (2018-09-05)
 
