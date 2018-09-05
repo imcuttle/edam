@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="2.3.11"></a>
+## [2.3.11](https://github.com/imcuttle/edam/compare/v2.3.10...v2.3.11) (2018-09-05)
+
+
+### Bug Fixes
+
+* **prompt:** should assign value when exists `validate` ([e2755fc](https://github.com/imcuttle/edam/commit/e2755fc))
+
+
+
+
 <a name="2.3.10"></a>
 ## [2.3.10](https://github.com/imcuttle/edam/compare/v2.3.9...v2.3.10) (2018-09-05)
 
