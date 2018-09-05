@@ -24,6 +24,7 @@ import hookify from './hookify'
 import matchMeta from './matchMeta'
 import parseQueryString from '../../lib/parseQueryString'
 import DefaultLogger from '../DefaultLogger'
+import EdamError from '../EdamError';
 
 const debug = require('debug')('edam:Compiler')
 
@@ -138,7 +139,7 @@ export default class Compiler extends AwaitEventEmitter {
           loader = this.loaders[id]
 
           if (!loader) {
-            throw new Error(`loaderId: ${id} is not matched.`)
+            throw new EdamError(`loaderId: ${id} is not matched.`)
           }
           return await this.transform(
             input,

@@ -9,6 +9,7 @@ import { Prompt, Variables } from '../../types/TemplateConfig'
 import evaluate from '../../lib/eval'
 import cliProcess from './cli'
 import * as _ from 'lodash'
+import EdamError from '../EdamError';
 
 const debug = require('debug')('edam:promptProcessor')
 
@@ -17,12 +18,12 @@ export default async function prompt(
   { yes = true, promptProcess = cliProcess, context = {} } = {}
 ): Promise<Variables> {
   if (!_.isFunction(promptProcess)) {
-    throw new Error('prompt is missing the process')
+    throw new EdamError('prompt is missing the process')
   }
   debug('input: %O', prompts)
   const res = await pReduce(
     prompts,
-    async function(set, prompt) {
+    async (set, prompt) => {
       prompt = { ...prompt }
       let allow = true
       if (_.isString(prompt.when)) {
@@ -65,16 +66,10 @@ export default async function prompt(
       if (_.isFunction(validate)) {
         let message = await validate(value, set, context)
         if (typeof message === 'string') {
-          value = prompt.default
-          this.logger &&
-            this.logger.warn(
-              'validate %s failed, error message: %s, so the value "%s" fallback to default value.',
-              prompt.name,
-              message,
-              value
-            )
-          return set
+          // value = prompt.default
+          throw new EdamError(`Validate ${JSON.stringify(prompt.name)} failed, error message: ${message}`)
         }
+        return set
       }
 
       Object.assign(set, {

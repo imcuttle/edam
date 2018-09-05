@@ -1,10 +1,12 @@
 import { Options } from '../core/normalizeSource'
 import safeRequireResolve from './safeRequireResolve'
+import EdamError from '../core/EdamError';
 
 const JSON5 = require('json5')
 const cosmiconfig = require('cosmiconfig')
 const nps = require('path')
 const fileSystem = require('./fileSystem').default
+const tildify = require('tildify')
 const explorer = cosmiconfig('edam', { rcStrictJson: true })
 
 const debug = require('debug')('edam:loadConfig')
@@ -14,7 +16,7 @@ async function parseJSONFile(filename) {
     const text = await fileSystem.readFile(filename, { encoding: 'utf8' })
     return JSON5.parse(text)
   } catch (err) {
-    throw new Error(`${err.message} in file: "${filename}"`)
+    throw new EdamError(`${err.message} in file: "${tildify(filename)}"`)
   }
 }
 

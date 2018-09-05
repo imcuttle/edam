@@ -9,6 +9,7 @@ import { EdamConfig, Source } from '../../types/Options'
 import gitClone, { checkout, pullForce } from '../../lib/gitClone'
 import { join } from 'path'
 import fileSystem from '../../lib/fileSystem'
+import EdamError from '../EdamError';
 
 const filenamify = require('filenamify')
 const npmInstall = require('../../lib/yarnInstall')
@@ -81,7 +82,7 @@ module.exports = async function gitPull(
           production: true
         })
       } catch (err) {
-        throw new Error(
+        throw new EdamError(
           `Install package from git "${source.url}" failed \n` +
           err.stack
         )
@@ -127,7 +128,7 @@ module.exports = async function gitPull(
         await pullForce(target)
         await checkout(source.checkout || 'master', { targetPath: target })
       } catch (err) {
-        throw new Error(err.message + '\n running in ' + tildify(target))
+        throw new EdamError(err.message + '\n running in ' + tildify(target))
       }
       log('Using cached git assets from %s', c.cyan.bold(tildify(target)))
       await installFromPkg(target)
@@ -172,7 +173,7 @@ module.exports = async function gitPull(
       }
 
     default:
-      throw new Error(
+      throw new EdamError(
         `Git pull type "${git}" is not allowed, please use one of 'clone' | 'download'`
       )
   }

@@ -9,6 +9,7 @@ import { Edam } from '../../index'
 import * as nps from 'path'
 import * as _ from 'lodash'
 import * as mm from 'micromatch'
+import EdamError from '../EdamError';
 
 const tildify = require('tildify')
 
@@ -23,12 +24,12 @@ export default async function filter(/*options*/) {
       // const templateConfig = edam.templateConfig
 
       if (!templateConfig.root) {
-        throw new Error('templateConfig.root is required on pre treat: filter')
+        throw new EdamError('templateConfig.root is required on pre treat: filter')
       }
       const compiler = edam.compiler
       let { root, ignore } = templateConfig
       if (!fileSystem.isDirectory(root)) {
-        throw new Error(`templateConfig.root ${tildify(root)} is illegal, maybe it is not existed or is file path.`)
+        throw new EdamError(`templateConfig.root ${tildify(root)} is illegal, maybe it is not existed or is file path.`)
       }
 
       if (_.isFunction(ignore)) {

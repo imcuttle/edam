@@ -40,10 +40,10 @@ const tildify = require('tildify')
 const debug = require('debug')('edam:core')
 
 function throwEdamError(err, message) {
-  if (err && err.id === '') {
+  if (err && err.id === 'EDAM_ERROR') {
     throw err
   }
-  throw `${message} ${err.stack}`
+  throw new EdamError(`${message} ${err.stack}`)
 }
 
 export class Edam extends AwaitEventEmitter {
