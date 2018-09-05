@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="2.3.10"></a>
+## [2.3.10](https://github.com/imcuttle/edam/compare/v2.3.9...v2.3.10) (2018-09-05)
+
+
+### Performance Improvements
+
+* use `EdamError` thrown ([845bafe](https://github.com/imcuttle/edam/commit/845bafe))
+
+
+
+
 <a name="2.3.9"></a>
 ## [2.3.9](https://github.com/imcuttle/edam/compare/v2.3.8...v2.3.9) (2018-09-02)
 

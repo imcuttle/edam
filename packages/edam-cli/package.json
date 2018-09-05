@@ -1,11 +1,11 @@
 {
   "name": "edam-cli",
-  "version": "2.3.9",
+  "version": "2.3.10",
   "dependencies": {
     "chalk": "^2.3.2",
     "cli-width": "^2.2.0",
     "cliui": "^4.0.0",
-    "edam": "^2.3.9",
+    "edam": "^2.3.10",
     "meow": "^4.0.0",
     "ora": "^2.0.0",
     "tildify": "^1.2.0",
