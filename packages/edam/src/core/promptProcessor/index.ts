@@ -66,10 +66,11 @@ export default async function prompt(
       if (_.isFunction(validate)) {
         let message = await validate(value, set, context)
         if (typeof message === 'string') {
-          // value = prompt.default
           throw new EdamError(`Validate ${JSON.stringify(prompt.name)} failed, error message: ${message}`)
         }
-        return set
+        if (!message) {
+          throw new EdamError(`Validate ${JSON.stringify(prompt.name)} failed`)
+        }
       }
 
       Object.assign(set, {
