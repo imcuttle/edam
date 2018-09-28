@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="2.3.13"></a>
+## [2.3.13](https://github.com/imcuttle/edam/compare/v2.3.12...v2.3.13) (2018-09-28)
+
+
+### Bug Fixes
+
+* **resolve:** should throw error when module is found ([92b33b9](https://github.com/imcuttle/edam/commit/92b33b9))
+
+
+
+
 <a name="2.3.12"></a>
 ## [2.3.12](https://github.com/imcuttle/edam/compare/v2.3.11...v2.3.12) (2018-09-05)
 
