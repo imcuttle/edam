@@ -38,6 +38,8 @@ export default function cusResolve(
         return false
       }
       throw err
+    } else {
+      throw err
     }
   }
 }
