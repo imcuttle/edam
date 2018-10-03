@@ -7,14 +7,25 @@
 import * as nps from 'path'
 
 const yarnInstall = require('../lib/yarnInstall')
+const fs = require('fs')
 const parseGitConfig = require('@moyuyc/parse-git-config')
 const gitConfigPath = require('git-config-path')
+const findUp = require('find-up')
 
-function gitUserInfo(): { name: string, email: string } {
+function gitUserInfo(): { name: string; email: string } {
+  const gitPath = findUp.sync('.git')
+  let localGitConfig = null
+  if (gitPath) {
+    const gitConfigPath = nps.join(gitPath, 'config')
+    if (fs.existsSync(gitConfigPath)) {
+      localGitConfig = parseGitConfig.sync({ path: gitConfigPath })
+    }
+  }
+
   return Object.assign(
     { name: '', email: '' },
     parseGitConfig.sync({ path: gitConfigPath('global') }).user,
-    parseGitConfig.sync({ path: gitConfigPath() }).user
+    localGitConfig && localGitConfig.user
   )
 }
 
