@@ -174,8 +174,10 @@ describe('prompt', function() {
   describe('store', () => {
     let storePath = nps.join(tmpDir, 'edam-prompts.json')
     beforeEach(() => {
+      // remove fail in linux
       sync(tmpDir)
       sync(storePath)
+      fs.unlinkSync(storePath)
     })
     function readStore() {
       return JSON.parse(fs.readFileSync(storePath).toString())
