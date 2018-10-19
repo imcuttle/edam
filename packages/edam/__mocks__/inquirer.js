@@ -48,7 +48,7 @@ async function enter(reset = true) {
   })
 }
 
-async function run(tasks, { delayMs = 100 } = {}) {
+async function run(tasks, { delayMs = 1000 } = {}) {
   for (let i = 0; i < tasks.length; i++) {
     await delay(delayMs)
     await tasks[i]()
