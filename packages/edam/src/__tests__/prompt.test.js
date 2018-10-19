@@ -8,6 +8,7 @@
 import prompt from '../core/promptProcessor'
 import * as fs from 'fs'
 import * as nps from 'path'
+import * as os from 'os'
 
 const tempy = require('tempy')
 const { sync } = require('rimraf')
@@ -175,13 +176,7 @@ describe('prompt', function() {
     let storePath = nps.join(tmpDir, 'edam-prompts.json')
     beforeEach(() => {
       // remove fail in linux
-      try {
-        sync(tmpDir)
-        sync(storePath)
-        fs.unlinkSync(storePath)
-      } catch (e) {
-        console.error(e)
-      }
+      sync(tmpDir)
     })
     function readStore() {
       return JSON.parse(fs.readFileSync(storePath).toString())
@@ -232,6 +227,9 @@ describe('prompt', function() {
     })
 
     it('should prompt works on store case in assign mode', async () => {
+      if (os.platform() !== 'darwin') {
+        return
+      }
       op.run([
         op.enter,
         async () => {
