@@ -177,8 +177,7 @@ describe('prompt', function() {
       sync(tmpDir)
     })
     function readStore() {
-      jest.resetModules()
-      return require(storePath)
+      return JSON.parse(fs.readFileSync(storePath).toString())
     }
 
     it('should prompt works on store case', async () => {
