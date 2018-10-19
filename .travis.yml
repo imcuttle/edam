@@ -1,8 +1,9 @@
 sudo: true
 language: node_js
 os:
-  - linux
   - osx
+  - linux
+
 node_js:
 #  - 6
 #  - 7
