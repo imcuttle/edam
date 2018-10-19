@@ -5,17 +5,36 @@
  * @description
  */
 import * as pReduce from 'p-reduce'
+import * as _ from 'lodash'
+
 import { Prompt, Variables } from '../../types/TemplateConfig'
 import evaluate from '../../lib/eval'
 import cliProcess from './cli'
-import * as _ from 'lodash'
-import EdamError from '../EdamError';
+import EdamError from '../EdamError'
+import { store } from '../storePrompts'
+import { Source } from '../../types/Options'
 
 const debug = require('debug')('edam:promptProcessor')
 
+export type Options = {
+  yes?: boolean
+  promptProcess?: Function
+  storePrompts?: boolean
+  cacheDir?: string
+  source?: Source
+  context?: any
+}
+
 export default async function prompt(
   prompts: Array<Prompt>,
-  { yes = true, promptProcess = cliProcess, context = {} } = {}
+  {
+    yes = true,
+    promptProcess = cliProcess,
+    storePrompts = false,
+    cacheDir = null,
+    source = null,
+    context = {}
+  }: Options = {}
 ): Promise<Variables> {
   if (!_.isFunction(promptProcess)) {
     throw new EdamError('prompt is missing the process')
@@ -66,13 +85,27 @@ export default async function prompt(
       if (_.isFunction(validate)) {
         let message = await validate(value, set, context)
         if (typeof message === 'string') {
-          throw new EdamError(`Validate ${JSON.stringify(prompt.name)} failed, error message: ${message}`)
+          throw new EdamError(
+            `Validate ${JSON.stringify(
+              prompt.name
+            )} failed, error message: ${message}`
+          )
         }
       }
 
-      Object.assign(set, {
+      const answer = {
         [prompt.name]: value
-      })
+      }
+
+      if (storePrompts && cacheDir) {
+        // store
+        await store(answer, [prompt], {
+          source,
+          cacheDir
+        })
+      }
+
+      Object.assign(set, answer)
       return set
     },
     {}

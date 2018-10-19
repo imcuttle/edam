@@ -6,20 +6,25 @@
  * @description
  */
 import prompt from '../core/promptProcessor'
-import bdd from 'bdd-stdin'
+import * as fs from 'fs'
+import * as nps from 'path'
 
-const k = Object.freeze({
-  up: '\u001b[A',
-  down: '\u001b[B',
-  left: '\u001b[D',
-  right: '\u001b[C',
-  enter: '\n',
-  space: ' '
-})
+const tempy = require('tempy')
+const { sync } = require('rimraf')
+const tmpDir = tempy.directory()
+
+jest.mock('inquirer')
+
+const { op } = require('inquirer')
 
 describe('prompt', function() {
   it('should prompt works on simple case', async () => {
-    bdd('cuttle', k.enter)
+    process.nextTick(async () => {
+      op.type('cuttle')
+      await op.enter()
+      await op.enter()
+    })
+
     const answers = await prompt(
       [
         {
@@ -106,6 +111,172 @@ describe('prompt', function() {
       password: 'hello',
       password2: 'HELLO'
       // password3: 'HELLO'
+    })
+  })
+
+  it('should prompt works on complex case', async () => {
+    const answers = await prompt(
+      [
+        {
+          transformer: val => val.toUpperCase(),
+          default: 'abc',
+          name: 'username',
+          message: "What's your name?"
+        },
+        {
+          // transformer: val => val.toUpperCase(),
+          when: function(ctx) {
+            return ctx.username === 'ABC'
+          },
+          // yes: true,
+          default: '${git.name}',
+          name: 'password',
+          type: 'password',
+          message: "What's your password?"
+        },
+        {
+          transformer: val => val.toUpperCase(),
+          when: 'password === "hello"',
+          // yes: true,
+          default: '${git.name}',
+          name: 'password2',
+          type: 'password',
+          message: "What's your password?"
+        },
+        {
+          transformer: val => val.toUpperCase(),
+          when: "username === 'abc'",
+          // yes: true,
+          default: '${git.name}',
+          name: 'password3',
+          type: 'password',
+          message: "What's your password?"
+        }
+      ],
+      {
+        yes: true,
+        context: {
+          git: {
+            name: 'hello'
+          }
+        }
+      }
+    )
+
+    expect(answers).toEqual({
+      username: 'ABC',
+      password: 'hello',
+      password2: 'HELLO'
+      // password3: 'HELLO'
+    })
+  })
+
+  describe('store', () => {
+    let storePath = nps.join(tmpDir, 'edam-prompts.json')
+    beforeEach(() => {
+      sync(tmpDir)
+    })
+    function readStore() {
+      jest.resetModules()
+      return require(storePath)
+    }
+
+    it('should prompt works on store case', async () => {
+      op.run([op.enter, op.enter])
+
+      const answers = await prompt(
+        [
+          {
+            default: 'abc',
+            name: 'username',
+            message: "What's your name?"
+          },
+          {
+            default: 'pass',
+            name: 'password',
+            type: 'password',
+            message: "What's your password?"
+          }
+        ],
+        {
+          yes: false,
+          storePrompts: true,
+          cacheDir: tmpDir,
+          source: {
+            type: 'npm',
+            url: 'ttt',
+            version: 'latest'
+          },
+          context: {
+            git: {
+              name: 'hello'
+            }
+          }
+        }
+      )
+
+      expect(answers).toEqual({
+        username: 'abc',
+        password: 'pass'
+      })
+
+      expect(readStore()).toEqual({
+        'ttt?version=latest': answers
+      })
+    })
+
+    it('should prompt works on store case in assign mode', async () => {
+      op.run([
+        op.enter,
+        async () => {
+          expect(readStore()).toEqual({
+            'ttt?version=latest': {
+              username: 'abc'
+            }
+          })
+          await op.enter()
+        }
+      ])
+
+      const answers = await prompt(
+        [
+          {
+            default: 'abc',
+            name: 'username',
+            message: "What's your name?"
+          },
+          {
+            default: 'pass',
+            name: 'password',
+            type: 'password',
+            message: "What's your password?"
+          }
+        ],
+        {
+          yes: false,
+          storePrompts: true,
+          cacheDir: tmpDir,
+          source: {
+            type: 'npm',
+            url: 'ttt',
+            version: 'latest'
+          },
+          context: {
+            git: {
+              name: 'hello'
+            }
+          }
+        }
+      )
+
+      expect(answers).toEqual({
+        username: 'abc',
+        password: 'pass'
+      })
+
+      expect(readStore()).toEqual({
+        'ttt?version=latest': answers
+      })
     })
   })
 })

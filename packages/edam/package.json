@@ -51,7 +51,8 @@
     "walli": "^1.1.2"
   },
   "devDependencies": {
-    "bdd-stdin": "^0.2.0"
+    "rimraf": "^2.6.2",
+    "tempy": "^0.2.1"
   },
   "repository": {
     "type": "git",

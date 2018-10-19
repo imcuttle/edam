@@ -59,7 +59,8 @@ async function _store(cacheDir: string, source, promptValues) {
   const filename = getFilename(cacheDir)
   const old = await _get(cacheDir)
   let key = getKeyBySource(source)
-  old[key] = promptValues
+  // assign
+  old[key] = { ...promptValues, ...old[key] }
   await fileSystem.writeFile(filename, JSON.stringify(old))
 }
 
@@ -74,7 +75,7 @@ export async function store(
     cacheDir?: string | boolean
   } = {}
 ) {
-  if (!cacheDir) {
+  if (!cacheDir || !source) {
     return
   }
   const deniesStoreNames = prompts.filter(x => !!x.deniesStore).map(x => x.name)
@@ -101,7 +102,7 @@ export async function get({
   prompts?: Prompt[]
   cacheDir?: string | boolean
 } = {}) {
-  if (!cacheDir) {
+  if (!cacheDir || !source) {
     return
   }
   let old = (await _get(<string>cacheDir))[getKeyBySource(source)]

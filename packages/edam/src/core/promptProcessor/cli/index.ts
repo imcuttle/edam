@@ -5,7 +5,7 @@
  * @description
  */
 import { Prompt, Variable } from '../../../types/TemplateConfig'
-const inquirer = require('inquirer')
+const inquirer = require('../../inquirer')
 const debug = require('debug')('edam:inquirer')
 
 export default async function(prompt: Prompt): Promise<Variable> {

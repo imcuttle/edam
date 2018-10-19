@@ -35,7 +35,7 @@ import { store, get } from './core/storePrompts'
 import fileSystem from './lib/fileSystem'
 import { yarnInstall } from './lib'
 
-const inquirer = require('inquirer')
+const inquirer = require('./core/inquirer')
 const tildify = require('tildify')
 const debug = require('debug')('edam:core')
 
@@ -167,16 +167,12 @@ export class Edam extends AwaitEventEmitter {
       const promptValues = await this.prompt.call(this, prompts, {
         yes: this.config.yes,
         context,
-        promptProcess: this.promptProcess
+        promptProcess: this.promptProcess,
+        storePrompts: this.config.storePrompts,
+        cacheDir: this.config.cacheDir,
+        source: this.config.source
       })
       this.compiler.variables.setStore(promptValues)
-
-      if (this.config.storePrompts && this.config.cacheDir) {
-        await store(promptValues, prompts, {
-          source: <Source>this.config.source,
-          cacheDir: this.config.cacheDir
-        })
-      }
 
       let respectNpm5 = this.config.pull
         ? this.config.pull.npmClient === 'npm'
