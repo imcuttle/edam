@@ -9,7 +9,7 @@ import { EdamConfig, Source } from '../../types/Options'
 import gitClone, { checkout, pullForce } from '../../lib/gitClone'
 import { join } from 'path'
 import fileSystem from '../../lib/fileSystem'
-import EdamError from '../EdamError';
+import EdamError from '../EdamError'
 
 const filenamify = require('filenamify')
 const npmInstall = require('../../lib/yarnInstall')
@@ -18,7 +18,8 @@ const down = require('download')
 const c = require('chalk')
 const nurl = require('url')
 const urlJoin = require('url-join')
-// const ora = require('ora')
+const isOnline = require('is-online')
+
 const debug = require('debug')('edam:pull:git')
 
 function download(url, dest) {
@@ -58,9 +59,15 @@ module.exports = async function gitPull(
   destDir: string,
   config: EdamConfig
 ) {
-  const { cacheDir, pull: { git, npmClient } } = config
+  const {
+    cacheDir,
+    pull: { git, npmClient },
+    offlineFallback
+  } = config
   const log = (this && this.logger && this.logger.log) || console.log
   const errorLog = (this && this.logger && this.logger.warn) || console.error
+
+  let isOffline = offlineFallback ? !(await isOnline()) : false
 
   async function installFromPkg(target) {
     debug('installFromPkg: %s', target)
@@ -82,9 +89,12 @@ module.exports = async function gitPull(
           production: true
         })
       } catch (err) {
+        const msg = `Install package from git "${source.url}" failed \n` + err.stack
+        if (isOffline) {
+          return errorLog(msg)
+        }
         throw new EdamError(
-          `Install package from git "${source.url}" failed \n` +
-          err.stack
+          msg
         )
       }
       log(
@@ -98,7 +108,7 @@ module.exports = async function gitPull(
 
   async function downloadSource() {
     const where = join(target, filenamify(source.checkout || 'master'))
-    if (!cacheDir) {
+    if (!cacheDir && !isOffline) {
       await fileSystem.cleanDir(where)
     } else if (fileSystem.existsSync(where)) {
       // cached
@@ -120,7 +130,7 @@ module.exports = async function gitPull(
   }
   async function gitCloneSource() {
     debug('gitCloneSource: target is %s', target)
-    if (!cacheDir) {
+    if (!cacheDir && !isOffline) {
       await fileSystem.cleanDir(target)
     } else if (fileSystem.existsSync(join(target, '.git'))) {
       // cached
@@ -128,7 +138,11 @@ module.exports = async function gitPull(
         await pullForce(target)
         await checkout(source.checkout || 'master', { targetPath: target })
       } catch (err) {
-        throw new EdamError(err.message + '\n running in ' + tildify(target))
+        const msg = err.message + '\n running in ' + tildify(target)
+        if (isOffline) {
+          return errorLog(msg)
+        }
+        throw new EdamError(msg)
       }
       log('Using cached git assets from %s', c.cyan.bold(tildify(target)))
       await installFromPkg(target)

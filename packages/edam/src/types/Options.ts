@@ -76,14 +76,18 @@ export const rc: Equal = leq({
   //   npmClient: oneOf(['yarn', 'npm']).optional,
   //   git: oneOf(['clone', 'download']).optional
   // }).optional,
-  storePrompts: boolean.optional
+  storePrompts: boolean.optional,
+  offlineFallback: boolean.optional,
+  updateNotify: boolean.optional,
+  debug: boolean.optional
 }).assign(sourceConfig())
 
 export const edam: LooseEqual = rc.assign(
   leq({
+    // walli's bug
     source: source().optional,
+
     name: string.optional,
-    updateNotify: boolean.optional,
     yes: boolean.optional,
     silent: boolean.optional
   })
@@ -108,23 +112,24 @@ export type Source = {
   version?: string
 }
 
+// extendable config
 export interface RCOptions extends SourceConfig {
   // template configuration file, or the name from `alias`, or repo string, npm package
   source?: string | Source
   // alias the source
   alias?: object
-  // the wanted extend edam configuration file path (relative or absolute)
-  extends?: string | string[]
+  ['extends']?: string | string[] // the wanted extend edam configuration file path (relative or absolute)
+  offlineFallback?: boolean
+  debug?: boolean
+  updateNotify?: boolean
 }
 
 export interface EdamConfig extends RCOptions {
   // the template's name, be used for log
   // NOTE: it's unused now
   name?: string
-  updateNotify?: boolean
   userc?: boolean
   yes?: boolean
-  debug?: boolean
   // when silent is `true` equals yes: true
   silent?: boolean
 }

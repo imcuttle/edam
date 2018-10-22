@@ -2,6 +2,16 @@
 title: Options
 ---
 
+### offlineFallback
+
+- Type: `boolean`
+
+Fallback to local cache assets when you are offline.
+
+| default | cli                  |
+| ------- | -------------------- |
+| `true`  | `--offline-fallback` |
+
 ### updateNotify
 
 - Type: `boolean`
@@ -59,9 +69,9 @@ Enable debug mode for verbose log (Don't works when silent is true).
 
 Appoints to the command when installing package form npmjs.com.
 
-| default | cli                         |
-| ------- | --------------------------- |
-| `npm`   | `--pull.npmClient=<string>` |
+| default | cli                          |
+| ------- | ---------------------------- |
+| `npm`   | `--pull.npm-client=<string>` |
 
 ### pull.git
 

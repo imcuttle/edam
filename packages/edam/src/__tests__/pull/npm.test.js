@@ -7,8 +7,14 @@
 import npmPull from '../../core/pull/npm'
 import constant from '../../core/constant'
 import sourceFilenamify from '../../core/sourceFilenamify'
-import * as nps from 'path'
 import { fileSystem } from '../../lib'
+
+import * as nps from 'path'
+
+const mockIsOnline = require('is-online')
+jest.mock('is-online', () => {
+  return jest.fn(() => Promise.resolve(true))
+})
 
 jest.setTimeout(60000) // 60s
 describe('npm', function() {
@@ -29,7 +35,7 @@ describe('npm', function() {
     ).version
   }
 
-  beforeEach(async function () {
+  beforeEach(async function() {
     await fileSystem.cleanDir(output)
   })
   it('should npm pull universal package when use `npm`', async () => {
@@ -46,10 +52,61 @@ describe('npm', function() {
       )
     ).toBe(output)
     expect(version()).toBe('1.0.0')
-    // await fileSystenpmm.cleanDir(output)
+
+    mockIsOnline.mockResolvedValueOnce(false)
+    expect(
+      await npmPull(
+        { ...source, version: '>=1.0.2' },
+        constant.DEFAULT_CACHE_DIR,
+        {
+          cacheDir: true,
+          offlineFallback: true,
+          pull: {
+            npmClient: 'npm'
+          }
+        }
+      )
+    ).toBe(output)
+    expect(version()).toBe('1.0.0')
+    expect(mockIsOnline).toHaveBeenCalledTimes(1)
+
+    mockIsOnline.mockResolvedValueOnce(true)
+    expect(
+      await npmPull(
+        { ...source, version: '>=1.0.2' },
+        constant.DEFAULT_CACHE_DIR,
+        {
+          cacheDir: true,
+          offlineFallback: true,
+          pull: {
+            npmClient: 'npm'
+          }
+        }
+      )
+    ).toBe(output)
+    expect(version()).not.toBe('1.0.0')
+    expect(mockIsOnline).toHaveBeenCalledTimes(2)
   })
 
-  afterAll(async function () {
+  it('should npm pull caches package when use `yarn`', async () => {
+    expect(
+      await npmPull(
+        { ...source, version: '=1.0.0' },
+        constant.DEFAULT_CACHE_DIR,
+        {
+          cacheDir: true,
+          pull: {
+            npmClient: 'yarn'
+          }
+        }
+      )
+    ).toBe(output)
+    expect(version()).toBe('1.0.0')
+  })
+
+  afterAll(async function() {
     await fileSystem.cleanDir(this.constants.DEFAULT_CACHE_DIR)
+
+    jest.unmock('is-online')
   })
 })

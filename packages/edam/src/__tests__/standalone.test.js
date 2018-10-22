@@ -36,7 +36,7 @@ describe('standalone', function() {
       .then(done)
   })
 
-  it('should stringMacthcing', function() {
+  it('should stringMatching', function() {
     expect('abc').toEqual(expect.stringMatching('bc'))
   })
 })

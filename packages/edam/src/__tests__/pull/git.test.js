@@ -22,7 +22,10 @@ describe('git', function() {
     nps.join(constant.DEFAULT_CACHE_DIR, sourceFilenamify(source))
   )
 
-  // it('should clone works on simple case', async () => {
+  // it('should clone works on simple case with offline mode', async () => {
+  //   jest.mock('is-online', () => () => Promise.resolve(false))
+  //   // ../../lib/gitClone
+  //
   //   expect(
   //     await gitPull(source, constant.DEFAULT_CACHE_DIR, {
   //       cacheDir: true,
@@ -42,6 +45,8 @@ describe('git', function() {
   //       }
   //     })
   //   ).toBe(nps.join(output, 'clone', filenamify(source.url)))
+  //
+  //   jest.unmock('is-online')
   // })
 
   it('should download works on simple case', async () => {

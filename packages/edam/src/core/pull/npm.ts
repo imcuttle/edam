@@ -17,6 +17,7 @@ const updateNotifier = require('update-notifier')
 const c = require('chalk')
 const debug = require('debug')('edam:pull:npm')
 const semver = require('semver')
+const isOnline = require('is-online')
 
 const yarnInstall = require('../../lib/yarnInstall')
 
@@ -25,9 +26,15 @@ module.exports = async function npmPull(
   destDir: string,
   options: EdamConfig
 ) {
-  const { cacheDir, pull: { npmClient } } = options
+  const {
+    cacheDir,
+    pull: { npmClient },
+    offlineFallback
+  } = options
+  let isOffline = offlineFallback ? !(await isOnline()) : false
 
   const log = (this && this.logger && this.logger.log) || console.log
+  const warn = (this && this.logger && this.logger.warn) || console.warn
   const updateNotify = this && this.config && this.config.updateNotify
 
   let respectNpm5 = npmClient === 'npm'
@@ -47,12 +54,11 @@ module.exports = async function npmPull(
       })
     } catch (err) {
       throw new EdamError(
-        `Install package "${name}" failed. \n` +
-        (err ? err.stack : '')
+        `Install package "${name}" failed. \n` + (err ? err.stack : '')
       )
     }
 
-    if (updateNotify) {
+    if (updateNotify && !isOffline) {
       const notifier = updateNotifier({
         pkg: JSON.parse(
           await fs.readFile(join(modulePath, 'package.json'), {
@@ -121,12 +127,23 @@ module.exports = async function npmPull(
     if (semver.satisfies(oldPkg.version, source.version)) {
       debug('cache satisfied!')
       log(
-        'Cached version %s of %s is matched the version range %s that you wanted.',
+        'Cached version %s of %s is matched the version %s you wanted.',
         c.cyan.bold(oldPkg.version),
         c.magenta.bold(source.url),
         c.gray.bold(source.version)
       )
       // use cache
+      return modulePath
+    }
+
+    if (isOffline) {
+      warn(
+        'Cached version %s of %s do %s match the version %s you wanted.\nDetect you are offline so fallback to use the bad one.',
+        c.cyan.bold(oldPkg.version),
+        c.magenta.bold(source.url),
+        c.red.bold('NOT'),
+        c.gray.bold(source.version)
+      )
       return modulePath
     }
   }

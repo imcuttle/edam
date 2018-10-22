@@ -49,6 +49,7 @@ describe('extendsConfig', function() {
     ])
 
     expect(config).toEqual({
+      offlineFallback: false,
       extends: ['./fixture/loadConfig/a/.edamrc', './b/.edamrc', './rc'],
       source: {
         type: 'npm',

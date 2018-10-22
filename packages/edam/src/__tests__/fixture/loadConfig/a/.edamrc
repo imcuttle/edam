@@ -4,5 +4,6 @@
     './plugin-a'
   ],
   source: 'a.edamrc',
-  output: ''
+  output: '',
+  offlineFallback: false,
 }

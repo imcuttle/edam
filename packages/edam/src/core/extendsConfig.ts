@@ -24,17 +24,6 @@ export type Track = {
   }
 }
 
-function toNormalizedFileSource(source, options) {
-  if (!source) {
-    return source
-  }
-  let s = normalizeSource(source, options)
-  // if (s.type === 'file') {
-  //   return s.url
-  // }
-  return source
-}
-
 export function normalizePlugins(plugins, options: Options) {
   plugins = toArray(plugins)
   return <[Function, any]>plugins.map(p => {

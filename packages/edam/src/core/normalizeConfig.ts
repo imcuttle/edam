@@ -42,22 +42,16 @@ export default async function normalizeConfig(
       yes: false,
       silent: false,
       extends: [],
-      alias: {},
-      cacheDir: true,
-      updateNotify: true
+      alias: {}
     },
     looseConfig
   )
-
-  // if (!looseConfig.plugins || !looseConfig.plugins.length) {
-  //   delete looseConfig.plugins
-  // }
 
   const coreSpecial = {
     userc: looseConfig.userc,
     yes: looseConfig.yes,
     silent: looseConfig.silent,
-    updateNotify: looseConfig.updateNotify,
+    // updateNotify: looseConfig.updateNotify,
     name: looseConfig.name
   }
 
@@ -67,7 +61,6 @@ export default async function normalizeConfig(
     track: true
   })
 
-  // mergedConfig = _.cloneDeep(mergedConfig)
   if (coreSpecial.userc) {
     const obj = await load(options.cwd)
     debug('rc config: %o', obj)
@@ -85,6 +78,14 @@ export default async function normalizeConfig(
   }
 
   debug('merged config after: %O', mergedConfig)
+
+  // default value
+  mergedConfig = Object.assign({
+    offlineFallback: true,
+    cacheDir: true,
+    updateNotify: true
+  }, mergedConfig)
+
   if (!mergedConfig.plugins) {
     mergedConfig.plugins = []
   }
@@ -150,6 +151,7 @@ export default async function normalizeConfig(
     ...sourceConfig,
     pull: {
       npmClient: 'npm',
+      git: 'clone',
       ...mergedConfig.pull,
       ...sourceConfig.pull
     },

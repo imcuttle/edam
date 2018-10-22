@@ -57,7 +57,8 @@ describe('normalizeConfig', function() {
           file: './fixture/source'
         },
         source: 'react',
-        userc: false
+        userc: false,
+        offlineFallback: true
       },
       {
         cwd: __dirname
@@ -72,6 +73,7 @@ describe('normalizeConfig', function() {
 
     expect(config).toEqual(
       expect.objectContaining({
+        offlineFallback: true,
         output: nps.resolve(__dirname, './fixture/loadConfig/a'),
         extends: ['./fixture/loadConfig/a/.edamrc', './b/.edamrc', './rc'],
         source: {
@@ -198,6 +200,7 @@ describe('normalizeConfig', function() {
 
     expect(config).toEqual(
       expect.objectContaining({
+        offlineFallback: false,
         // extends: ['./loadConfig/a/.edamrc', './b/.edamrc', './rc'],
         source: {
           type: 'git',
@@ -241,6 +244,7 @@ describe('normalizeConfig', function() {
 
     expect(config).toEqual(
       expect.objectContaining({
+        offlineFallback: false,
         // extends: ['./loadConfig/a/.edamrc', './b/.edamrc', './rc'],
         source: {
           type: 'git',
@@ -320,6 +324,26 @@ describe('normalizeConfig', function() {
     expect(config.pull).toEqual({
       npmClient: 'npm',
       git: 'download'
+    })
+  })
+
+  it('should fallback to default values', async function () {
+    const { config } = await normalize(
+      {
+        output: '',
+        userc: false,
+        pull: {}
+      },
+      {
+        cwd: __dirname
+      }
+    )
+    // console.error(config)
+    expect(config).toMatchObject({
+      offlineFallback: true,
+      updateNotify: true,
+      storePrompts: true,
+      pull: { npmClient: 'npm', git: 'clone' }
     })
   })
 })
