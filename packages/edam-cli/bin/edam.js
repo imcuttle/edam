@@ -68,7 +68,7 @@ const flags = [
     default: null
   },
   {
-    name: 'pull.npmClient',
+    name: 'pull.npm-client',
     type: 'string',
     desc:
       'Appoints to the command when installing package form npmjs.com. [npm|yarn]',
@@ -174,7 +174,7 @@ ${generateFlagHelp(flags, '      ')}
       extends: flags.extends,
       plugins: flags.plugins,
       pull: {
-        npmClient: flags.pull['npmClient'],
+        npmClient: flags.pull['npm-client'],
         git: flags.pull['git']
       },
       yes: flags.yes,

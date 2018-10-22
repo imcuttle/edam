@@ -14,6 +14,7 @@
     "update-notifier": "^2.4.0"
   },
   "scripts": {
+    "prepublishOnly": "jest",
     "postinstall": "node postInstall.js"
   },
   "bin": {
