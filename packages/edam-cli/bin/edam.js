@@ -160,7 +160,7 @@ ${generateFlagHelp(flags, '      ')}
       extends: flags.extends,
       plugins: flags.plugins,
       pull: {
-        npmClient: flags.pull['npm-client'],
+        npmClient: flags.pull['npmClient'],
         git: flags.pull['git']
       },
       yes: flags.yes,
