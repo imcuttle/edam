@@ -124,6 +124,7 @@ export interface EdamConfig extends RCOptions {
   updateNotify?: boolean
   userc?: boolean
   yes?: boolean
+  debug?: boolean
   // when silent is `true` equals yes: true
   silent?: boolean
 }

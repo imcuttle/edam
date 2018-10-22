@@ -8,11 +8,11 @@
 import { mockPrompts } from '../../index'
 import { join } from 'path'
 
-describe('spec', function() {
+describe('mockPrompts', function() {
   const tplPath = join(__dirname, '../fixture/edam')
   const outputRoot = join(__dirname, '../fixture/edam-output')
 
-  it('should spec', async () => {
+  it('should mockPrompts', async () => {
     const ft = await mockPrompts(
       join(tplPath, 'spec'),
       {

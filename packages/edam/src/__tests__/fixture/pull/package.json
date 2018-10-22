@@ -1,0 +1,8 @@
+{
+  "edam": {
+    "pull": {
+      "npmClient": "yarn",
+      "git": "download"
+    }
+  }
+}

@@ -2,14 +2,15 @@
 /* eslint-disable indent */
 const c = require('chalk')
 const constant = require('edam/dist/core/constant').default
-
-const generateFlagData = require('./util').generateFlagData
-const generateFlagHelp = require('./util').generateFlagHelp
-
 const meow = require('meow')
 const pkg = require('edam/package.json')
 const tildify = require('tildify')
 const updateNotify = require('update-notifier')
+const dbg = require('debug')
+
+const { generateFlagData, generateFlagHelp } = require('./util')
+
+const debug = dbg('edam-cli')
 
 const flags = [
   {
@@ -24,6 +25,13 @@ const flags = [
     alias: 'h',
     type: 'boolean',
     desc: 'Shows the help document.',
+    default: false
+  },
+  {
+    name: 'debug',
+    alias: 'd',
+    type: 'boolean',
+    desc: 'Open debug mode (print debug log).',
     default: false
   },
   {
@@ -83,13 +91,15 @@ const flags = [
     name: 'yes',
     alias: 'y',
     type: 'boolean',
-    desc: 'Uses stored prompt\'s values instead of typing arduously.',
+    // eslint-disable-next-line quotes
+    desc: "Uses stored prompt's values instead of typing arduously.",
     default: false
   },
   {
     name: 'no-store',
     type: 'boolean',
-    desc: 'Disables storing latest prompt\'s values.',
+    // eslint-disable-next-line quotes
+    desc: "Disables storing latest prompt's values.",
     default: false
   },
   {
@@ -119,9 +129,7 @@ const cli = meow(
     ${c.white('Usage')}
       $ ${c.cyan.bold('edam')} ${c
     .keyword('orchid')
-    .bold('<source>')} ${c.keyword(
-    'orange'
-  )('[options]')}
+    .bold('<source>')} ${c.keyword('orange')('[options]')}
  
     ${c.white('Options')}
     
@@ -133,8 +141,14 @@ ${generateFlagHelp(flags, '      ')}
     description: ` ${c.cyan.bold(pkg.description)}`
   }
 )
-
 ;(function() {
+  if (cli.flags.debug) {
+    dbg.enable('edam-cli')
+  }
+
+  debug('cli input: %o', cli.input)
+  debug('cli flags: %O', cli.flags)
+
   if (cli.flags.help) {
     cli.showHelp()
     return
@@ -168,7 +182,8 @@ ${generateFlagHelp(flags, '      ')}
       output: flags.output,
       source: cli.input[0],
       // overwrite: flags.overwrite,
-      storePrompts: !flags.noStore
+      storePrompts: !flags.noStore,
+      debug: flags.debug
     }
   )
 
@@ -207,9 +222,6 @@ ${generateFlagHelp(flags, '      ')}
   })
   em.on('pull:before', source => {
     if (source && ['npm', 'git'].includes(source.type)) {
-      // console.log(process._getActiveHandles())
-      // console.log(process._getActiveRequests().length)
-
       !em.config.silent &&
         spinner.start(`Pulling template from ${source.type}: ${source.url}`)
     }

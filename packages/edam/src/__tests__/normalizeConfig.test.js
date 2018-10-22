@@ -250,4 +250,76 @@ describe('normalizeConfig', function() {
       })
     )
   })
+
+  it('should through pull.npmClient and git when not using rc', async function() {
+    const { config } = await normalize(
+      {
+        output: '',
+        pull: {
+          npmClient: 'yarn',
+          git: 'download'
+        },
+        userc: false
+      },
+      {
+        cwd: nps.join(__dirname, 'fixture')
+      }
+    )
+
+    expect(config.pull).toEqual({
+      npmClient: 'yarn',
+      git: 'download'
+    })
+  })
+
+  it('should through pull.npmClient and git when using rc', async function() {
+    let { config } = await normalize(
+      {
+        output: '',
+        userc: true
+      },
+      {
+        cwd: nps.join(__dirname, 'fixture/pull')
+      }
+    )
+
+    expect(config.pull).toEqual({
+      npmClient: 'yarn',
+      git: 'download'
+    })
+
+    config  = (await normalize(
+      {
+        output: '',
+        userc: true,
+        pull: {}
+      },
+      {
+        cwd: nps.join(__dirname, 'fixture/pull')
+      }
+    )).config
+
+    expect(config.pull).toEqual({
+      npmClient: 'yarn',
+      git: 'download'
+    })
+
+    config  = (await normalize(
+      {
+        output: '',
+        userc: true,
+        pull: {
+          npmClient: 'npm'
+        }
+      },
+      {
+        cwd: nps.join(__dirname, 'fixture/pull')
+      }
+    )).config
+
+    expect(config.pull).toEqual({
+      npmClient: 'npm',
+      git: 'download'
+    })
+  })
 })

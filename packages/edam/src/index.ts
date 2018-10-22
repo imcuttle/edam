@@ -37,7 +37,8 @@ import { yarnInstall } from './lib'
 
 const inquirer = require('./core/inquirer')
 const tildify = require('tildify')
-const debug = require('debug')('edam:core')
+const dbg = require('debug')
+const debug = dbg('edam:core')
 
 function throwEdamError(err, message) {
   if (err && err.id === 'EDAM_ERROR') {
@@ -122,6 +123,12 @@ export class Edam extends AwaitEventEmitter {
   }
   public setConfig(config: EdamConfig): Edam {
     this.config = config
+    if (this.config.debug && !this.config.silent) {
+      dbg.enable('edam*')
+    }
+    if (!this.config.debug || this.config.silent) {
+      dbg.disable('edam*')
+    }
     return this
   }
   public setOption(options: Options): Edam {
@@ -360,7 +367,7 @@ export class Edam extends AwaitEventEmitter {
   public compiler: Compiler = new Compiler()
 }
 
-function edam(config: EdamConfig, options: Options): Edam {
+function edam(config?: EdamConfig, options?: Options): Edam {
   return new Edam(config, options)
 }
 export { default as mockPrompts } from './mockPrompts'
