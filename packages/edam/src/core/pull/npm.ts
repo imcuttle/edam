@@ -17,6 +17,7 @@ const updateNotifier = require('update-notifier')
 const c = require('chalk')
 const debug = require('debug')('edam:pull:npm')
 const semver = require('semver')
+
 const yarnInstall = require('../../lib/yarnInstall')
 
 module.exports = async function npmPull(
@@ -47,7 +48,7 @@ module.exports = async function npmPull(
     } catch (err) {
       throw new EdamError(
         `Install package "${name}" failed. \n` +
-        (err && err.stack)
+        (err ? err.stack : '')
       )
     }
 
@@ -68,9 +69,9 @@ module.exports = async function npmPull(
             'Update available ' +
             chalk.dim(upt.current) +
             chalk.reset(' → ') +
-            chalk.green(upt.latest) +
+            chalk.greenBright(upt.latest) +
             ' \nRun ' +
-            chalk.cyan(`edam ${source.url}@latest ${output}`) +
+            chalk.cyanBright(`edam ${source.url}@latest -o ${output}`) +
             ' to update'
         })
       }
@@ -82,7 +83,7 @@ module.exports = async function npmPull(
     log(
       'Installed %s from NPM, and the actual version is %s.',
       c.magenta.bold(name),
-      c.green(installedVersion)
+      c.greenBright(installedVersion)
     )
   }
 

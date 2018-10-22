@@ -187,6 +187,26 @@ ${generateFlagHelp(flags, '      ')}
     }
   )
 
+  if (config.updateNotify) {
+    const notifier = updateNotify({
+      pkg
+    })
+    const upt = notifier.update
+
+    if (upt) {
+      notifier.notify({
+        message:
+          'Update available ' +
+          c.dim(upt.current) +
+          c.reset(' → ') +
+          c.greenBright(upt.latest) +
+          ' \nRun ' +
+          c.cyanBright('npm install edam@latest -g') +
+          ' to update'
+      })
+    }
+  }
+
   const edam = require('edam').default
   const Edam = require('edam').Edam
   // default
@@ -304,23 +324,6 @@ ${generateFlagHelp(flags, '      ')}
       code = 1
     })
     .then(function() {
-      if (config.updateNotify) {
-        const notifier = updateNotify({ pkg })
-        const upt = updateNotify.update
-        if (upt) {
-          notifier.notify({
-            message:
-              'Update available ' +
-              c.dim(upt.current) +
-              c.reset(' → ') +
-              c.green(upt.latest) +
-              ' \nRun ' +
-              c.cyan('npm install edam@latest -g') +
-              ' to update'
-          })
-        }
-      }
-
       process.exit(code)
     })
 })()
