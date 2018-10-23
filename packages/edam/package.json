@@ -54,7 +54,7 @@
     "update-notifier": "^2.4.0",
     "url-join": "^4.0.0",
     "vfile-location": "^2.0.3",
-    "walli": "^1.1.2"
+    "walli": "^1.1.4"
   },
   "devDependencies": {
     "rimraf": "^2.6.2",

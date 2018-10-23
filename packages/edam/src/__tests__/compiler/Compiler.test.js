@@ -138,13 +138,17 @@ describe('Compiler', function() {
       }
     ]
 
+    cer.variables.assign({
+      _: {abc: 'abc'}
+    })
+
     cer.assets = {
       'test.js': {
         value: new Buffer('Hello,{{ name}}')
         // load
       },
       'test.a.js': {
-        value: '// @loader hbs?v=1.2.3 \nHello,A,{{ name}}'
+        value: '// @loader hbs?v=1.2.3 \nHello,A,{{ name}} {{_.abc}}'
         // load
       }
     }
@@ -161,8 +165,8 @@ describe('Compiler', function() {
           input: new Buffer('Hello,{{ name}}')
         }),
         'test.a.js': expect.objectContaining({
-          input: 'Hello,A,{{ name}}',
-          output: 'Hello,A,pig',
+          input: 'Hello,A,{{ name}} {{_.abc}}',
+          output: 'Hello,A,pig abc',
           loaders: 'hbs'
         })
       })
@@ -322,7 +326,7 @@ describe('Compiler', function() {
     expect(tree).toEqual(
       expect.objectContaining({
         'test.js': expect.objectContaining({
-          output: 'Hello, heihei',
+          output: 'Hello, heihei'
         })
       })
     )
@@ -331,9 +335,67 @@ describe('Compiler', function() {
     expect(await cer.run()).toEqual(
       expect.objectContaining({
         'test.js': expect.objectContaining({
-          output: 'Hello, ',
+          output: 'Hello, '
         })
       })
     )
+  })
+
+  it('should `includes` works', async function() {
+    cer.assets = {
+      'test.js': {
+        value: 'Hello, test.js'
+      },
+      'test.jsx': {
+        value: 'Hello, test.jsx'
+      },
+      'main.test.js': {
+        value: 'Hello, main.test.js'
+      }
+    }
+    cer.includes = '*.js'
+
+    const tree = await cer.run()
+    expect(Object.keys(tree)).toEqual(['test.js', 'main.test.js'])
+  })
+
+  it('should `excludes` works', async function() {
+    cer.assets = {
+      'test.js': {
+        value: 'Hello, test.js'
+      },
+      'test.jsx': {
+        value: 'Hello, test.jsx'
+      },
+      'main.test.js': {
+        value: 'Hello, main.test.js'
+      }
+    }
+    cer.excludes = '*.js'
+
+    const tree = await cer.run()
+    expect(Object.keys(tree)).toEqual(['test.jsx'])
+  })
+
+  it('should `includes & excludes` works', async function() {
+    cer.assets = {
+      'test.js': {
+        value: 'Hello, test.js'
+      },
+      'test.jsx': {
+        value: 'Hello, test.jsx'
+      },
+      'main.test.js': {
+        value: 'Hello, main.test.js'
+      },
+      'abc/main.js': {
+        value: ''
+      }
+    }
+    cer.includes = ['*.{jsx,js}', '!*/*']
+    cer.excludes = '*.jsx'
+
+    const tree = await cer.run()
+    expect(Object.keys(tree)).toEqual(['test.js', 'main.test.js'])
   })
 })

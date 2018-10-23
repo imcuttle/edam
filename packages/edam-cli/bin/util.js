@@ -22,7 +22,11 @@ exports.generateFlagHelp = function generateFlagHelp(flags = []) {
       null,
       [maxDescLen].concat(desc.split('\n').map(x => x.length))
     )
-    _d = _d != null ? `[default: ${String(_d).trim()}]` : ''
+
+    _d =
+      typeof _d !== 'function' && _d != null
+        ? `[default: ${String(_d).trim()}]`
+        : ''
     rightMax = Math.max(_d.length, rightMax)
     return [name, desc, _d]
   })

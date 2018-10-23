@@ -34,7 +34,7 @@ export type StrictLoader = Function & { raw?: boolean }
 export type StrictLoaderWithOption = [StrictLoader, any]
 export type Loader = Array<StrictLoader | string | StrictLoaderWithOption> | string | StrictLoader | StrictLoaderWithOption
 
-export type Matcher = Glob | RegExp | Function
+export type Matcher = Glob | Glob[] | RegExp | Function
 
 export type Mapper = {
   test: Matcher

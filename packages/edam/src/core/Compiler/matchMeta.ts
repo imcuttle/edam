@@ -1,5 +1,4 @@
-import parseQuery from '../../lib/parseQuery'
-import parseQueryString from "../../lib/parseQueryString";
+import parseQueryString from '../../lib/parseQueryString'
 
 export type Meta = {
   loader?: {
@@ -9,7 +8,7 @@ export type Meta = {
   [name: string]: any
 }
 
-function matchMeta(content: string, path?: string): Meta {
+function matchMeta(content: string): Meta {
   let meta: Meta = {}
 
   function fillMeta(str: string) {
@@ -21,29 +20,29 @@ function matchMeta(content: string, path?: string): Meta {
     new RegExp(
       // # //
       '^[\\t ]*(?:#|//)' +
-      '[\\t ]*' +
-      // @loader
-      '\\@loader[\\t ]+' +
-      // name name
-      '(.+)[\\t ]*\\n?'
+        '[\\t ]*' +
+        // @loader
+        '\\@loader[\\t ]+' +
+        // name name
+        '(.+)[\\t ]*\\n?'
     ),
     new RegExp(
       // <!--  -->
       '^[\\t ]*<!--' +
-      '[\\t ]*' +
-      // @loader
-      '\\@loader[\\t ]+' +
-      // name name
-      '(.+)[\\t ]*-->[\\t ]*\\n?'
+        '[\\t ]*' +
+        // @loader
+        '\\@loader[\\t ]+' +
+        // name name
+        '(.+)[\\t ]*-->[\\t ]*\\n?'
     ),
     new RegExp(
       // /*  */
       '^[\\t ]*/\\*' +
-      '[\\t ]*' +
-      // @loader
-      '\\@loader[\\t ]+' +
-      // name name
-      '(.+)[\\t ]*\\*/[\\t ]*\\n?'
+        '[\\t ]*' +
+        // @loader
+        '\\@loader[\\t ]+' +
+        // name name
+        '(.+)[\\t ]*\\*/[\\t ]*\\n?'
     )
   ]
 

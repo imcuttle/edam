@@ -77,7 +77,7 @@ export class Edam extends AwaitEventEmitter {
   constructor(public config?: EdamConfig, public options: Options = {}) {
     super()
     config && this.setConfig(config)
-    options && this.setOption(options)
+    this.setOption(options)
     // fill
     this.utils = Object.assign({}, Edam.utils)
     this.sourcePullMethods = Object.assign({}, Edam.sourcePullMethods)
@@ -90,6 +90,8 @@ export class Edam extends AwaitEventEmitter {
 
     symbolic(this.compiler, 'hookCwd', [this, ['config', 'output']])
     symbolic(this.compiler, 'root', [this, ['templateConfig', 'root']])
+    symbolic(this.compiler, 'includes', [this, ['config', 'includes']])
+    symbolic(this.compiler, 'excludes', [this, ['config', 'excludes']])
   }
 
   private async normalizeConfig(): Promise<EdamConfig> {
@@ -132,7 +134,7 @@ export class Edam extends AwaitEventEmitter {
     return this
   }
   public setOption(options: Options): Edam {
-    this.options = options
+    Object.assign(this.options, { cwd: process.cwd() }, options)
     return this
   }
 
@@ -308,6 +310,7 @@ export class Edam extends AwaitEventEmitter {
   ): Promise<FileProcessor> {
     // preset plugins only do something about template
     await this.registerPlugins(plugins)
+
     debug('templatePath: %s', templateConfigPath)
     let templateConfig =
       (await getTemplateConfig.apply(

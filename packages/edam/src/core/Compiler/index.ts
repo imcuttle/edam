@@ -12,13 +12,14 @@ import {
   Hook,
   Loader,
   Mapper,
+  Matcher,
   StrictLoader,
   StrictLoaderWithOption
 } from '../../types/TemplateConfig'
 import * as pReduce from 'p-reduce'
 import { AwaitEventEmitter, Logger, Tree } from '../../types/core'
 import toArray from '../../lib/toArray'
-import { isMatch } from '../../lib/match'
+import { isMatch, isIncludes } from '../../lib/match'
 import VariablesImpl from './Variables'
 import hookify from './hookify'
 import matchMeta from './matchMeta'
@@ -37,6 +38,9 @@ export default class Compiler extends AwaitEventEmitter {
   public logger: Logger = new DefaultLogger()
   public root: string = ''
   public hookCwd: string = process.cwd()
+  public includes: Matcher = () => true
+  public excludes: Matcher = () => false
+
   public removeHook(hookName: string, hook?: Function) {
     this.removeListener(hookName, hook)
     return this
@@ -68,8 +72,17 @@ export default class Compiler extends AwaitEventEmitter {
     loaders,
     mappers,
     hookCwd,
-    root
-  }: { loaders?; mappers?; root?: string; hookCwd?: string } = {}) {
+    root,
+    includes,
+    excludes
+  }: {
+    excludes?: Matcher
+    includes?: Matcher
+    loaders?
+    mappers?
+    root?: string
+    hookCwd?: string
+  } = {}) {
     super()
     if (hookCwd) {
       this.hookCwd = hookCwd
@@ -82,6 +95,12 @@ export default class Compiler extends AwaitEventEmitter {
     }
     if (root) {
       this.root = root
+    }
+    if (excludes) {
+      this.excludes = excludes
+    }
+    if (includes) {
+      this.includes = includes
     }
   }
   public addLoader(loaderId: string, loader: Loader): Compiler {
@@ -206,13 +225,19 @@ export default class Compiler extends AwaitEventEmitter {
     await this.emit('assets', this.assets)
     await this.emit('variables', this.variables)
     const workers = _.map(this.assets, async (asset, path) => {
+      if (
+        !isIncludes(path, { excludes: this.excludes, includes: this.includes })
+      ) {
+        return
+      }
+
       const input = asset.value
       const loaders = asset.loaders
       const data = { input, loaders }
       let highOrderOptions
 
       if (_.isString(data.input)) {
-        const { content, meta } = matchMeta(data.input, path)
+        const { content, meta } = matchMeta(data.input)
         data.input = content
         if (meta && meta.loader) {
           debug('matched meta: \n%O \npath: %s', meta, path)

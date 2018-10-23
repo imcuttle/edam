@@ -1,3 +1,4 @@
+/* eslint-disable indent */
 /**
  * @file match
  * @author Cuttle Cong
@@ -11,7 +12,7 @@ import { isString, isArray } from 'lodash'
 
 export function isMatch(value: string, m: Matcher): boolean {
   if (isString(m) || isArray(m)) {
-    return !!(mm([value], m, { matchBase: true, dot: true }).length)
+    return !!mm([value], m, { matchBase: true, dot: true }).length
   }
   if (m instanceof RegExp) {
     return m.test(value)
@@ -20,6 +21,19 @@ export function isMatch(value: string, m: Matcher): boolean {
     return !!m(value)
   }
   throw new TypeError('isMatch requires glob[]/glob/regexp/function, but ' + m)
+}
+
+export function isIncludes(
+  path: string,
+  {
+    includes = () => true,
+    excludes = () => false
+  }: {
+    includes?: Matcher
+    excludes?: Matcher
+  } = {}
+) {
+  return isMatch(path, includes) && !isMatch(path, excludes)
 }
 
 export default function match(value: Array<string>, m: Matcher): string[] {

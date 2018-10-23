@@ -11,9 +11,11 @@ import {
   eq,
   function_,
   any,
+  instanceOf,
   LooseEqual,
   Equal
 } from 'walli'
+import { Matcher } from './TemplateConfig'
 
 const { createVerifiableClass } = util
 
@@ -65,21 +67,19 @@ const source = createVerifiableClass({
   }
 })
 
+const matcher = oneOf([string, arrayOf(string), function_, instanceOf(RegExp)])
+
 export const rc: Equal = leq({
   source: source().optional,
   // cacheDir: oneOf([boolean, string]).optional,
   alias: objectOf(source()).optional,
   extends: oneOf([string, arrayOf(string)]).optional,
-  // output: string.optional,
-  // plugins: arrayOf(eq([function_, any])).optional,
-  // pull: leq({
-  //   npmClient: oneOf(['yarn', 'npm']).optional,
-  //   git: oneOf(['clone', 'download']).optional
-  // }).optional,
   storePrompts: boolean.optional,
   offlineFallback: boolean.optional,
   updateNotify: boolean.optional,
-  debug: boolean.optional
+  debug: boolean.optional,
+  includes: matcher.optional,
+  excludes: matcher.optional
 }).assign(sourceConfig())
 
 export const edam: LooseEqual = rc.assign(
@@ -122,6 +122,8 @@ export interface RCOptions extends SourceConfig {
   offlineFallback?: boolean
   debug?: boolean
   updateNotify?: boolean
+  includes?: Matcher
+  excludes?: Matcher
 }
 
 export interface EdamConfig extends RCOptions {

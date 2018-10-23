@@ -29,9 +29,31 @@ By [update-notifier](https://github.com/yeoman/update-notifier)
 
 Appoints to the cache where to store. It should be a directory path.
 
-| default          | cli                    |
-| ---------------- | ---------------------- |
-| a computed value | `--cache-dir=<string>` |
+| default           | cli                    |
+| ----------------- | ---------------------- |
+| an computed value | `--cache-dir=<string>` |
+
+### includes
+
+- Type: `string|string[]|Function|RegExp`
+
+Which files are included (including all files by default)
+
+It's useful that overwriting some files. (e.g. `README.md`)
+
+| default      | cli                            |
+| ------------ | ------------------------------ |
+| `() => true` | `--includes=<string>,<string>` |
+
+### excludes
+
+- Type: `string|string[]|Function|RegExp`
+
+Which files are excluded.
+
+| default       | cli                            |
+| ------------- | ------------------------------ |
+| `() => false` | `--excludes=<string>,<string>` |
 
 ### extends
 

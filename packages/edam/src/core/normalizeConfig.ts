@@ -83,7 +83,9 @@ export default async function normalizeConfig(
   mergedConfig = Object.assign({
     offlineFallback: true,
     cacheDir: true,
-    updateNotify: true
+    updateNotify: true,
+    includes: () => true,
+    excludes: () => false
   }, mergedConfig)
 
   if (!mergedConfig.plugins) {

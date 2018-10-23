@@ -54,11 +54,23 @@ const flags = [
     default: true
   },
   {
+    name: 'includes',
+    type: 'string',
+    desc: 'Which files are included (including all files by default)\ne.g. --includes=*.md,**/*.js',
+    default: () => true
+  },
+  {
+    name: 'excludes',
+    type: 'string',
+    desc: 'Which files are excluded. e.g. --excludes=*.js',
+    default: () => false
+  },
+  {
     name: 'extends',
     type: 'string',
     desc:
-      'Extends external edam configuration files.  ' +
-      'eg. --extends="./.edamrc,../.edamrc"',
+      'Extends external edam configuration files. \n' +
+      'e.g. --extends="./.edamrc,../.edamrc"',
     default: null
   },
   {
@@ -103,6 +115,13 @@ const flags = [
     default: true
   },
   {
+    name: 'offline-fallback',
+    type: 'boolean',
+    // eslint-disable-next-line quotes
+    desc: "Fallback to local cache assets when you are offline.",
+    default: true
+  },
+  {
     name: 'output',
     alias: 'o',
     type: 'string',
@@ -142,6 +161,18 @@ ${generateFlagHelp(flags, '      ')}
   }
 )
 ;(function() {
+  const flags = cli.flags
+  // parse array input
+  ;['extends', 'plugins', 'includes', 'excludes'].forEach(name => {
+    if (!Array.isArray(flags[name]) && typeof flags[name] === 'string') {
+      if (flags[name]) {
+        flags[name] = flags[name].split(',')
+      } else {
+        flags[name] = null
+      }
+    }
+  })
+
   if (cli.flags.debug) {
     dbg.enable('edam-cli')
   }
@@ -153,18 +184,6 @@ ${generateFlagHelp(flags, '      ')}
     cli.showHelp()
     return
   }
-
-  const flags = cli.flags
-  // parse array input
-  ;['extends', 'plugins'].forEach(name => {
-    if (!Array.isArray(flags[name])) {
-      if (flags[name]) {
-        flags[name] = flags[name].split(',')
-      } else {
-        flags[name] = null
-      }
-    }
-  })
 
   const config = Object.assign(
     {},
@@ -183,7 +202,10 @@ ${generateFlagHelp(flags, '      ')}
       source: cli.input[0],
       // overwrite: flags.overwrite,
       storePrompts: flags.storePrompts,
-      debug: flags.debug
+      debug: flags.debug,
+      offlineFallback: flags.offlineFallback,
+      includes: flags.includes,
+      excludes: flags.excludes
     }
   )
 

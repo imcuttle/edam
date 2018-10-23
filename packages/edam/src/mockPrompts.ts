@@ -7,22 +7,23 @@
 
 import { Edam } from './index'
 import FileProcessor from './core/TreeProcessor/FileProcessor'
-import TemplateConfig from './types/TemplateConfig'
+import { EdamConfig } from './types/Options'
 
 export default async function mockPrompts(
-  template: string | TemplateConfig,
+  template: string,
   promptValues = {},
-  output?: string
+  config: EdamConfig | string = {}
 ): Promise<FileProcessor> {
   const em: Edam = new Edam({ userc: false, yes: true, storePrompts: false })
-  em.config.output = output
+
+  // Compatible with edam@<=2
+  if (typeof config === 'string') {
+    config = { output: config }
+  }
+  Object.assign(em.config, config)
   em.once('prompt:after', variables => {
     variables.assign(promptValues)
   })
 
-  if (typeof template === 'string') {
-    return await em.process(template)
-  }
-  em.templateConfig = template
-  return await em.process()
+  return await em.process(template)
 }
