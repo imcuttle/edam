@@ -64,7 +64,8 @@ module.exports = async function npmPull(
           await fs.readFile(join(modulePath, 'package.json'), {
             encoding: 'utf8'
           })
-        )
+        ),
+        updateCheckInterval: 0
       })
       const output =
         this && this.config ? tildify(this.config.output) : './output'
