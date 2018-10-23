@@ -15,7 +15,7 @@ const { sync } = require('rimraf')
 const tmpDir = tempy.directory()
 
 jest.mock('inquirer')
-
+const isCI = require('is-ci')
 const { op } = require('inquirer')
 
 describe('prompt', function() {
@@ -227,7 +227,7 @@ describe('prompt', function() {
     })
 
     it('should prompt works on store case in assign mode', async () => {
-      if (os.platform() !== 'darwin') {
+      if (isCI) {
         return
       }
       op.run([

@@ -10,9 +10,6 @@ import * as isCI from 'is-ci'
 
 describe('extendsConfig', function() {
   it('should extendsConfig throw error when syntax is illegal', async () => {
-    if (isCI) {
-      return
-    }
     try {
       await extendsConfig(
         {
