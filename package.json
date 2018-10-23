@@ -12,7 +12,7 @@
     "dev": "lerna run --parallel dev",
     "bootstrap": "lerna bootstrap",
     "prerelease": "npm test",
-    "release": "lerna publish --conventional-commits -m 'chore(release): publish'",
+    "release": "lerna publish --conventional-commits -m 'chore(release): publish %s'",
     "site": "picidae start -c _site/picidae.config.js",
     "site:build": "picidae build -f --source-map -c _site/picidae.config.js"
   },
