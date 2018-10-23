@@ -31,6 +31,7 @@
     "download": "^6.2.5",
     "filenamify": "^2.0.0",
     "find-up": "^3.0.0",
+    "git-config-path": "^1.0.1",
     "global-modules": "^1.0.0",
     "handlebars": "^4.0.11",
     "handlebars-helpers": "^0.10.0",

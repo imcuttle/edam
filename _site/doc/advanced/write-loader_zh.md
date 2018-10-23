@@ -15,9 +15,9 @@ order: 3
   ]
 }
 ```
-用于定义 loader 集合，预设两种 Loader: [`LoDash`](https://lodash.com/docs/4.17.5#template) `module`.
+用于定义 loader 集合，预设两种 `hbs`, `module`.
 
-LoDash 为模板替换 Loader，在文本中书写 `<%= name %>` 将会被替换。
+hbs 为模板替换 Loader，在文本中书写 `{{{ name }}}` 将会被替换。
 
 而 `module` Loader 较为特殊，不是模板引擎替换，而是以 commonjs 的规范处理输出 JSON 数据，所以非常适合于json文本的处理。
 
@@ -58,14 +58,14 @@ module Loader 将会输出为 `JSON.stringify(pkg, null, indent)`.
   {
     // glob
     test: '*.ts',
-    loader: 'LoDash?query'
+    loader: 'hbs?query'
   }
 ]
 ```
 
-用于分发文件使用哪个`loader`，默认都采用 LoDash Loader 和 hbs Loader。
+用于分发文件使用哪个`loader`，默认都采用 hbs Loader。
 
-**注意：Edam@3 将会移除 LoDash Loader，默认引入 [Plop Handlebar](https://plopjs.com/documentation/#built-in-helpers) Loader**
+**注意：Edam@3 移除 LoDash Loader，默认引入 [Plop Handlebar](https://plopjs.com/documentation/#built-in-helpers) Loader**
 Plop Handlebar 使用 Handlebar 模板，注入了一些 helper:
 
 - camelCase: changeFormatToThis
@@ -79,14 +79,15 @@ Plop Handlebar 使用 Handlebar 模板，注入了一些 helper:
 - constantCase: CHANGE_FORMAT_TO_THIS
 - titleCase: Change Format To This
 
-介绍完 loader 相关的概念后，进入正文：书写Loader
+除此之外，还注入了 100+ 个有用的 [handlebar helpers](https://github.com/helpers/handlebars-helpers)
+
+介绍完 loader 相关的概念后，进入正文：书写 Loader
 
 ## 怎么书写Loader
 
 官方提供两种预设Loader，可以提供参考
-* [LoDash](https://github.com/imcuttle/edam/blob/master/packages/edam/src/core/Compiler/loaders/lodash.ts)
+* [hbs](https://github.com/imcuttle/edam/blob/master/packages/edam/src/core/Compiler/loaders/plopHandlebar.ts)
 * [module](https://github.com/imcuttle/edam/blob/master/packages/edam/src/core/Compiler/loaders/module.ts)
-
 
 ### Raw Loader
 
