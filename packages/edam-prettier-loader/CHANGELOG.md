@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="3.0.0"></a>
+# [3.0.0](https://github.com/imcuttle/edam/compare/v2.3.14...v3.0.0) (2018-10-23)
+
+
+### Features
+
+* handlebar.js inject some bulit-in helper (e.g. `eq`) ([50c593e](https://github.com/imcuttle/edam/commit/50c593e)), closes [#17](https://github.com/imcuttle/edam/issues/17)
+
+
+### BREAKING CHANGES
+
+* remove lodash loader
+
+
+
+
 <a name="2.3.14"></a>
 ## [2.3.14](https://github.com/imcuttle/edam/compare/v2.3.13...v2.3.14) (2018-10-03)
 

@@ -3,6 +3,36 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="3.0.0"></a>
+# [3.0.0](https://github.com/imcuttle/edam/compare/v2.3.14...v3.0.0) (2018-10-23)
+
+
+### Bug Fixes
+
+* cli pull npm client is not working ([2d33436](https://github.com/imcuttle/edam/commit/2d33436)), closes [#20](https://github.com/imcuttle/edam/issues/20)
+* updateNotify is not working ([fab3586](https://github.com/imcuttle/edam/commit/fab3586)), closes [#10](https://github.com/imcuttle/edam/issues/10)
+
+
+### Chores
+
+* change pull.npmClient to pull.npm-client ([a9db6ed](https://github.com/imcuttle/edam/commit/a9db6ed))
+
+
+### Features
+
+* handlebar.js inject some bulit-in helper (e.g. `eq`) ([50c593e](https://github.com/imcuttle/edam/commit/50c593e)), closes [#17](https://github.com/imcuttle/edam/issues/17)
+* support `scope` `ignore` globby files ([096b521](https://github.com/imcuttle/edam/commit/096b521)), closes [#16](https://github.com/imcuttle/edam/issues/16)
+* supports `debug` option ([b0cb8b7](https://github.com/imcuttle/edam/commit/b0cb8b7))
+
+
+### BREAKING CHANGES
+
+* remove lodash loader
+* pull.npmClient in cli change to pull.npm-client
+
+
+
+
 <a name="2.3.14"></a>
 ## [2.3.14](https://github.com/imcuttle/edam/compare/v2.3.13...v2.3.14) (2018-10-03)
 

@@ -4,6 +4,9 @@
     "packages/*"
   ],
   "useWorkspaces": false,
-  "hoist": ["jest", "typescript"],
-  "version": "2.3.14"
+  "hoist": [
+    "jest",
+    "typescript"
+  ],
+  "version": "3.0.0"
 }
