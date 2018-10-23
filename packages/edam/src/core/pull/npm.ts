@@ -32,6 +32,7 @@ module.exports = async function npmPull(
     offlineFallback
   } = options
   let isOffline = offlineFallback ? !(await isOnline()) : false
+  debug('isOffline', isOffline)
 
   const log = (this && this.logger && this.logger.log) || console.log
   const warn = (this && this.logger && this.logger.warn) || console.warn

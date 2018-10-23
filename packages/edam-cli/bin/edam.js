@@ -3,7 +3,7 @@
 const c = require('chalk')
 const constant = require('edam/dist/core/constant').default
 const meow = require('meow')
-const pkg = require('edam/package.json')
+const pkg = require('../package.json')
 const tildify = require('tildify')
 const updateNotify = require('update-notifier')
 const dbg = require('debug')
@@ -223,7 +223,7 @@ ${generateFlagHelp(flags, '      ')}
           c.reset(' → ') +
           c.greenBright(upt.latest) +
           ' \nRun ' +
-          c.cyanBright('npm install edam@latest -g') +
+          c.cyanBright(`npm install ${pkg.name}@latest -g`) +
           ' to update'
       })
     }

@@ -68,6 +68,7 @@ module.exports = async function gitPull(
   const errorLog = (this && this.logger && this.logger.warn) || console.error
 
   let isOffline = offlineFallback ? !(await isOnline()) : false
+  debug('isOffline', isOffline)
 
   async function installFromPkg(target) {
     debug('installFromPkg: %s', target)
