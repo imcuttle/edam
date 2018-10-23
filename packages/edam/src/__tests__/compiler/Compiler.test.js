@@ -91,11 +91,11 @@ describe('Compiler', function() {
     })
     cer.assets = {
       'test.js': {
-        value: 'Hello,<%= name%>'
+        value: 'Hello,{{name}}'
         // load
       },
       'test.a.js': {
-        value: 'Hello,A,<%= name%> {{paramCase name}}'
+        value: 'Hello,A,{{name}} {{paramCase name}}'
         // load
       }
     }
@@ -105,13 +105,13 @@ describe('Compiler', function() {
       expect.objectContaining({
         'test.js': expect.objectContaining({
           output: 'Hello,pigAbc',
-          input: 'Hello,<%= name%>',
-          loaders: ['LoDash', 'hbs']
+          input: 'Hello,{{name}}',
+          loaders: ['hbs']
         }),
         'test.a.js': expect.objectContaining({
-          input: 'Hello,A,<%= name%> {{paramCase name}}',
+          input: 'Hello,A,{{name}} {{paramCase name}}',
           output: 'Hello,A,pigAbc pig-abc',
-          loaders: ['LoDash', 'hbs']
+          loaders: ['hbs']
         })
       })
     )
@@ -134,17 +134,17 @@ describe('Compiler', function() {
       },
       {
         test: '*.js',
-        loader: 'LoDash'
+        loader: 'hbs'
       }
     ]
 
     cer.assets = {
       'test.js': {
-        value: new Buffer('Hello,<%= name%>')
+        value: new Buffer('Hello,{{ name}}')
         // load
       },
       'test.a.js': {
-        value: '// @loader LoDash?v=1.2.3 \nHello,A,<%= name%>'
+        value: '// @loader hbs?v=1.2.3 \nHello,A,{{ name}}'
         // load
       }
     }
@@ -155,15 +155,15 @@ describe('Compiler', function() {
         'test.js': expect.objectContaining({
           output: JSON.stringify({
             name: 'pig',
-            content: 'Hello,<%= name%>',
+            content: 'Hello,{{ name}}',
             options: {}
           }),
-          input: new Buffer('Hello,<%= name%>')
+          input: new Buffer('Hello,{{ name}}')
         }),
         'test.a.js': expect.objectContaining({
-          input: 'Hello,A,<%= name%>',
+          input: 'Hello,A,{{ name}}',
           output: 'Hello,A,pig',
-          loaders: 'LoDash'
+          loaders: 'hbs'
         })
       })
     )
@@ -187,13 +187,13 @@ describe('Compiler', function() {
       },
       {
         test: '*.js',
-        loader: 'LoDash'
+        loader: 'hbs'
       }
     ]
 
     cer.assets = {
       'test.js': {
-        value: 'Hello,<%= name%>'
+        value: 'Hello,{{ name}}'
         // load
       }
     }
@@ -203,7 +203,7 @@ describe('Compiler', function() {
       expect.objectContaining({
         'test.js': expect.objectContaining({
           output: 'options:' + 'haha',
-          input: 'Hello,<%= name%>'
+          input: 'Hello,{{ name}}'
         })
       })
     )
@@ -226,13 +226,13 @@ describe('Compiler', function() {
     cer.mappers = [
       {
         test: '*.js',
-        loader: 'LoDash'
+        loader: 'hbs'
       }
     ]
 
     cer.assets = {
       'test.js': {
-        value: '/* @loader cus?name=abc */ Hello,<%= name%>'
+        value: '/* @loader cus?name=abc */ Hello,{{ name}}'
         // load
       }
     }
@@ -242,7 +242,7 @@ describe('Compiler', function() {
       expect.objectContaining({
         'test.js': expect.objectContaining({
           output: 'options:' + 'abc',
-          input: 'Hello,<%= name%>'
+          input: 'Hello,{{ name}}'
         })
       })
     )
@@ -265,7 +265,7 @@ describe('Compiler', function() {
 
     cer.assets = {
       'test.js': {
-        value: 'Hello,<%= name%>',
+        value: 'Hello,{{ name}}',
         loaders: 'cus?name=abc'
       }
     }
@@ -275,7 +275,63 @@ describe('Compiler', function() {
       expect.objectContaining({
         'test.js': expect.objectContaining({
           output: 'options:' + 'abc',
-          input: 'Hello,<%= name%>'
+          input: 'Hello,{{ name}}'
+        })
+      })
+    )
+  })
+
+  it('should detect legacy lodash loader', async function() {
+    cer.logger.error = jest.fn(cer.logger.error)
+
+    cer.assets = {
+      'test.js': {
+        value: 'Hello, <%=name%> \n <%=name%>  \n {{ name}}',
+        loaders: 'hbs'
+      }
+    }
+    cer.variables.setStore({ name: '<foo></foo>' })
+
+    const tree = await cer.run()
+    expect(tree).toEqual(
+      expect.objectContaining({
+        'test.js': expect.objectContaining({
+          output: 'Hello, <%=name%> \n <%=name%>  \n &lt;foo&gt;&lt;/foo&gt;',
+          input: 'Hello, <%=name%> \n <%=name%>  \n {{ name}}'
+        })
+      })
+    )
+
+    expect(cer.logger.error).toHaveBeenCalledTimes(2)
+    expect(cer.logger.error).toBeCalledWith(
+      expect.stringContaining('test.js:2:2'),
+      'Detected using the deprecated Lodash loader, please replace it (https://bit.ly/2CYM8lC) by handlebar.'
+    )
+  })
+
+  it('should handlebar helps works', async function() {
+    cer.assets = {
+      'test.js': {
+        value: 'Hello, {{#is name "foo"}}heihei{{/is}}',
+        loaders: 'hbs'
+      }
+    }
+    cer.variables.setStore({ name: 'foo' })
+
+    const tree = await cer.run()
+    expect(tree).toEqual(
+      expect.objectContaining({
+        'test.js': expect.objectContaining({
+          output: 'Hello, heihei',
+        })
+      })
+    )
+
+    cer.variables.setStore({ name: 'bar' })
+    expect(await cer.run()).toEqual(
+      expect.objectContaining({
+        'test.js': expect.objectContaining({
+          output: 'Hello, ',
         })
       })
     )

@@ -1,5 +1,5 @@
 ---
-title: Options
+title: 选项
 ---
 
 ### offlineFallback
@@ -8,9 +8,9 @@ title: Options
 
 Fallback to local cache assets when you are offline.
 
-| default | cli                  |
-| ------- | -------------------- |
-| `true`  | `--offline-fallback` |
+| default | cli                             |
+| ------- | ------------------------------- |
+| `true`  | `--offline-fallback=true|false` |
 
 ### updateNotify
 
@@ -19,9 +19,9 @@ Fallback to local cache assets when you are offline.
 Notifies the latest upgrade information like npm
 By [update-notifier](https://github.com/yeoman/update-notifier)
 
-| default | cli               |
-| ------- | ----------------- |
-| `true`  | `--update-notify` |
+| default | cli                          |
+| ------- | ---------------------------- |
+| `true`  | `--update-notify=true|false` |
 
 ### cacheDir
 
@@ -31,7 +31,7 @@ Appoints to the cache where to store. It should be a directory path.
 
 | default          | cli                    |
 | ---------------- | ---------------------- |
-| a computed value | `--cache-dir <string>` |
+| a computed value | `--cache-dir=<string>` |
 
 ### extends
 
@@ -39,9 +39,9 @@ Appoints to the cache where to store. It should be a directory path.
 
 Extends external edam configuration files.
 
-| default | cli                  |
-| ------- | -------------------- |
-| `[]`    | `--extends=<string>` |
+| default | cli                         |
+| ------- | --------------------------- |
+| `[]`    | `--extends=<string,string>` |
 
 ### plugins
 
@@ -49,9 +49,9 @@ Extends external edam configuration files.
 
 The plugins you requires.
 
-| default | cli                  |
-| ------- | -------------------- |
-| `[]`    | `--plugins=<string>` |
+| default | cli                         |
+| ------- | --------------------------- |
+| `[]`    | `--plugins=<string,string>` |
 
 ### debug
 
@@ -59,9 +59,9 @@ The plugins you requires.
 
 Enable debug mode for verbose log (Don't works when silent is true).
 
-| default | cli           |
-| ------- | ------------- |
-| `false` | `-d, --debug` |
+| default | cli                      |
+| ------- | ------------------------ |
+| `false` | `-d, --debug=true|false` |
 
 ### pull.npmClient
 
@@ -89,9 +89,9 @@ Uses which way to pull git repo.
 
 Edam can deduce the configuration file from current work directory like `.babelrc`.
 
-| default | cli             |
-| ------- | --------------- |
-| `true`  | `--userc=false` |
+| default | cli                  |
+| ------- | -------------------- |
+| `true`  | `--userc=true|false` |
 
 ### yes
 
@@ -109,9 +109,9 @@ Uses stored prompt's values instead of typing arduously.
 
 Disables storing latest prompt's values.
 
-| default | cli                |
-| ------- | ------------------ |
-| `true`  | `--no-store=false` |
+| default | cli                          |
+| ------- | ---------------------------- |
+| `true`  | `--store-prompts=true|false` |
 
 ### output
 

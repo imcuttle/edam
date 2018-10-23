@@ -10,7 +10,7 @@ const compiler = new Compiler()
 compiler.assets = {
   'test.js': {
     value: `
-  var a = '<%= v %>'
+  var a = '{{{ v }}}'
   if (a === '123') {
     console.log(1)
   } 
@@ -27,7 +27,7 @@ it('should passed options works', async function() {
   ]
   const tree = await compiler.run()
   expect(tree['test.js'].output).toBe(
-    `var a = '<%= v %>';
+    `var a = '{{{ v }}}';
 if (a === '123') {
     console.log(1);
 }\n`.trimLeft()
@@ -39,7 +39,7 @@ it('should passed filePath works', async function() {
     {
       test: '*.js',
       loader: [
-        'LoDash',
+        'hbs',
         [require('./'), { filePath: __dirname, semi: true }]
       ]
     }

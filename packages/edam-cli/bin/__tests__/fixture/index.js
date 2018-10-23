@@ -16,6 +16,11 @@ module.exports = {
       message: 'abc',
       when: 'user!=="edam-user"',
       default: '19'
+    },
+    {
+      name: 'default',
+      message: 'default',
+      default: 'default value'
     }
   ],
   // mappers: {

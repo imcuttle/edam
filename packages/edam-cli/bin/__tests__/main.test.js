@@ -22,7 +22,6 @@ const exec = function(argString, { cwd = gCwd } = {}) {
 }
 
 describe('main.spec', function() {
-
   beforeEach(function () {
     rimraf.sync(join(__dirname, 'fixture/output'))
   })

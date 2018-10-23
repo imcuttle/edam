@@ -8,15 +8,15 @@ Edam loader for prettier text.
 
 * Input
 
-```ejs
-<% if (name === '123') {%>
+```handlebar
+{{#is name '123'}}
 var name = "abc";
-<%}%>
+{{/is}
 ```
 
 * Output
 
-```ejs
+```javascript
 var name = "abc";
 ```
 

@@ -96,11 +96,11 @@ const flags = [
     default: false
   },
   {
-    name: 'no-store',
+    name: 'store-prompts',
     type: 'boolean',
     // eslint-disable-next-line quotes
-    desc: "Disables storing latest prompt's values.",
-    default: false
+    desc: "Enable storing latest prompt's values.",
+    default: true
   },
   {
     name: 'output',
@@ -182,7 +182,7 @@ ${generateFlagHelp(flags, '      ')}
       output: flags.output,
       source: cli.input[0],
       // overwrite: flags.overwrite,
-      storePrompts: !flags.noStore,
+      storePrompts: flags.storePrompts,
       debug: flags.debug
     }
   )

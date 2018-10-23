@@ -24,7 +24,7 @@ import hookify from './hookify'
 import matchMeta from './matchMeta'
 import parseQueryString from '../../lib/parseQueryString'
 import DefaultLogger from '../DefaultLogger'
-import EdamError from '../EdamError';
+import EdamError from '../EdamError'
 
 const debug = require('debug')('edam:Compiler')
 
@@ -99,13 +99,12 @@ export default class Compiler extends AwaitEventEmitter {
     [loaderId: string]: Array<StrictLoader | StrictLoaderWithOption>
   } = {
     module: require('./loaders/module'),
-    LoDash: [[require('./loaders/lodash'), {}]],
     hbs: [[require('./loaders/plopHandlebar'), {}]]
   }
   public mappers: Array<Mapper> = [
     {
       test: '*',
-      loader: ['LoDash', 'hbs']
+      loader: ['hbs']
     }
   ]
   public variables = new VariablesImpl()
@@ -141,6 +140,7 @@ export default class Compiler extends AwaitEventEmitter {
           if (!loader) {
             throw new EdamError(`loaderId: ${id} is not matched.`)
           }
+
           return await this.transform(
             input,
             loader,
@@ -218,7 +218,7 @@ export default class Compiler extends AwaitEventEmitter {
           debug('matched meta: \n%O \npath: %s', meta, path)
           if (!(meta.loader.name in this.loaders)) {
             this.logger.warn(
-              'Matched loader %s from file: %s is not existed',
+              '%s loader that from file "%s" is not existed',
               meta.loader.name,
               path
             )
