@@ -5,7 +5,6 @@
  * @description
  */
 
-import c from 'chalk'
 import { Logger } from '../types/core'
 const logSymbols = require('log-symbols')
 
