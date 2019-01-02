@@ -82,7 +82,7 @@ describe('git', function() {
   // it('should download deals with the gitlab', async function() {
   //   let s = {
   //     ...source,
-  //     url: 'http://gitlab.baidu.com/be-fe/befe-utils.git',
+  //     url: 'http://gitlab.example.com/be-fe/befe-utils.git',
   //     checkout: 'master'
   //   }
   //   expect(

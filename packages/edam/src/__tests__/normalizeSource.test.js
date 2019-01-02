@@ -59,19 +59,19 @@ describe('normalizeSource', function() {
   })
 
   it('should normalizeSource works on gitlab', function() {
-    expect(normalizeSource('ssh://g@gitlab.baidu.com:8022/aa/vvv.git')).toEqual(
+    expect(normalizeSource('ssh://g@gitlab.example.com:8022/aa/vvv.git')).toEqual(
       {
         type: 'git',
-        url: 'ssh://g@gitlab.baidu.com:8022/aa/vvv.git',
+        url: 'ssh://g@gitlab.example.com:8022/aa/vvv.git',
         checkout: 'master'
       }
     )
 
     expect(
-      normalizeSource('ssh://g@gitlab.baidu.com:8022/aa/vvv?checkout=dev')
+      normalizeSource('ssh://g@gitlab.example.com:8022/aa/vvv?checkout=dev')
     ).toEqual({
       type: 'git',
-      url: 'ssh://g@gitlab.baidu.com:8022/aa/vvv.git',
+      url: 'ssh://g@gitlab.example.com:8022/aa/vvv.git',
       checkout: 'dev'
     })
 

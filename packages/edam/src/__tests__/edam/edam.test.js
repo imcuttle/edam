@@ -12,7 +12,7 @@ describe('edam', function() {
     it('should edam.setConfig works', () => {
       const config = {}
       const em = edam(config)
-      expect(em.config).toBe(config)
+      expect(em.config).not.toBe(config)
 
       em.setConfig({})
       expect(em.config).not.toBe(config)

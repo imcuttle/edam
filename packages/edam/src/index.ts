@@ -76,8 +76,8 @@ export class Edam extends AwaitEventEmitter {
   public track: Track
   constructor(public config?: EdamConfig, public options: Options = {}) {
     super()
-    config && this.setConfig(config)
-    this.setOption(options)
+    config && this.setConfig({ ...config })
+    this.setOption({ ...options })
     // fill
     this.utils = Object.assign({}, Edam.utils)
     this.sourcePullMethods = Object.assign({}, Edam.sourcePullMethods)

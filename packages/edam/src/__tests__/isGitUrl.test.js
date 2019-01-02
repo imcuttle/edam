@@ -12,10 +12,10 @@ describe('isGitUrl', function () {
       isGitUrl('https://github.com/telescopejs/telescope')
     ).toBeTruthy()
     expect(
-      isGitUrl('ssh://g@gitlab.baidu.com:8022/be-fe/matriks2-seed.git')
+      isGitUrl('ssh://g@gitlab.example.com:8022/be-fe/matriks2-seed.git')
     ).toBeTruthy()
     expect(
-      isGitUrl('ssh://g@gitlab.baidu.com:8022/be-fe/matriks2-seed')
+      isGitUrl('ssh://g@gitlab.example.com:8022/be-fe/matriks2-seed')
     ).toBeTruthy()
     expect(
       isGitUrl('https://github.com/telescopejs/telescope.git')

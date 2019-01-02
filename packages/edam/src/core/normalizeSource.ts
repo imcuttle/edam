@@ -12,7 +12,7 @@ import * as _ from 'lodash'
 import { Source } from '../types/Options'
 import resolve from '../lib/resolve'
 import { normalizePlugins } from './extendsConfig'
-import parseQuery from "../lib/parseQuery";
+import parseQuery from '../lib/parseQuery'
 const debug = require('debug')('edam:normalizeSource')
 const untildify = require('untildify')
 
@@ -135,7 +135,6 @@ export default function normalizeSource(
       url: result.url.slice(0, i)
     }
   }
-
 
   debug('source parsed: %o', result)
   return result

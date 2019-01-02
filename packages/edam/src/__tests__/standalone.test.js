@@ -11,6 +11,7 @@ const { readFileSync } = require('fs')
 
 describe('standalone', function() {
   it('should standalone', done => {
+    jest.setTimeout(14000)
     const em = edam(
       {
         source: './edam.js',
@@ -33,7 +34,7 @@ describe('standalone', function() {
         })
       })
       .catch(console.error)
-      .then(done)
+      .finally(done)
   })
 
   it('should stringMatching', function() {
