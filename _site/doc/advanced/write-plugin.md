@@ -1,4 +1,4 @@
 ---
-title: Write a plugin
+title: Write a plugin ⚠WIP
 order: 5
 ---
