@@ -60,7 +60,7 @@ async function _store(cacheDir: string, source, promptValues) {
   const old = await _get(cacheDir)
   let key = getKeyBySource(source)
   // assign
-  old[key] = { ...promptValues, ...old[key] }
+  old[key] = { ...old[key], ...promptValues }
   await fileSystem.writeFile(filename, JSON.stringify(old))
 }
 
