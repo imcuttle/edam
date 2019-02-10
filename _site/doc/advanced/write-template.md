@@ -23,7 +23,7 @@ Template is the most significant concept. the processing is follows.
 4. Adjust files struction by `copy` and `move`.
 5. Trigger `usefulHook` then `post` hooks
 
-**Note：The order of fields in `package.json` is that `edam:main` is superior to `main`.**
+**Note：The order of fields in `package.json` is that `edam:main` is superior to `main`. (>=3.1)**
 
 ## Config
 
