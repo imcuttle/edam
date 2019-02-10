@@ -1,0 +1,9 @@
+{
+  "name": "resolve-edam-main",
+  "version": "1.0.0",
+  "private": true,
+  "edam:main": "edam",
+  "dependencies": {
+    
+  }
+}

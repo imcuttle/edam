@@ -12,7 +12,7 @@ const globalModulePath = require('global-modules')
 
 export default function cusResolve(
   id,
-  options: Options & { safe?: boolean, global?: boolean }
+  options: Options & { safe?: boolean, global?: boolean, packageFilter?: Function }
 ) {
   options = Object.assign({
     cwd: process.cwd(),
@@ -21,7 +21,8 @@ export default function cusResolve(
   }, options)
   const opt = {
     basedir: options.cwd,
-    extensions: ['.js', '.json']
+    extensions: ['.js', '.json'],
+    packageFilter: options.packageFilter
   }
   try {
     return resolve.sync(id, opt)
@@ -42,4 +43,15 @@ export default function cusResolve(
       throw err
     }
   }
+}
+
+export function resolveEdamTemplate(id, opts?) {
+  return cusResolve(id, {
+    packageFilter: pkg => {
+      return Object.assign({}, pkg, {
+        main: pkg['edam:main'] || pkg['main']
+      })
+    },
+    ...opts
+  })
 }

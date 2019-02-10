@@ -13,6 +13,7 @@ import * as presetSourcePull from './core/pull/preset'
 import EdamError from './core/EdamError'
 import * as coreExported from './core/index'
 import * as libExported from './lib/index'
+import { resolveEdamTemplate } from './lib/resolve'
 import constant from './core/constant'
 import * as nps from 'path'
 import {
@@ -225,8 +226,9 @@ export class Edam extends AwaitEventEmitter {
         this.config.cacheDir || this.constants.DEFAULT_CACHE_DIR,
         this.config
       ])
-      templateConfigPath = this.templateConfigPath = require.resolve(
-        templateConfigPath
+      templateConfigPath = this.templateConfigPath = resolveEdamTemplate(
+        templateConfigPath,
+        { safe: false }
       )
 
       await this.emit('pull:after', templateConfigPath)

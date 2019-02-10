@@ -10,7 +10,7 @@ import fs from '../lib/fileSystem'
 import * as nps from 'path'
 import * as _ from 'lodash'
 import { Source } from '../types/Options'
-import resolve from '../lib/resolve'
+import { resolveEdamTemplate } from '../lib/resolve'
 import { normalizePlugins } from './extendsConfig'
 import parseQuery from '../lib/parseQuery'
 const debug = require('debug')('edam:normalizeSource')
@@ -114,7 +114,10 @@ export default function normalizeSource(
   }
 
   if (
-    ((filename = resolve(untildify(source), { ...options, safe: true })),
+    ((filename = resolveEdamTemplate(untildify(source), {
+      ...options,
+      safe: true
+    })),
     fs.isFile(filename))
   ) {
     result = {

@@ -25,6 +25,8 @@ order: 2
 5. 得到转换后的文件目录结构，根据 `copy` `move` 进行文件的负责和移动；
 6. 写入输出文件夹后，触发 usefulHook，调用 post 钩子。
 
+**注意：在 edam 模板项目 `package.json` 中，匹配 fields 优先顺序为 `edam:main` > `main`**
+
 ## 配置项
 
 允许直接 exports 配置，或者 `module.exports = edam => ({ /*config*/ })`
