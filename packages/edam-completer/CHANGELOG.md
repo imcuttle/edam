@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="3.1.0"></a>
+# [3.1.0](https://github.com/imcuttle/edam/compare/v3.0.3...v3.1.0) (2019-02-10)
+
+
+
+
+**Note:** Version bump only for package edam-completer
+
 <a name="3.0.3"></a>
 ## [3.0.3](https://github.com/imcuttle/edam/compare/v3.0.2...v3.0.3) (2019-01-30)
 
