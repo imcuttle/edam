@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="3.1.1"></a>
+## [3.1.1](https://github.com/imcuttle/edam/compare/v3.1.0...v3.1.1) (2019-02-15)
+
+
+### Bug Fixes
+
+* **edam-pull-npm:** use execa in npmInstall for supporting version range ([637fffa](https://github.com/imcuttle/edam/commit/637fffa))
+
+
+
+
 <a name="3.1.0"></a>
 # [3.1.0](https://github.com/imcuttle/edam/compare/v3.0.3...v3.1.0) (2019-02-10)
 
