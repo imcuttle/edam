@@ -104,6 +104,38 @@ describe('npm', function() {
     expect(version()).toBe('1.0.0')
   })
 
+  it('should npm install from version range', async () => {
+    expect(
+      await npmPull(
+        { ...source, version: '>=1.0.0 <1.2.0' },
+        constant.DEFAULT_CACHE_DIR,
+        {
+          cacheDir: true,
+          pull: {
+            npmClient: 'npm'
+          }
+        }
+      )
+    ).toBe(output)
+    expect(version()).toBe('1.1.0')
+  })
+
+  it('should npm install from version range by `yarn`', async () => {
+    expect(
+      await npmPull(
+        { ...source, version: '~1.0.0' },
+        constant.DEFAULT_CACHE_DIR,
+        {
+          cacheDir: true,
+          pull: {
+            npmClient: 'yarn'
+          }
+        }
+      )
+    ).toBe(output)
+    expect(version()).toBe('1.0.3')
+  })
+
   afterAll(async function() {
     await fileSystem.cleanDir(this.constants.DEFAULT_CACHE_DIR)
 

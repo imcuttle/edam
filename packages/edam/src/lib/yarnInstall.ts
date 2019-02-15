@@ -4,7 +4,7 @@
 'use strict'
 import processAsync from './processAsync'
 
-const spawn = require('cross-spawn')
+const spawn = require('execa')
 
 // cache the install check result
 let yarnInstalled
@@ -88,7 +88,7 @@ module.exports = function(deps, opts) {
     console.log('>', command, args.join(' '))
   }
 
-  const proc = spawn(command, args, {
+  const proc = spawn.shell(command + ' ' + args.join(' '), {
     stdio,
     cwd,
     env: getEnv(opts, command === 'yarn')

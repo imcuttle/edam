@@ -29,6 +29,7 @@
     "cross-spawn": "^6.0.5",
     "debug": "^3.1.0",
     "download": "^6.2.5",
+    "execa": "^1.0.0",
     "filenamify": "^2.0.0",
     "find-up": "^3.0.0",
     "git-config-path": "^1.0.1",

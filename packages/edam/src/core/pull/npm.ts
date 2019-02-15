@@ -40,7 +40,7 @@ module.exports = async function npmPull(
 
   let respectNpm5 = npmClient === 'npm'
 
-  const name = source.version ? `${source.url}@${source.version}` : source.url
+  const name = source.version ? `${source.url}@${JSON.stringify(source.version)}` : source.url
   let dest: string
   let modulePath: string
   let oldPkgPath: string
