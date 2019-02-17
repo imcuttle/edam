@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="3.1.2"></a>
+## [3.1.2](https://github.com/imcuttle/edam/compare/v3.1.1...v3.1.2) (2019-02-17)
+
+
+### Bug Fixes
+
+* **edam:** use resolveEdamTemplate instead of require.resolve ([af753eb](https://github.com/imcuttle/edam/commit/af753eb))
+
+
+
+
 <a name="3.1.1"></a>
 ## [3.1.1](https://github.com/imcuttle/edam/compare/v3.1.0...v3.1.1) (2019-02-15)
 
