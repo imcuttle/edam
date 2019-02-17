@@ -323,7 +323,7 @@ export class Edam extends AwaitEventEmitter {
     // The below process would update templateConfig
     // So we requires clone
     templateConfig = _.cloneDeep(templateConfig)
-    this.templateConfigPath = templateConfigPath = require.resolve(
+    this.templateConfigPath = templateConfigPath = resolveEdamTemplate(
       templateConfigPath
     )
 
