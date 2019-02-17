@@ -312,8 +312,11 @@ export class Edam extends AwaitEventEmitter {
   ): Promise<FileProcessor> {
     // preset plugins only do something about template
     await this.registerPlugins(plugins)
-
+    this.templateConfigPath = templateConfigPath = resolveEdamTemplate(
+      templateConfigPath
+    )
     debug('templatePath: %s', templateConfigPath)
+
     let templateConfig =
       (await getTemplateConfig.apply(
         this,
@@ -323,9 +326,6 @@ export class Edam extends AwaitEventEmitter {
     // The below process would update templateConfig
     // So we requires clone
     templateConfig = _.cloneDeep(templateConfig)
-    this.templateConfigPath = templateConfigPath = resolveEdamTemplate(
-      templateConfigPath
-    )
 
     await this._promptPrivate(templateConfig.prompts)
     this.templateConfig = await normalize.apply(this, [
