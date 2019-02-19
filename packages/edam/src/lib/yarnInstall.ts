@@ -2,22 +2,21 @@
 // Forked from https://github.com/egoist/yarn-install
 // use async instead sync
 'use strict'
-import processAsync from './processAsync'
-
+Object.defineProperty(exports, '__esModule', { value: true })
+const processAsync_1 = require('./processAsync')
 const spawn = require('execa')
-
 // cache the install check result
 let yarnInstalled
-
+let npmInstalled
 // cache npm version check result
 let isNpm5
 
-function getPm({ respectNpm5 }: { respectNpm5?: boolean } = {}) {
+// @ts-ignore
+function getPm({ respectNpm5 } = {}) {
   return (respectNpm5 && checkNpmVersion()) || !checkYarnInstalled()
     ? 'npm'
     : 'yarn'
 }
-
 // const install = require('yarn-install)
 //
 // with dependencies
@@ -39,13 +38,10 @@ module.exports = function(deps, opts) {
     opts = deps
     deps = null
   }
-
   opts = opts || {}
   const cwd = opts.cwd
   const stdio = opts.stdio === undefined ? 'inherit' : opts.stdio
-
   const command = getPm({ respectNpm5: opts.respectNpm5 })
-
   let args
   if (command === 'yarn') {
     args = getArgs({
@@ -79,23 +75,19 @@ module.exports = function(deps, opts) {
       '--production': opts.production
     })
   }
-
   if (deps) {
     args = args.concat(deps)
   }
-
   if (opts.showCommand) {
     console.log('>', command, args.join(' '))
   }
-
   const proc = spawn.shell(command + ' ' + args.join(' '), {
     stdio,
     cwd,
     env: getEnv(opts, command === 'yarn')
   })
-
   return new Promise((resolve, reject) => {
-    processAsync(proc, [command].concat(args).join(' '), function(
+    processAsync_1.default(proc, [command].concat(args).join(' '), function(
       error,
       stdout,
       stderr
@@ -108,23 +100,40 @@ module.exports = function(deps, opts) {
     })
   })
 }
-
 module.exports.yarnInstalled = yarnInstalled
 module.exports.isNpm5 = isNpm5
 module.exports.getPm = getPm
-
 function checkYarnInstalled() {
   if (typeof yarnInstalled !== 'undefined') return yarnInstalled
+  try {
+    const command = spawn.shellSync('yarn --version')
+    const installed = command.stdout && command.stdout.toString().trim()
+    yarnInstalled = installed
+  } catch (e) {
+    yarnInstalled = false
+  }
 
-  const command = spawn.sync('yarn', ['--version'])
-  const installed = command.stdout && command.stdout.toString().trim()
-  yarnInstalled = installed
-  return installed
+  return yarnInstalled
+}
+
+function checkNpmInstalled() {
+  if (typeof npmInstalled !== 'undefined') return npmInstalled
+  try {
+    const command = spawn.shellSync('npm --version')
+    const installed = command.stdout && command.stdout.toString().trim()
+    npmInstalled = installed
+  } catch (e) {
+    npmInstalled = false
+  }
+
+  return npmInstalled
 }
 
 function checkNpmVersion() {
   if (typeof isNpm5 !== 'undefined') return isNpm5
-
+  if (!checkNpmInstalled()) {
+    return false
+  }
   const command = spawn.sync('npm', ['--version'])
   const majorVersion = command.stdout
     .toString()
@@ -137,7 +146,6 @@ function checkNpmVersion() {
 function getArgs(obj) {
   return Object.keys(obj).filter(name => obj[name])
 }
-
 function getEnv(opts, isYarn) {
   const env = Object.assign({}, process.env)
   if (opts.registry) {
