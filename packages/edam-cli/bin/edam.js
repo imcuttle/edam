@@ -5,6 +5,8 @@ const constant = require('edam/dist/core/constant').default
 const meow = require('meow')
 const pkg = require('../package.json')
 const tildify = require('tildify')
+const get = require('lodash.get')
+const set = require('lodash.set')
 const updateNotify = require('update-notifier')
 const dbg = require('debug')
 
@@ -83,8 +85,15 @@ const flags = [
     name: 'pull.npm-client',
     type: 'string',
     desc:
-      'Appoints to the command when installing package form npmjs.com. [npm|yarn]',
+      'Appoints to the command when installing package. [npm|yarn]',
     default: 'npm'
+  },
+  {
+    name: 'pull.npm-client-args',
+    type: 'string',
+    desc:
+      'Appoints to the command\'s arguments when installing package. eg. --pull.npm-client-args="--registry=http://example.com"',
+    default: ''
   },
   {
     name: 'pull.git',
@@ -163,12 +172,13 @@ ${generateFlagHelp(flags, '      ')}
 ;(function() {
   const flags = cli.flags
   // parse array input
-  ;['extends', 'plugins', 'includes', 'excludes'].forEach(name => {
-    if (!Array.isArray(flags[name]) && typeof flags[name] === 'string') {
-      if (flags[name]) {
-        flags[name] = flags[name].split(',')
+  ;['extends', 'plugins', 'includes', 'excludes', 'pull.npm-client-args'].forEach(name => {
+    const value = get(flags, name)
+    if (!Array.isArray(value) && typeof value === 'string') {
+      if (value) {
+        set(flags, name, value.split(','))
       } else {
-        flags[name] = null
+        set(flags, name, null)
       }
     }
   })
@@ -194,6 +204,7 @@ ${generateFlagHelp(flags, '      ')}
       plugins: flags.plugins,
       pull: {
         npmClient: flags.pull['npm-client'],
+        npmClientArgs: flags.pull['pull.npm-client-args'],
         git: flags.pull['git']
       },
       yes: flags.yes,
