@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="3.3.0"></a>
+# [3.3.0](https://github.com/imcuttle/edam/compare/v3.2.0...v3.3.0) (2019-02-20)
+
+
+### Features
+
+* **edam-cli:** add --pull.npm-client-args ([a2c7273](https://github.com/imcuttle/edam/commit/a2c7273))
+
+
+
+
 <a name="3.2.0"></a>
 # [3.2.0](https://github.com/imcuttle/edam/compare/v3.1.5...v3.2.0) (2019-02-20)
 
