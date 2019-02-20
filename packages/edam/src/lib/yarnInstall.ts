@@ -75,6 +75,9 @@ module.exports = function(deps, opts) {
       '--production': opts.production
     })
   }
+  if (opts.args) {
+    args = args.concat(opts.args || [])
+  }
   if (deps) {
     args = args.concat(deps)
   }

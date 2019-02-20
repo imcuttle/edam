@@ -39,6 +39,9 @@ it('inferrable-configuration test', async () => {
         },
         'standalone.config': {
           config: {
+            pull: {
+              npmClientArgs: ['--version']
+            },
             output: nps.join(__dirname, './par/abc/output'),
             storePrompts: true
           },
@@ -64,6 +67,11 @@ it('inferrable-configuration source.config', async () => {
       plugins: [[require('./foo/edamrc'), {}]],
       output: nps.join(__dirname, './par/abc/output'),
       storePrompts: true,
+      pull: {
+        git: "clone",
+        npmClient: "npm",
+        npmClientArgs: ['--version']
+      },
       alias: {
         par: {
           type: 'npm',
@@ -82,6 +90,9 @@ it('inferrable-configuration source.config', async () => {
         },
         'standalone.config': {
           config: {
+            pull: {
+              npmClientArgs: ['--version']
+            },
             output: nps.join(__dirname, './par/abc/output'),
             storePrompts: true
           },

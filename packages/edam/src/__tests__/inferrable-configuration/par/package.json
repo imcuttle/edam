@@ -16,6 +16,9 @@
         "type": "file",
         "url": "./cwd",
         "config": {
+          "pull": {
+            "npmClientArgs": ["--version"]
+          },
           "output": "./abc/output",
           "storePrompts": true
         }

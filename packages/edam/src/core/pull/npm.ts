@@ -28,7 +28,7 @@ module.exports = async function npmPull(
 ) {
   const {
     cacheDir,
-    pull: { npmClient },
+    pull: { npmClient, npmClientArgs },
     offlineFallback
   } = options
   let isOffline = offlineFallback ? !(await isOnline()) : false
@@ -48,6 +48,7 @@ module.exports = async function npmPull(
   const install = async () => {
     try {
       await yarnInstall([name], {
+        args: npmClientArgs,
         respectNpm5,
         stdio: 'pipe',
         cwd: dest
