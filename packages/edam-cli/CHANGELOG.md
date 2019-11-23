@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="3.3.1"></a>
+## [3.3.1](https://github.com/imcuttle/edam/compare/v3.3.0...v3.3.1) (2019-11-23)
+
+
+### Bug Fixes
+
+* edam config is advanced for alias ([d2a06c6](https://github.com/imcuttle/edam/commit/d2a06c6))
+
+
+
+
 <a name="3.3.0"></a>
 # [3.3.0](https://github.com/imcuttle/edam/compare/v3.2.0...v3.3.0) (2019-02-20)
 
