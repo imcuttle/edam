@@ -11,7 +11,7 @@ const updateNotify = require('update-notifier')
 const dbg = require('debug')
 const omitNully = require('omit-nully')
 
-const { generateFlagData, generateFlagHelp } = require('./util')
+const {generateFlagData, generateFlagHelp} = require('./util')
 
 const debug = dbg('edam-cli')
 
@@ -40,8 +40,9 @@ const flags = [
   {
     name: 'cache-dir',
     type: 'string',
-    desc:
-      `Appoints to the cache where to store. It should be a directory path.\n ${tildify(constant.DEFAULT_CACHE_DIR)} by default`
+    desc: `Appoints to the cache where to store. It should be a directory path.\n ${tildify(
+      constant.DEFAULT_CACHE_DIR
+    )} by default`
     // default: tildify(constant.DEFAULT_CACHE_DIR)
   },
   {
@@ -71,9 +72,7 @@ const flags = [
   {
     name: 'extends',
     type: 'string',
-    desc:
-      'Extends external edam configuration files. \n' +
-      'e.g. --extends="./.edamrc,../.edamrc"'
+    desc: 'Extends external edam configuration files. \n' + 'e.g. --extends="./.edamrc,../.edamrc"'
     // default: null
   },
   {
@@ -85,8 +84,7 @@ const flags = [
   {
     name: 'pull.npm-client',
     type: 'string',
-    desc:
-      'Appoints to the command when installing package. [npm|yarn]'
+    desc: 'Appoints to the command when installing package. [npm|yarn]'
     // default: 'npm'
   },
   {
@@ -105,8 +103,7 @@ const flags = [
   {
     name: 'userc',
     type: 'boolean',
-    desc:
-      'Edam can deduce the configuration file from current work directory like `.babelrc`.',
+    desc: 'Edam can deduce the configuration file from current work directory like `.babelrc`.',
     default: true
   },
   {
@@ -128,7 +125,7 @@ const flags = [
     name: 'offline-fallback',
     type: 'boolean',
     // eslint-disable-next-line quotes
-    desc: "Fallback to local cache assets when you are offline.",
+    desc: 'Fallback to local cache assets when you are offline.',
     default: true
   },
   {
@@ -153,12 +150,112 @@ const flags = [
   }
 ]
 
+function run(config) {
+  let spinner = require('ora')()
+  const edam = require('edam').default
+  const em = edam(Object.assign({}, config), {
+    cwd: process.cwd()
+  })
+
+  const format = require('util').format
+  Object.assign(em.logger, {
+    _log() {
+      spinner.color = 'cyan'
+      spinner.text = format.apply(null, arguments)
+    },
+    _warn() {
+      spinner.color = 'yellow'
+      spinner.warn(format.apply(null, arguments))
+    },
+    _success() {
+      spinner.succeed(format.apply(null, arguments))
+    },
+    _error() {
+      // the error outside are caught outside.
+      spinner.fail(format.apply(null, arguments))
+    }
+  })
+  em.on('pull:before', source => {
+    if (source && ['npm', 'git'].includes(source.type)) {
+      !em.config.silent && spinner.start(`Pulling template from ${source.type}: ${source.url}`)
+    }
+  })
+    .on('pull:after', templateConfigPath => {
+      em.logger.success(`Pull done! template path: "${tildify(templateConfigPath)}"`)
+    })
+    .on('install:packages:before', () => {
+      spinner.start('Installing packages after generating...')
+    })
+    .on('install:packages:after', () => {
+      spinner.succeed('Install packages after generating succeed.')
+    })
+
+  em.compiler
+    .once('pre', (/*output*/) => {
+      // spinner.start('Writing to file...')
+    })
+    .once('post', output => {
+      em.logger.success(`Generate done! the output: "${tildify(output)}" is waiting for you`)
+    })
+
+  //
+  let code = 0
+  return em.normalizeConfig().then(() => {
+    if (!em.config.output) {
+      em.config.output = process.cwd()
+    }
+
+    if (!em.config.source || (em.config.source && em.config.source.url === '-')) {
+      if (em.config.alias && Object.keys(em.config.alias).length) {
+        let choices = Object.keys(em.config.alias).map(name => {
+          let config = em.config.alias[name]
+          return {
+            name: name + c.gray(config.description ? ' - ' + config.description : ''),
+            value: name
+          }
+        })
+
+        return em.inquirer
+          .prompt([
+            {
+              type: 'list',
+              choices,
+              name: 'source',
+              message: 'Please select your preferable template.'
+            }
+          ])
+          .then(({source}) => {
+            return run(Object.assign({}, config, {source}))
+          })
+      }
+    }
+
+    return Promise.resolve()
+      .then(() => em.registerPlugins())
+      .then(() => em.checkConfig())
+      .then(() => em.pull())
+      .then(() => em.process())
+      .then(function(fp) {
+        return fp.writeToFile(void 0, {overwrite: flags.overwrite})
+      })
+      .catch(function(err) {
+        if (err && err.id === 'EDAM_ERROR') {
+          spinner.fail(err.message)
+        } else {
+          spinner.fail(err.stack)
+        }
+        code = 1
+      })
+      .then(function() {
+        process.exit(code)
+      })
+  })
+}
+
 const cli = meow(
   `
     ${c.white('Usage')}
-      $ ${c.cyan.bold('edam')} ${c
-    .keyword('orchid')
-    .bold('<source>')} ${c.keyword('orange')('[options]')}
+      $ ${c.cyan.bold('edam')} ${c.keyword('orchid').bold('<source>')} ${c.keyword('orange')('[options]')}
  
     ${c.white('Options')}
     
@@ -189,17 +286,19 @@ ${generateFlagHelp(flags, '      ')}
     return
   }
 
-  const config = omitNully(Object.assign(
-    {
+  const config = omitNully(
+    Object.assign({
       cacheDir: !flags.noCache && flags.cacheDir,
       updateNotify: flags.updateNotify,
       extends: flags.extends,
       plugins: flags.plugins,
-      pull: flags.pull && omitNully({
-        npmClient: flags.pull['npm-client'],
-        npmClientArgs: flags.pull['npm-client-args'],
-        git: flags.pull['git']
-      }),
+      pull:
+        flags.pull &&
+        omitNully({
+          npmClient: flags.pull['npm-client'],
+          npmClientArgs: flags.pull['npm-client-args'],
+          git: flags.pull['git']
+        }),
       yes: flags.yes,
       silent: flags.silent,
       output: flags.output,
@@ -210,8 +309,8 @@ ${generateFlagHelp(flags, '      ')}
       offlineFallback: flags.offlineFallback,
       includes: flags.includes,
       excludes: flags.excludes
-    }
-  ))
+    })
+  )
 
   debug('config: %o', config)
 
@@ -235,7 +334,6 @@ ${generateFlagHelp(flags, '      ')}
     }
   }
 
-  const edam = require('edam').default
   const Edam = require('edam').Edam
   // default
   if (config.cacheDir === tildify(Edam.constants.DEFAULT_CACHE_DIR)) {
@@ -245,113 +343,5 @@ ${generateFlagHelp(flags, '      ')}
     delete config.output
   }
 
-  let spinner = require('ora')()
-  const em = edam(config, {
-    cwd: process.cwd()
-  })
-
-  const format = require('util').format
-  Object.assign(em.logger, {
-    _log() {
-      spinner.color = 'cyan'
-      spinner.text = format.apply(null, arguments)
-    },
-    _warn() {
-      spinner.color = 'yellow'
-      spinner.warn(format.apply(null, arguments))
-    },
-    _success() {
-      spinner.succeed(format.apply(null, arguments))
-    },
-    _error() {
-      // the error outside are caught outside.
-      spinner.fail(format.apply(null, arguments))
-    }
-  })
-  em.on('pull:before', source => {
-    if (source && ['npm', 'git'].includes(source.type)) {
-      !em.config.silent &&
-        spinner.start(`Pulling template from ${source.type}: ${source.url}`)
-    }
-  })
-    .on('pull:after', templateConfigPath => {
-      em.logger.success(
-        `Pull done! template path: "${tildify(templateConfigPath)}"`
-      )
-    })
-    .on('install:packages:before', () => {
-      spinner.start('Installing packages after generating...')
-    })
-    .on('install:packages:after', () => {
-      spinner.succeed('Install packages after generating succeed.')
-    })
-
-  em.compiler
-    .once('pre', (/*output*/) => {
-      // spinner.start('Writing to file...')
-    })
-    .once('post', output => {
-      em.logger.success(
-        `Generate done! the output: "${tildify(output)}" is waiting for you`
-      )
-    })
-
-  //
-  let code = 0
-  em.normalizeConfig()
-    .then(() => {
-      if (!em.config.output) {
-        em.config.output = process.cwd()
-      }
-
-      if (
-        !em.config.source ||
-        (em.config.source && em.config.source.url === '-')
-      ) {
-        if (em.config.alias && Object.keys(em.config.alias).length) {
-          let choices = Object.keys(em.config.alias).map(name => {
-            let config = em.config.alias[name]
-            return {
-              name:
-                name +
-                c.gray(config.description ? ' - ' + config.description : ''),
-              value: name
-            }
-          })
-
-          return em.inquirer
-            .prompt([
-              {
-                type: 'list',
-                choices,
-                name: 'source',
-                message: 'Please select your preferable template.'
-              }
-            ])
-            .then(({ source }) => {
-              em.config.source = source
-              // Normalize config again
-              return em.normalizeConfig()
-            })
-        }
-      }
-    })
-    .then(() => em.registerPlugins())
-    .then(() => em.checkConfig())
-    .then(() => em.pull())
-    .then(() => em.process())
-    .then(function(fp) {
-      return fp.writeToFile(void 0, { overwrite: flags.overwrite })
-    })
-    .catch(function(err) {
-      if (err && err.id === 'EDAM_ERROR') {
-        spinner.fail(err.message)
-      } else {
-        spinner.fail(err.stack)
-      }
-      code = 1
-    })
-    .then(function() {
-      process.exit(code)
-    })
+  run(Object.assign(config))
 })()
