@@ -16,7 +16,6 @@
     "no-use-before-define": ["error"],
     "no-undef": ["error"],
     "array-bracket-spacing": ["error", "never"],
-    "object-curly-spacing": ["error", "always"],
     "typescript/no-use-before-define": "warn",
     "typescript/no-unused-vars": "warn"
     //    "react/prop-types": [ true, { "ignore": ["children"] }]

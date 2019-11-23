@@ -16,6 +16,7 @@ const exec = function(argString, { cwd = gCwd } = {}) {
     cwd
   })
   console.log('arguments', argString)
+  console.log('sp.stdout', sp.stdout && sp.stdout.toString())
   console.log('sp.stderr', sp.stderr && sp.stderr.toString())
   console.log('sp.error', sp.error)
   return sp
@@ -50,7 +51,7 @@ describe('main.spec', function() {
   })
 
   it('should works fine when source is setting in parent', async () => {
-    const sp = exec('-o ../fixture/output -y -w', {
+    const sp = exec('../fixture --debug -o ../fixture/output -y -w', {
       cwd: join(__dirname, 'cwd')
     })
 

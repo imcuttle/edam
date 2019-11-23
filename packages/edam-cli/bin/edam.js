@@ -9,6 +9,7 @@ const get = require('lodash.get')
 const set = require('lodash.set')
 const updateNotify = require('update-notifier')
 const dbg = require('debug')
+const omitNully = require('omit-nully')
 
 const { generateFlagData, generateFlagHelp } = require('./util')
 
@@ -40,8 +41,8 @@ const flags = [
     name: 'cache-dir',
     type: 'string',
     desc:
-      'Appoints to the cache where to store. It should be a directory path.',
-    default: tildify(constant.DEFAULT_CACHE_DIR)
+      `Appoints to the cache where to store. It should be a directory path.\n ${tildify(constant.DEFAULT_CACHE_DIR)} by default`
+    // default: tildify(constant.DEFAULT_CACHE_DIR)
   },
   {
     name: 'no-cache',
@@ -58,48 +59,48 @@ const flags = [
   {
     name: 'includes',
     type: 'string',
-    desc: 'Which files are included (including all files by default)\ne.g. --includes=*.md,**/*.js',
-    default: () => true
+    desc: 'Which files are included (including all files by default)\ne.g. --includes=*.md,**/*.js'
+    // default: () => true
   },
   {
     name: 'excludes',
     type: 'string',
-    desc: 'Which files are excluded. e.g. --excludes=*.js',
-    default: () => false
+    desc: 'Which files are excluded. e.g. --excludes=*.js'
+    // default: () => false
   },
   {
     name: 'extends',
     type: 'string',
     desc:
       'Extends external edam configuration files. \n' +
-      'e.g. --extends="./.edamrc,../.edamrc"',
-    default: null
+      'e.g. --extends="./.edamrc,../.edamrc"'
+    // default: null
   },
   {
     name: 'plugins',
     type: 'string',
-    desc: 'The plugins you requires. eg. --plugins="edam-plugin-dulcet-prompt"',
-    default: null
+    desc: 'The plugins you requires. eg. --plugins="edam-plugin-dulcet-prompt"'
+    // default: null
   },
   {
     name: 'pull.npm-client',
     type: 'string',
     desc:
-      'Appoints to the command when installing package. [npm|yarn]',
-    default: 'npm'
+      'Appoints to the command when installing package. [npm|yarn]'
+    // default: 'npm'
   },
   {
     name: 'pull.npm-client-args',
     type: 'string',
     desc:
-      'Appoints to the command\'s arguments when installing package. eg. --pull.npm-client-args="--registry=http://example.com"',
-    default: ''
+      'Appoints to the command\'s arguments when installing package. eg. --pull.npm-client-args="--registry=http://example.com"'
+    // default: ''
   },
   {
     name: 'pull.git',
     type: 'string',
-    desc: 'Uses which way to pull git repo. [clone|download]',
-    default: 'clone'
+    desc: 'Uses which way to pull git repo. [clone|download]'
+    // default: 'clone'
   },
   {
     name: 'userc',
@@ -113,8 +114,8 @@ const flags = [
     alias: 'y',
     type: 'boolean',
     // eslint-disable-next-line quotes
-    desc: "Uses stored prompt's values instead of typing arduously.",
-    default: false
+    desc: "Uses stored prompt's values instead of typing arduously."
+    // default: false
   },
   {
     name: 'store-prompts',
@@ -174,12 +175,8 @@ ${generateFlagHelp(flags, '      ')}
   // parse array input
   ;['extends', 'plugins', 'includes', 'excludes', 'pull.npm-client-args'].forEach(name => {
     const value = get(flags, name)
-    if (!Array.isArray(value) && typeof value === 'string') {
-      if (value) {
-        set(flags, name, value.split(','))
-      } else {
-        set(flags, name, null)
-      }
+    if (value && !Array.isArray(value) && typeof value === 'string') {
+      set(flags, name, value.split(','))
     }
   })
 
@@ -187,26 +184,22 @@ ${generateFlagHelp(flags, '      ')}
     dbg.enable('edam-cli')
   }
 
-  debug('cli input: %o', cli.input)
-  debug('cli flags: %O', cli.flags)
-
   if (cli.flags.help) {
     cli.showHelp()
     return
   }
 
-  const config = Object.assign(
-    {},
+  const config = omitNully(Object.assign(
     {
       cacheDir: !flags.noCache && flags.cacheDir,
       updateNotify: flags.updateNotify,
       extends: flags.extends,
       plugins: flags.plugins,
-      pull: {
+      pull: flags.pull && omitNully({
         npmClient: flags.pull['npm-client'],
-        npmClientArgs: flags.pull['pull.npm-client-args'],
+        npmClientArgs: flags.pull['npm-client-args'],
         git: flags.pull['git']
-      },
+      }),
       yes: flags.yes,
       silent: flags.silent,
       output: flags.output,
@@ -218,7 +211,9 @@ ${generateFlagHelp(flags, '      ')}
       includes: flags.includes,
       excludes: flags.excludes
     }
-  )
+  ))
+
+  debug('config: %o', config)
 
   if (config.updateNotify) {
     const notifier = updateNotify({

@@ -11,6 +11,8 @@
     "lodash.get": "^4.4.2",
     "lodash.set": "^4.3.2",
     "meow": "^4.0.0",
+    "minimist": "^1.2.0",
+    "omit-nully": "^1.0.0",
     "ora": "^2.0.0",
     "tildify": "^1.2.0",
     "ttys": "^0.0.3",
