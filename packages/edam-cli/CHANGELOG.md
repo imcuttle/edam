@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+<a name="3.3.2"></a>
+## [3.3.2](https://github.com/imcuttle/edam/compare/v3.3.1...v3.3.2) (2019-11-23)
+
+
+### Bug Fixes
+
+* rerun normalizeConfig has error when select source ([0710621](https://github.com/imcuttle/edam/commit/0710621))
+
+
+
+
 <a name="3.3.1"></a>
 ## [3.3.1](https://github.com/imcuttle/edam/compare/v3.3.0...v3.3.1) (2019-11-23)
 
