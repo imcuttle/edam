@@ -6,8 +6,6 @@
   "private": true,
   "scripts": {
     "test": "npm run dist && jest",
-    "precommit": "lint-staged",
-    "commitmsg": "commitlint -E GIT_PARAMS",
     "dist": "lerna run --parallel dist",
     "dev": "lerna run --parallel dev",
     "bootstrap": "lerna bootstrap",
@@ -24,6 +22,12 @@
     "packages/**/*.{js,jsx}": [
       "eslint --fix"
     ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged",
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+    }
   },
   "commitlint": {
     "extends": [
