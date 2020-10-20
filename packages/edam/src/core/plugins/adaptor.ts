@@ -10,13 +10,14 @@ import * as _ from 'lodash'
 import toArray from '../../lib/toArray'
 import { Hook, default as TemplateConfig } from '../../types/TemplateConfig'
 import { dirname, resolve } from 'path'
+import template = require("lodash/fp/template");
 const npmInstall = require('../../lib/yarnInstall')
 const debug = require('debug')('edam:adaptor')
 
 export default async function filter(/*options*/) {
   const edam = <Edam>this
 
-  edam.prependOnceListener('normalize:templateConfig:after', () => {
+  edam.prependOnceListener('normalize:templateConfig:after', async () => {
     const templateConfig: TemplateConfig = edam.templateConfig
     let { loaders, mappers, hooks } = templateConfig
 
@@ -33,6 +34,8 @@ export default async function filter(/*options*/) {
 
     debug('compiler merged loaders %O', compiler.loaders)
     debug('compiler merged mappers %O', compiler.mappers)
+
+    await compiler.emit('register:hooks:before', templateConfig)
 
     if (templateConfig.usefulHook) {
       const {
@@ -71,6 +74,8 @@ export default async function filter(/*options*/) {
         })
       })
     })
+
+    await compiler.emit('register:hooks:after', templateConfig)
 
     variables.assign(templateConfig.variables)
   })

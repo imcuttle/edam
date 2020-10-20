@@ -11,7 +11,7 @@ const updateNotify = require('update-notifier')
 const dbg = require('debug')
 const omitNully = require('omit-nully')
 
-const {generateFlagData, generateFlagHelp} = require('./util')
+const { generateFlagData, generateFlagHelp } = require('./util')
 
 const debug = dbg('edam-cli')
 
@@ -60,7 +60,8 @@ const flags = [
   {
     name: 'includes',
     type: 'string',
-    desc: 'Which files are included (including all files by default)\ne.g. --includes=*.md,**/*.js'
+    desc:
+      'Which files are included (including all files by default)\ne.g. --includes=*.md,**/*.js'
     // default: () => true
   },
   {
@@ -72,7 +73,9 @@ const flags = [
   {
     name: 'extends',
     type: 'string',
-    desc: 'Extends external edam configuration files. \n' + 'e.g. --extends="./.edamrc,../.edamrc"'
+    desc:
+      'Extends external edam configuration files. \n' +
+      'e.g. --extends="./.edamrc,../.edamrc"'
     // default: null
   },
   {
@@ -103,7 +106,8 @@ const flags = [
   {
     name: 'userc',
     type: 'boolean',
-    desc: 'Edam can deduce the configuration file from current work directory like `.babelrc`.',
+    desc:
+      'Edam can deduce the configuration file from current work directory like `.babelrc`.',
     default: true
   },
   {
@@ -122,10 +126,16 @@ const flags = [
     default: true
   },
   {
+    name: 'clean',
+    type: 'boolean',
+    desc: 'Clean path before generate',
+    default: false
+  },
+  {
     name: 'offline-fallback',
     type: 'boolean',
     // eslint-disable-next-line quotes
-    desc: 'Fallback to local cache assets when you are offline.',
+    desc: "Fallback to local cache assets when you are offline.",
     default: true
   },
   {
@@ -150,7 +160,7 @@ const flags = [
   }
 ]
 
-function run(config) {
+function run(config, flags) {
   let spinner = require('ora')()
   const edam = require('edam').default
   const em = edam(Object.assign({}, config), {
@@ -177,11 +187,14 @@ function run(config) {
   })
   em.on('pull:before', source => {
     if (source && ['npm', 'git'].includes(source.type)) {
-      !em.config.silent && spinner.start(`Pulling template from ${source.type}: ${source.url}`)
+      !em.config.silent &&
+        spinner.start(`Pulling template from ${source.type}: ${source.url}`)
     }
   })
     .on('pull:after', templateConfigPath => {
-      em.logger.success(`Pull done! template path: "${tildify(templateConfigPath)}"`)
+      em.logger.success(
+        `Pull done! template path: "${tildify(templateConfigPath)}"`
+      )
     })
     .on('install:packages:before', () => {
       spinner.start('Installing packages after generating...')
@@ -190,13 +203,17 @@ function run(config) {
       spinner.succeed('Install packages after generating succeed.')
     })
 
-  em.compiler
-    .once('pre', (/*output*/) => {
-      // spinner.start('Writing to file...')
+  em.compiler.once('pre', (/*output*/) => {
+    // spinner.start('Writing to file...')
+  })
+
+  em.compiler.once('register:hooks:after', () => {
+    em.compiler.once('post', output => {
+      em.logger.success(
+        `Generate done! the output: "${tildify(output)}" is waiting for you`
+      )
     })
-    .once('post', output => {
-      em.logger.success(`Generate done! the output: "${tildify(output)}" is waiting for you`)
-    })
+  })
 
   //
   let code = 0
@@ -205,12 +222,17 @@ function run(config) {
       em.config.output = process.cwd()
     }
 
-    if (!em.config.source || (em.config.source && em.config.source.url === '-')) {
+    if (
+      !em.config.source ||
+      (em.config.source && em.config.source.url === '-')
+    ) {
       if (em.config.alias && Object.keys(em.config.alias).length) {
         let choices = Object.keys(em.config.alias).map(name => {
           let config = em.config.alias[name]
           return {
-            name: name + c.gray(config.description ? ' - ' + config.description : ''),
+            name:
+              name +
+              c.gray(config.description ? ' - ' + config.description : ''),
             value: name
           }
         })
@@ -224,8 +246,8 @@ function run(config) {
               message: 'Please select your preferable template.'
             }
           ])
-          .then(({source}) => {
-            return run(Object.assign({}, config, {source}))
+          .then(({ source }) => {
+            return run(Object.assign({}, config, { source }), flags)
           })
       }
     }
@@ -236,7 +258,12 @@ function run(config) {
       .then(() => em.pull())
       .then(() => em.process())
       .then(function(fp) {
-        return fp.writeToFile(void 0, {overwrite: flags.overwrite})
+        const options = {
+          clean: flags.clean,
+          overwrite: flags.overwrite
+        }
+        debug('writeToFile %o', options)
+        return fp.writeToFile(void 0, options)
       })
       .catch(function(err) {
         if (err && err.id === 'EDAM_ERROR') {
@@ -255,10 +282,12 @@ function run(config) {
 const cli = meow(
   `
     ${c.white('Usage')}
-      $ ${c.cyan.bold('edam')} ${c.keyword('orchid').bold('<source>')} ${c.keyword('orange')('[options]')}
- 
+      $ ${c.cyan.bold('edam')} ${c
+    .keyword('orchid')
+    .bold('<source>')} ${c.keyword('orange')('[options]')}
+
     ${c.white('Options')}
-    
+
 ${generateFlagHelp(flags, '      ')}
 `,
   {
@@ -266,11 +295,17 @@ ${generateFlagHelp(flags, '      ')}
     autoHelp: false,
     description: ` ${c.cyan.bold(pkg.description)}`
   }
-)
-;(function() {
-  const flags = cli.flags
+);
+(function() {
+  const flags = cli.flags;
   // parse array input
-  ;['extends', 'plugins', 'includes', 'excludes', 'pull.npm-client-args'].forEach(name => {
+  [
+    'extends',
+    'plugins',
+    'includes',
+    'excludes',
+    'pull.npm-client-args'
+  ].forEach(name => {
     const value = get(flags, name)
     if (value && !Array.isArray(value) && typeof value === 'string') {
       set(flags, name, value.split(','))
@@ -343,5 +378,5 @@ ${generateFlagHelp(flags, '      ')}
     delete config.output
   }
 
-  run(Object.assign(config))
+  run(Object.assign(config), flags)
 })()

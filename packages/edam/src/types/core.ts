@@ -15,6 +15,7 @@ export interface Tree {
 }
 
 export class AwaitEventEmitter extends AwaitEventEmitterCore {
+  public listeners: (name?: string) => Function[]
   public emit: (name: string, ...any) => Promise<boolean>
   public emitSync: (name: string, ...any) => boolean
   public on: (name: string, ...any) => AwaitEventEmitter

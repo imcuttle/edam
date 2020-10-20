@@ -4,6 +4,9 @@
     "packages/*"
   ],
   "useWorkspaces": false,
+  "run": {
+    "stream": true
+  },
   "hoist": [
     "jest",
     "typescript"

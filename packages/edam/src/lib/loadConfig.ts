@@ -1,6 +1,6 @@
 import { Options } from '../core/normalizeSource'
 import safeRequireResolve from './safeRequireResolve'
-import EdamError from '../core/EdamError';
+import EdamError from '../core/EdamError'
 
 const JSON5 = require('json5')
 const cosmiconfig = require('cosmiconfig')
