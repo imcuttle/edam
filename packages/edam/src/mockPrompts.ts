@@ -21,9 +21,15 @@ export default async function mockPrompts(
     config = { output: config }
   }
   Object.assign(em.config, config)
+  em.once('prompt:before', () => {
+    em.compiler.variables.assign(promptValues);
+  })
+
   em.once('prompt:after', variables => {
     variables.assign(promptValues)
   })
+
+  // em.prompt = null;
 
   return await em.process(template)
 }

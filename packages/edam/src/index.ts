@@ -52,6 +52,7 @@ export class Edam extends AwaitEventEmitter {
   public inquirer = inquirer
 
   public logger: Logger
+  public static Compiler = Compiler
   protected static sourcePullMethods: {
     [name: string]: (source: Source, edam: Edam) => string
   } = {
@@ -142,7 +143,7 @@ export class Edam extends AwaitEventEmitter {
   promptProcess: PromptProcess = require('./core/promptProcessor/cli/index')
     .default
 
-  public prompt: Function = prompt
+  public prompt: typeof prompt = prompt
 
   private async _promptPrivate(prompts = this.templateConfig.prompts) {
     if (!prompts) {
@@ -174,15 +175,18 @@ export class Edam extends AwaitEventEmitter {
       }
 
       await this.emit('prompt:before', prompts, context)
-      const promptValues = await this.prompt.call(this, prompts, {
-        yes: this.config.yes,
-        context,
-        promptProcess: this.promptProcess,
-        storePrompts: this.config.storePrompts,
-        cacheDir: this.config.cacheDir,
-        source: this.config.source
-      })
-      this.compiler.variables.setStore(promptValues)
+      if (typeof this.prompt === 'function') {
+        const promptValues = await this.prompt.call(this, prompts, {
+          yes: this.config.yes,
+          context,
+          variables: this.compiler.variables,
+          promptProcess: this.promptProcess,
+          storePrompts: this.config.storePrompts,
+          cacheDir: this.config.cacheDir,
+          source: this.config.source
+        })
+        this.compiler.variables.setStore(promptValues)
+      }
 
       let respectNpm5 = this.config.pull
         ? this.config.pull.npmClient === 'npm'

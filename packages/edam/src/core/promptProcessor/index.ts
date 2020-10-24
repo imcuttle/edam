@@ -13,6 +13,7 @@ import cliProcess from './cli'
 import EdamError from '../EdamError'
 import { store } from '../storePrompts'
 import { Source } from '../../types/Options'
+import VariablesStore from "../Compiler/Variables";
 
 const debug = require('debug')('edam:promptProcessor')
 
@@ -22,6 +23,7 @@ export type Options = {
   storePrompts?: boolean
   cacheDir?: string
   source?: Source
+  variables?: VariablesStore
   context?: any
 }
 
@@ -33,7 +35,8 @@ export default async function prompt(
     storePrompts = false,
     cacheDir = null,
     source = null,
-    context = {}
+    variables,
+    context = {},
   }: Options = {}
 ): Promise<Variables> {
   if (!_.isFunction(promptProcess)) {
@@ -42,7 +45,7 @@ export default async function prompt(
   debug('input: %O', prompts)
   const res = await pReduce(
     prompts,
-    async (set, prompt) => {
+    async (set, prompt: Prompt) => {
       prompt = { ...prompt }
       let allow = true
       if (_.isString(prompt.when)) {
@@ -68,13 +71,13 @@ export default async function prompt(
         prompt.default = await prompt.default(set, context)
       }
 
-      let value
-      const { transformer, validate } = prompt
+      const { transformer, validate, name } = prompt
+      let value = variables && await variables.get(name)
       delete prompt.when
       delete prompt.transformer
       delete prompt.validate
       if (yes && prompt.yes !== false) {
-        value = prompt.default
+        value = value == null ? prompt.default : value
       } else {
         value = await promptProcess(prompt)
       }

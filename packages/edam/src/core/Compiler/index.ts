@@ -8,14 +8,7 @@
 import * as _ from 'lodash'
 import * as nps from 'path'
 
-import {
-  Hook,
-  Loader,
-  Mapper,
-  Matcher,
-  StrictLoader,
-  StrictLoaderWithOption
-} from '../../types/TemplateConfig'
+import { Hook, Loader, Mapper, Matcher, StrictLoader, StrictLoaderWithOption } from '../../types/TemplateConfig'
 import * as pReduce from 'p-reduce'
 import { AwaitEventEmitter, Logger, Tree } from '../../types/core'
 import toArray from '../../lib/toArray'
@@ -45,11 +38,7 @@ export default class Compiler extends AwaitEventEmitter {
     this.removeListener(hookName, hook)
     return this
   }
-  public addHook(
-    hookName: string,
-    hook: Hook,
-    options: { type?: 'on' | 'once'; silent?: boolean } = {}
-  ): Function {
+  public addHook(hookName: string, hook: Hook, options: { type?: 'on' | 'once'; silent?: boolean } = {}): Function {
     let cmd = typeof hook === 'string' && hook
     options = Object.assign({ type: 'on', silent: false }, options)
     hook = hookify(hook, this.hookCwd)
@@ -57,11 +46,7 @@ export default class Compiler extends AwaitEventEmitter {
       ? hook
       : (function wrapHook(hook, logger) {
           return function() {
-            logger.log(
-              'Trigger hook:',
-              hookName,
-              cmd ? JSON.stringify(cmd) : ''
-            )
+            logger.log('Trigger hook:', hookName, cmd ? JSON.stringify(cmd) : '')
             return hook.apply(this, arguments)
           }
         })(hook, this.logger)
@@ -114,18 +99,23 @@ export default class Compiler extends AwaitEventEmitter {
   public assets: {
     [path: string]: Asset
   } = {}
-  public loaders: {
+
+  public static defaultLoaders: {
     [loaderId: string]: Array<StrictLoader | StrictLoaderWithOption>
   } = {
     module: require('./loaders/module'),
     hbs: [[require('./loaders/plopHandlebar'), {}]]
   }
-  public mappers: Array<Mapper> = [
+
+  public static defaultMappers: Array<Mapper> = [
     {
       test: '*',
       loader: ['hbs']
     }
   ]
+
+  public loaders = Compiler.defaultLoaders
+  public mappers = Compiler.defaultMappers
   public variables = new VariablesImpl()
 
   private _matchedLoaders(path: string) {
@@ -139,12 +129,7 @@ export default class Compiler extends AwaitEventEmitter {
     return matchedLoader
   }
 
-  async transform(
-    input,
-    loaders: Loader,
-    path: string,
-    highOrderOptions: object
-  ) {
+  async transform(input, loaders: Loader, path: string, highOrderOptions: object) {
     loaders = toArray(loaders)
     let data = { input, loaders }
     await this.emit('loader:each:before', data)
@@ -160,12 +145,7 @@ export default class Compiler extends AwaitEventEmitter {
             throw new EdamError(`loaderId: ${id} is not matched.`)
           }
 
-          return await this.transform(
-            input,
-            loader,
-            path,
-            _.isEmpty(query) ? highOrderOptions : query
-          )
+          return await this.transform(input, loader, path, _.isEmpty(query) ? highOrderOptions : query)
         }
 
         let options = {}
@@ -225,9 +205,7 @@ export default class Compiler extends AwaitEventEmitter {
     await this.emit('assets', this.assets)
     await this.emit('variables', this.variables)
     const workers = _.map(this.assets, async (asset, path) => {
-      if (
-        !isIncludes(path, { excludes: this.excludes, includes: this.includes })
-      ) {
+      if (!isIncludes(path, { excludes: this.excludes, includes: this.includes })) {
         return
       }
 
@@ -242,11 +220,7 @@ export default class Compiler extends AwaitEventEmitter {
         if (meta && meta.loader) {
           debug('matched meta: \n%O \npath: %s', meta, path)
           if (!(meta.loader.name in this.loaders)) {
-            this.logger.warn(
-              '%s loader that from file "%s" is not existed',
-              meta.loader.name,
-              path
-            )
+            this.logger.warn('%s loader that from file "%s" is not existed', meta.loader.name, path)
           } else {
             // data.loaders = this.loaders[meta.loader.name]
             // use name instead of function
@@ -265,19 +239,11 @@ export default class Compiler extends AwaitEventEmitter {
           await this.emit('loader:before', data)
           return {
             path,
-            output: await this.transform(
-              data.input,
-              data.loaders,
-              path,
-              highOrderOptions
-            ),
+            output: await this.transform(data.input, data.loaders, path, highOrderOptions),
             ...data
           }
         } catch (err) {
-          this.logger.error(
-            'Error occurs when transforming content of file: `' + path + '`\n',
-            err
-          )
+          this.logger.error('Error occurs when transforming content of file: `' + path + '`\n', err)
 
           return {
             path,

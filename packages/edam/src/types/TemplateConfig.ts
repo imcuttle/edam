@@ -1,8 +1,6 @@
 export type AsyncOrSync<T> = Promise<T> | T
 export type PromptType = 'checkbox' | 'radio' | 'input' | 'suggest'
 
-import * as w from 'walli'
-
 export interface Prompt {
   message: string
   default?: any
@@ -13,6 +11,8 @@ export interface Prompt {
   choices?: Array<any>
   transform?: Function,
   deniesStore?: boolean
+  transformer?: (val: any, set: Record<string, any>, context: Record<string, any>) => any
+  validate?: (val: any, set: Record<string, any>, context: Record<string, any>) => (string | boolean)
 }
 
 export type Hook = string | Function

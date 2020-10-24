@@ -4,8 +4,10 @@
     "packages/*"
   ],
   "useWorkspaces": false,
-  "run": {
-    "stream": true
+  "command": {
+    "run": {
+      "stream": true
+    }
   },
   "hoist": [
     "jest",
