@@ -3,6 +3,8 @@
   "version": "3.3.8",
   "description": "💥 The multifunctional scaffold generator.",
   "dependencies": {
+    "import-local": "^3.0.2",
+    "resolve-from": "^5.0.0",
     "chalk": "^2.3.2",
     "cli-width": "^2.2.0",
     "cliui": "^4.0.0",
@@ -23,7 +25,7 @@
     "postinstall": "node postInstall.js"
   },
   "bin": {
-    "edam": "bin/edam.js"
+    "edam": "bin/index.js"
   },
   "engines": {
     "node": ">=6"
