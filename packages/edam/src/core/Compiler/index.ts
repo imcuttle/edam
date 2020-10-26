@@ -114,8 +114,8 @@ export default class Compiler extends AwaitEventEmitter {
     }
   ]
 
-  public loaders = Compiler.defaultLoaders
-  public mappers = Compiler.defaultMappers
+  public loaders = {...Compiler.defaultLoaders}
+  public mappers = Compiler.defaultMappers.slice()
   public variables = new VariablesImpl()
 
   private _matchedLoaders(path: string) {
