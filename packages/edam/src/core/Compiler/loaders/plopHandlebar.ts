@@ -12,8 +12,6 @@ import * as lineColPath from 'line-column-path'
 import * as link from 'terminal-link'
 import chalk from 'chalk'
 
-// Creates an isolated Handlebars environment
-const handlebars = Handlebars.create()
 
 const helpers = {
   ...changeCase,
@@ -35,13 +33,6 @@ const helpers = {
   pascalCase: changeCase.pascal
 }
 
-// Register helpers
-Object.keys(helpers).forEach(h => handlebars.registerHelper(h, helpers[h]))
-// https://github.com/helpers/handlebars-helpers
-require('handlebars-helpers')({
-  handlebars: handlebars
-})
-
 function hbsLoader(content: string, variables): string {
   // Object.keys(partials).forEach(p => handlebars.registerPartial(p, partials[p]))
   const { options, path, compiler } = this
@@ -49,6 +40,16 @@ function hbsLoader(content: string, variables): string {
     compiler && typeof compiler.logger.error === 'function'
       ? compiler.logger.error
       : console.error
+
+  // Creates an isolated Handlebars environment
+  const handlebars = Handlebars.create()
+
+  // Register helpers
+  Object.keys(helpers).forEach(h => handlebars.registerHelper(h, helpers[h]))
+  // https://github.com/helpers/handlebars-helpers
+  require('handlebars-helpers')({
+    handlebars: handlebars
+  })
 
   if (typeof options.process === 'function') {
     options.process(handlebars)
