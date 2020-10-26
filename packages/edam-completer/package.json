@@ -14,5 +14,6 @@
     "uninstall": "tabtab uninstall --name edam --auto",
     "test": "npm link"
   },
-  "preferGlobal": true
+  "preferGlobal": true,
+  "gitHead": "837399908d8557039e8c849fbec532dc9d22e433"
 }

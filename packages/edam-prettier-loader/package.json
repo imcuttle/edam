@@ -4,5 +4,6 @@
   "dependencies": {
     "edam": "^3.3.7",
     "prettier": "^1.11.1"
-  }
+  },
+  "gitHead": "837399908d8557039e8c849fbec532dc9d22e433"
 }

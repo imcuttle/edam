@@ -14,5 +14,6 @@
   "preferGlobal": true,
   "peerDependencies": {
     "edam": "^0.0.5"
-  }
+  },
+  "gitHead": "837399908d8557039e8c849fbec532dc9d22e433"
 }
