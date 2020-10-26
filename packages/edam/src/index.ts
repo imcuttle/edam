@@ -32,7 +32,8 @@ import TemplateConfig from './types/TemplateConfig'
 import * as _ from 'lodash'
 import * as changeCase from 'change-case'
 import symbolic from './lib/symbolic'
-import { store, get } from './core/storePrompts'
+import { get } from './core/storePrompts'
+import mockPrompts from './mockPrompts'
 import fileSystem from './lib/fileSystem'
 import { yarnInstall } from './lib'
 
@@ -52,7 +53,9 @@ export class Edam extends AwaitEventEmitter {
   public inquirer = inquirer
 
   public logger: Logger
+  public static mockPrompts = mockPrompts
   public static Compiler = Compiler
+  public static FileProcessor = FileProcessor
   protected static sourcePullMethods: {
     [name: string]: (source: Source, edam: Edam) => string
   } = {
