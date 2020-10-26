@@ -104,7 +104,7 @@ export default class Compiler extends AwaitEventEmitter {
     [loaderId: string]: Array<StrictLoader | StrictLoaderWithOption>
   } = {
     module: require('./loaders/module'),
-    hbs: [[require('./loaders/plopHandlebar'), {}]]
+    hbs: require('./loaders/plopHandlebar')
   }
 
   public static defaultMappers: Array<Mapper> = [
