@@ -15,6 +15,7 @@
     "minimist": "^1.2.0",
     "omit-nully": "^1.0.0",
     "ora": "^2.0.0",
+    "require-fallback-middle": "^1.0.4",
     "resolve-from": "^5.0.0",
     "tildify": "^1.2.0",
     "ttys": "^0.0.3",
