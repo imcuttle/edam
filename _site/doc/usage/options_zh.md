@@ -6,7 +6,7 @@ title: 选项
 
 - Type: `boolean`
 
-Fallback to local cache assets when you are offline.
+当离线状态下，是否使用本地模板缓存作为兼容方案
 
 | default | cli                             |
 | ------- | ------------------------------- |
@@ -16,8 +16,7 @@ Fallback to local cache assets when you are offline.
 
 - Type: `boolean`
 
-Notifies the latest upgrade information like npm
-By [update-notifier](https://github.com/yeoman/update-notifier)
+是否提示升级 [update-notifier](https://github.com/yeoman/update-notifier)
 
 | default | cli                          |
 | ------- | ---------------------------- |
@@ -27,7 +26,7 @@ By [update-notifier](https://github.com/yeoman/update-notifier)
 
 - Type: `string|boolean`
 
-Appoints to the cache where to store. It should be a directory path.
+缓存存放的目录路径
 
 | default           | cli                    |
 | ----------------- | ---------------------- |
@@ -37,9 +36,9 @@ Appoints to the cache where to store. It should be a directory path.
 
 - Type: `string|string[]|Function|RegExp`
 
-Which files are included (including all files by default)
+哪些文件需要被覆盖（默认包括所有文件）
 
-It's useful that overwriting some files. (e.g. `README.md`)
+当你需要覆盖某些文件的时候，可以用该字段，如 `--includes=README.md`
 
 | default      | cli                            |
 | ------------ | ------------------------------ |
@@ -49,7 +48,7 @@ It's useful that overwriting some files. (e.g. `README.md`)
 
 - Type: `string|string[]|Function|RegExp`
 
-Which files are excluded.
+相反与 `inlcudes`
 
 | default       | cli                            |
 | ------------- | ------------------------------ |
@@ -69,7 +68,7 @@ Extends external edam configuration files.
 
 - Type: `string[]|[[Function, object]]|Function[]`
 
-The plugins you requires.
+插件注册
 
 | default | cli                         |
 | ------- | --------------------------- |
@@ -94,6 +93,16 @@ Appoints to the command when installing package form npmjs.com.
 | default | cli                          |
 | ------- | ---------------------------- |
 | `npm`   | `--pull.npm-client=<string>` |
+
+### pull.npmClientArgs
+
+- Type: `npm|yarn`
+
+Appoints to the command's arguments when installing package. eg. `--pull.npm-client-args="--registry=http://example.com"`
+
+| default  | cli                               |
+| -------- | --------------------------------- |
+| string[] | `--pull.npm-client-args=<string>` |
 
 ### pull.git
 
@@ -154,3 +163,23 @@ Just shut up.
 | default | cli            |
 | ------- | -------------- |
 | `false` | `-s, --silent` |
+
+### overwrite
+
+- Type: `boolean`
+
+是否覆盖已经存在的文件
+
+| default | cli               |
+| ------- | ----------------- |
+| `false` | `-w, --overwrite` |
+
+### clean
+
+- Type: `boolean`
+
+在写入之前，是否清空输出目录
+
+| default | cli       |
+| ------- | --------- |
+| `false` | `--clean` |

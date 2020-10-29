@@ -13,7 +13,7 @@ order: 2
 3. 读取 `root` 中的文件数据，忽略掉 `ignore` 字段中的文件，规则同 `.gitignore`
 4. 分析配置中的 loader，对文件数据进行处理转换  
     关于 Loader 描述请转至[书写 Loader](./write-loader_zh.md)
-   * 规则一（最高优先）：文件文本，如首行匹配如下任意一种语法：
+   - 规则一（最高优先）：文件文本，如首行匹配如下任意一种语法：
      ```text
      // @loader ${LOADER_NAME}?${QUERY}
      /* @loader ${LOADER_NAME}?${QUERY} */
@@ -21,8 +21,8 @@ order: 2
      <!-- @loader ${LOADER_NAME}?${QUERY} -->
      ```
      则将使用 LOADER_NAME 进行处理，LOADER_NAME 对应与 `loaders` 中定义的 loader
-   * 规则二：匹配 `mappers` 中的 `test`，第一个匹配到的 loader 将会被使用。
-5. 得到转换后的文件目录结构，根据 `copy` `move` 进行文件的负责和移动；
+   - 规则二：匹配 `mappers` 中的 `test`，第一个匹配到的 loader 将会被使用。
+5. 得到转换后的文件目录结构，根据 `move` `copy` 进行文件的移动和复制；
 6. 写入输出文件夹后，触发 usefulHook，调用 post 钩子。
 
 **注意：在 edam 模板项目 `package.json` 中，匹配 fields 优先顺序为 `edam:main` > `main` (>=3.1)**
@@ -35,17 +35,18 @@ order: 2
 
 用户输入值的交互定义
 
-* type: `[]`
+- type: `[]`
 
   参考[inquirer.js](https://github.com/SBoudrias/Inquirer.js/)
-  
+
 ### process
 
-`edam >= 2.0.1`  返回除去 `prompts` 配置以外的所有配置项
+`edam >= 2.0.1` 返回除去 `prompts` 配置以外的所有配置项
 
-* type: `function`
+- type: `function`
 
 如：
+
 ```javascript
 {
   process(answer) {
@@ -57,11 +58,9 @@ order: 2
 }
 ```
 
-
-
 ### root
 
-* type: `string`
+- type: `string`
 
   模板文件夹的目录，默认为 `./template`
   或者 `answer => './template'`
@@ -70,14 +69,14 @@ order: 2
 
 忽略哪些文件
 
-* type: `string[]`
+- type: `string[]`
 
   或者 `(answers) => []`
 
 ### variables
 
-* type `{}`
-* example
+- type `{}`
+- example
 
   ```javascript
   {
@@ -109,19 +108,21 @@ hooks: {
 
 移动文件
 
-* type: `{}`
+- type: `{}`
 
-```javascript
+```json5
 {
-  'package.json.js': 'package.json',
-  'test/**': 'tests/',
+  "package.json.js": "package.json",
+  "test/**": "tests/",
   // 特殊含义的占位符: [path] / [name] / [ext] / [base]
-  // 如  root/abc.js -> 
+  // 如  root/abc.js ->
   //   path: `root/`
   //   name: `abc`
   //   ext: `.js`
   //   base: `abc.js`
-  '**/*.hbs': '[path][name].js'
+
+  // root/a.js.hbs => root/a.js
+  "**/*.hbs": "[path][name]"
 }
 ```
 
@@ -135,27 +136,27 @@ hooks: {
 
 一些常用的 hook 快捷方式
 
-* gitInit
+- gitInit
 
   是否 `git init`
 
-  * type: `boolean`
-  * default: `false`
+  - type: `boolean`
+  - default: `false`
 
-* installDependencies
+- installDependencies
 
   是否安装 `package.json` 中的 Dependencies
   使用 `npm` 或 `yarn` 由用户配置中的 `pull.npmClient` 指定
 
-  * type: `boolean`
-  * default: `false`
+  - type: `boolean`
+  - default: `false`
 
-* installDevDependencies
+- installDevDependencies
 
   是否安装 `package.json` 中的 Dev Dependencies
 
-  * type: `boolean`
-  * default: `false`
+  - type: `boolean`
+  - default: `false`
 
 或者 `(answers) => ({})`
 

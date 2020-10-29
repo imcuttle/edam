@@ -95,6 +95,16 @@ Appoints to the command when installing package form npmjs.com.
 | ------- | ---------------------------- |
 | `npm`   | `--pull.npm-client=<string>` |
 
+### pull.npmClientArgs
+
+- Type: `npm|yarn`
+
+Appoints to the command's arguments when installing package. eg. `--pull.npm-client-args="--registry=http://example.com"`
+
+| default  | cli                               |
+| -------- | --------------------------------- |
+| string[] | `--pull.npm-client-args=<string>` |
+
 ### pull.git
 
 - Type: `clone|download`
@@ -154,3 +164,23 @@ Just shut up.
 | default | cli            |
 | ------- | -------------- |
 | `false` | `-s, --silent` |
+
+### overwrite
+
+- Type: `boolean`
+
+Whether overwrite the previous output.
+
+| default | cli               |
+| ------- | ----------------- |
+| `false` | `-w, --overwrite` |
+
+### clean
+
+- Type: `boolean`
+
+Clean output path before generate
+
+| default | cli       |
+| ------- | --------- |
+| `false` | `--clean` |
