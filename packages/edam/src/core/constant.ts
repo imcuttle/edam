@@ -12,7 +12,7 @@ const parseGitConfig = require('@moyuyc/parse-git-config')
 const gitConfigPath = require('git-config-path')
 const findUp = require('find-up')
 
-function gitUserInfo(): { name: string; email: string } {
+function gitGitInfo(): { name: string; email: string } {
   const gitPath = findUp.sync('.git')
   let localGitConfig = null
   if (gitPath) {
@@ -22,17 +22,25 @@ function gitUserInfo(): { name: string; email: string } {
     }
   }
 
+  // console.log('localGitConfig', Object.assign(
+  //   { name: '', email: '' },
+  //   parseGitConfig.sync({ path: gitConfigPath('global') }).user,
+  //   localGitConfig && localGitConfig.user,
+  //   { remote: localGitConfig && localGitConfig['remote "origin"'] && localGitConfig['remote "origin"'].url }
+  // ))
+
   return Object.assign(
     { name: '', email: '' },
     parseGitConfig.sync({ path: gitConfigPath('global') }).user,
-    localGitConfig && localGitConfig.user
+    localGitConfig && localGitConfig.user,
+    { remote: localGitConfig && localGitConfig['remote "origin"'] && localGitConfig['remote "origin"'].url }
   )
 }
 
 export class Constants {
   public DEFAULT_CACHE_DIR: string = nps.join(__dirname, '../../../.cache/edam')
   public DEFAULT_CONTEXT = {
-    git: gitUserInfo(),
+    git: gitGitInfo(),
     pm: <string>yarnInstall.getPm({ respectNpm5: true })
   }
 }
