@@ -1,6 +1,6 @@
 {
   "name": "edam-cli",
-  "version": "3.3.11",
+  "version": "3.3.12",
   "description": "💥 The multifunctional scaffold generator.",
   "dependencies": {
     "chalk": "^2.3.2",
