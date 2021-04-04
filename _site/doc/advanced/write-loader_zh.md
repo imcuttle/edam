@@ -63,7 +63,7 @@ module Loader 将会输出为 `JSON.stringify(pkg, null, indent)`.
 ]
 ```
 
-用于分发文件使用哪个`loader`，默认都采用 hbs Loader。
+用于分发文件使用哪个`loader`，默认都采用 hbs Loader（多媒体文件除外）。
 
 **注意：Edam@3 移除 LoDash Loader，默认引入 [Plop Handlebar](https://plopjs.com/documentation/#built-in-helpers) Loader**
 Plop Handlebar 使用 Handlebar 模板，注入了一些 helper:

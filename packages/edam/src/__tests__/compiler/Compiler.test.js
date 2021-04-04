@@ -91,12 +91,11 @@ describe('Compiler', function() {
     })
     cer.assets = {
       'test.js': {
-        value: 'Hello,{{name}}'
+        value: 'Hello,{{name}}',
         // load
       },
       'test.a.js': {
-        value: 'Hello,A,{{name}} {{paramCase name}}'
-        // load
+        value: 'Hello,A,{{name}} {{paramCase name}}',
       }
     }
 
@@ -144,7 +143,7 @@ describe('Compiler', function() {
 
     cer.assets = {
       'test.js': {
-        value: new Buffer('Hello,{{ name}}')
+        value: new Buffer('Hello,{{ name}}'),
         // load
       },
       'test.a.js': {

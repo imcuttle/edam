@@ -22,6 +22,7 @@ import fileSystem from '../../lib/fileSystem'
 import * as mm from 'micromatch'
 import DefaultLogger from '../DefaultLogger'
 import { ParsedPath } from 'path'
+import * as Console from "console";
 const debug = require('debug')('edam:FileProcessor')
 const tildify = require('tildify')
 
@@ -51,6 +52,7 @@ export default class FileProcessor extends TreeProcessor {
     }
     await this.emitter.emit('pre', filepath)
     const workers = []
+
     _.each(this.tree, (data: State, path) => {
       const filename = nps.join(filepath, path)
 

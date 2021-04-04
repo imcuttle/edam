@@ -4,6 +4,7 @@
     "outDir": "dist",
     "jsx": "react",
     "jsxFactory": "h",
-    "sourceMap": false
+    "sourceMap": false,
+    "skipLibCheck": true
   }
 }

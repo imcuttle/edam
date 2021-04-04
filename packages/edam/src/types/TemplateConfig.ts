@@ -37,7 +37,8 @@ export type Loader = Array<StrictLoader | string | StrictLoaderWithOption> | str
 export type Matcher = Glob | Glob[] | RegExp | Function
 
 export type Mapper = {
-  test: Matcher
+  test?: Matcher
+  mimeTest?: Matcher
   loader: Loader
 }
 

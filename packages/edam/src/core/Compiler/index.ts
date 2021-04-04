@@ -19,11 +19,17 @@ import matchMeta from './matchMeta'
 import parseQueryString from '../../lib/parseQueryString'
 import DefaultLogger from '../DefaultLogger'
 import EdamError from '../EdamError'
+import { FileTypeResult } from 'file-type'
+import map = require('lodash/fp/map')
 
 const debug = require('debug')('edam:Compiler')
 
 export type Asset = {
   value: Buffer | string | any
+  meta: Partial<{
+    ext: string,
+    mime: string
+  }>
   loaders?: Array<StrictLoader>
 }
 
@@ -110,21 +116,31 @@ export default class Compiler extends AwaitEventEmitter {
   public static defaultMappers: Array<Mapper> = [
     {
       test: '*',
+      mimeTest: 'text/*',
       loader: ['hbs']
     }
   ]
 
-  public loaders = {...Compiler.defaultLoaders}
+  public loaders = { ...Compiler.defaultLoaders }
   public mappers = Compiler.defaultMappers.slice()
   public variables = new VariablesImpl()
 
-  private _matchedLoaders(path: string) {
+  private _matchedLoaders(path: string, asset: Asset) {
     let matchedLoader
     _.some(this.mappers, function(mapper) {
-      if (isMatch(path, mapper.test)) {
-        matchedLoader = mapper.loader
-        return true
+      if (mapper.test) {
+        if (isMatch(path, mapper.test)) {
+          matchedLoader = mapper.loader
+        }
       }
+      if (mapper.mimeTest) {
+        if (isMatch(asset.meta && asset.meta.mime || 'text/plain', mapper.mimeTest)) {
+          matchedLoader = mapper.loader
+        } else {
+          matchedLoader = null
+        }
+      }
+      return !!matchedLoader
     })
     return matchedLoader
   }
@@ -231,7 +247,7 @@ export default class Compiler extends AwaitEventEmitter {
       }
 
       if (!data.loaders) {
-        data.loaders = this._matchedLoaders(path)
+        data.loaders = this._matchedLoaders(path, asset)
       }
       debug('loader path: %s, loaders: %o', path, data.loaders)
       if (data.loaders) {
@@ -254,6 +270,7 @@ export default class Compiler extends AwaitEventEmitter {
       }
       return {
         path,
+        output: data.input,
         ...data
       }
     })

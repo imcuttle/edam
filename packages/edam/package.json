@@ -30,6 +30,7 @@
     "debug": "^4.2.0",
     "download": "^8.0.0",
     "execa": "^1.0.0",
+    "file-type": "^16.3.0",
     "filenamify": "^2.0.0",
     "find-up": "^3.0.0",
     "git-config-path": "^1.0.1",
