@@ -6,12 +6,14 @@ import processAsync from "./processAsync";
 
 var pify = require('pify')
 var spawn = require('cross-spawn')
-
-
+var env = {
+  ...process.env,
+  GIT_TERMINAL_PROMPT: '0'
+}
 
 function _checkout(checkout, { targetPath = '', git = 'git' } = {}, cb) {
   var args = ['checkout', checkout]
-  var process = spawn(git, args, { cwd: targetPath })
+  var process = spawn(git, args, { env, cwd: targetPath })
 
   processAsync(process, 'git checkout', cb)
 }
@@ -38,7 +40,7 @@ function clone(repo, targetPath, opts, cb) {
   args.push(repo)
   args.push(targetPath)
 
-  var process = spawn(git, args)
+  var process = spawn(git, args, {env})
   processAsync(process, 'git clone', function (err, stdout) {
     if (opts.checkout) {
       checkout()
@@ -57,7 +59,8 @@ function _pullForce(targetPath, cb) {
     'git',
     ['pull', '--force', '--allow-unrelated-histories'],
     {
-      cwd: targetPath
+      cwd: targetPath,
+      env
     }
   )
 
