@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.4.0](https://github.com/imcuttle/edam/compare/v3.3.12...v3.4.0) (2021-04-04)
+
+**Note:** Version bump only for package edam-prettier-loader
+
+
+
+
+
 ## [3.3.11](https://github.com/imcuttle/edam/compare/v3.3.10...v3.3.11) (2020-11-28)
 
 **Note:** Version bump only for package edam-prettier-loader
