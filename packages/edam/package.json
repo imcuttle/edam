@@ -9,7 +9,7 @@
     "changelog": "conventional-changelog -p angular -i ../../CHANGELOG.md -s -r 0 && git add ../../CHANGELOG.md"
   },
   "typings": "dist/index.d.ts",
-  "description": "💥 The multifunctional scaffold generator.",
+  "description": "The multifunctional scaffold generator.",
   "main": "dist/index.js",
   "keywords": [
     "scaffold",
