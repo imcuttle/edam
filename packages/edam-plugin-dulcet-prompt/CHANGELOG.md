@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.4.2](https://github.com/imcuttle/edam/compare/v3.4.1...v3.4.2) (2021-04-07)
+
+**Note:** Version bump only for package edam-plugin-dulcet-prompt
+
+
+
+
+
 ## [3.4.1](https://github.com/imcuttle/edam/compare/v3.4.0...v3.4.1) (2021-04-04)
 
 **Note:** Version bump only for package edam-plugin-dulcet-prompt
