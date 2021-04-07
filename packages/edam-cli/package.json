@@ -1,13 +1,13 @@
 {
   "name": "edam-cli",
-  "version": "3.4.3",
+  "version": "3.4.4",
   "description": "The multifunctional scaffold generator.",
   "dependencies": {
     "chalk": "^2.3.2",
     "cli-width": "^2.2.0",
     "cliui": "^4.0.0",
     "debug": "^4.1.0",
-    "edam": "^3.4.3",
+    "edam": "^3.4.4",
     "import-local": "^3.0.2",
     "lodash.get": "^4.4.2",
     "lodash.set": "^4.3.2",
