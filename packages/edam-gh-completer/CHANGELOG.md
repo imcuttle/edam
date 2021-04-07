@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.4.3](https://github.com/imcuttle/edam/compare/v3.4.2...v3.4.3) (2021-04-07)
+
+**Note:** Version bump only for package edam-gh-completer
+
+
+
+
+
 ## [3.4.2](https://github.com/imcuttle/edam/compare/v3.4.1...v3.4.2) (2021-04-07)
 
 **Note:** Version bump only for package edam-gh-completer
