@@ -132,8 +132,12 @@ export default class Compiler extends AwaitEventEmitter {
         }
       }
       if (mapper.mimeTest) {
-        if (isMatch(asset.meta && asset.meta.mime || 'text/plain', mapper.mimeTest)) {
-          matchedLoader = mapper.loader
+        if (!mapper.test || (mapper.test && matchedLoader)) {
+          if (isMatch(asset.meta && asset.meta.mime || 'text/plain', mapper.mimeTest)) {
+            matchedLoader = mapper.loader
+          } else {
+            matchedLoader = null
+          }
         } else {
           matchedLoader = null
         }
