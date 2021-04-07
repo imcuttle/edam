@@ -19,8 +19,6 @@ import matchMeta from './matchMeta'
 import parseQueryString from '../../lib/parseQueryString'
 import DefaultLogger from '../DefaultLogger'
 import EdamError from '../EdamError'
-import { FileTypeResult } from 'file-type'
-import map = require('lodash/fp/map')
 
 const debug = require('debug')('edam:Compiler')
 
