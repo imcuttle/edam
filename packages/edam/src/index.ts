@@ -95,6 +95,7 @@ export class Edam extends AwaitEventEmitter {
 
     symbolic(this.compiler, 'hookCwd', [this, ['config', 'output']])
     symbolic(this.compiler, 'root', [this, ['templateConfig', 'root']])
+    symbolic(this.compiler, 'mappers', [this, ['templateConfig', 'mappers']])
     symbolic(this.compiler, 'includes', [this, ['config', 'includes']])
     symbolic(this.compiler, 'excludes', [this, ['config', 'excludes']])
   }

@@ -13,6 +13,7 @@ import TemplateConfig, {
 import * as nps from 'path'
 import toArray from '../../lib/toArray'
 import * as _ from 'lodash'
+import Compiler from "../Compiler";
 
 export type NormalizedTemplateConfig = TemplateConfig & {
   hooks?: {
@@ -68,7 +69,7 @@ export default async function normalize(
     [data]
   )
   templateConfig.loaders = await dynamicGet<any>(templateConfig.loaders, [data])
-  templateConfig.mappers = await dynamicGet<any>(templateConfig.mappers, [data])
+  templateConfig.mappers = await dynamicGet<any>(templateConfig.mappers, [data]) || Compiler.defaultMappers.slice()
   templateConfig.move = await dynamicGet<any>(templateConfig.move, [data])
   templateConfig.copy = await dynamicGet<any>(templateConfig.copy, [data])
   // templateConfig.remove = await dynamicGet<any>(templateConfig.remove, [data])
