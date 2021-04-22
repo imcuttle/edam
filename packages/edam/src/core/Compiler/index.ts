@@ -279,7 +279,7 @@ export default class Compiler extends AwaitEventEmitter {
 
     const array = await Promise.all(workers)
     let output: Tree = {}
-    array.filter(Boolean).forEach(data => {
+    array.filter(Boolean).forEach((data: any) => {
       const { path, ...rest } = data
       output[path] = rest
     })

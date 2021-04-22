@@ -58,7 +58,7 @@ title: 选项
 
 - Type: `string[]`
 
-Extends external edam configuration files.
+继承额外的 edam 配置文件
 
 | default | cli                         |
 | ------- | --------------------------- |
@@ -68,7 +68,7 @@ Extends external edam configuration files.
 
 - Type: `string[]|[[Function, object]]|Function[]`
 
-插件注册
+插件注册列表
 
 | default | cli                         |
 | ------- | --------------------------- |
@@ -78,7 +78,7 @@ Extends external edam configuration files.
 
 - Type: `boolean`
 
-Enable debug mode for verbose log (Don't works when silent is true).
+开启 debug 模式，当 --silent 开启时不会生效
 
 | default | cli                      |
 | ------- | ------------------------ |
@@ -88,7 +88,7 @@ Enable debug mode for verbose log (Don't works when silent is true).
 
 - Type: `npm|yarn`
 
-Appoints to the command when installing package form npmjs.com.
+指定安装 npm 包的客户端
 
 | default | cli                          |
 | ------- | ---------------------------- |
@@ -98,7 +98,7 @@ Appoints to the command when installing package form npmjs.com.
 
 - Type: `npm|yarn`
 
-Appoints to the command's arguments when installing package. eg. `--pull.npm-client-args="--registry=http://example.com"`
+指定安装 npm 包时的参数，如 `--pull.npm-client-args="--registry=http://example.com"`
 
 | default  | cli                               |
 | -------- | --------------------------------- |
@@ -108,7 +108,9 @@ Appoints to the command's arguments when installing package. eg. `--pull.npm-cli
 
 - Type: `clone|download`
 
-Uses which way to pull git repo.
+指定拉取 git 仓库的方式；
+- clone: 使用 git clone
+- download: download tar 包
 
 | default | cli                   |
 | ------- | --------------------- |
@@ -118,7 +120,7 @@ Uses which way to pull git repo.
 
 - Type: `boolean`
 
-Edam can deduce the configuration file from current work directory like `.babelrc`.
+是否使用 运行时配置文件，如 `.edamrc` / package.json 中 `edam` 配置
 
 | default | cli                  |
 | ------- | -------------------- |
@@ -128,7 +130,7 @@ Edam can deduce the configuration file from current work directory like `.babelr
 
 - Type: `boolean`
 
-Uses stored prompt's values instead of typing arduously.
+使用默认值问答，而不是需要输入交互
 
 | default | cli         |
 | ------- | ----------- |
@@ -138,7 +140,7 @@ Uses stored prompt's values instead of typing arduously.
 
 - Type: `boolean`
 
-Disables storing latest prompt's values.
+是否存储问答交互
 
 | default | cli                          |
 | ------- | ---------------------------- |
@@ -148,7 +150,7 @@ Disables storing latest prompt's values.
 
 - Type: `string`
 
-The output directory.
+输出文件夹
 
 | default         | cli                              |
 | --------------- | -------------------------------- |
@@ -158,7 +160,7 @@ The output directory.
 
 - Type: `boolean`
 
-Just shut up.
+静默模式
 
 | default | cli            |
 | ------- | -------------- |

@@ -16,10 +16,7 @@ import * as libExported from './lib/index'
 import { resolveEdamTemplate } from './lib/resolve'
 import constant from './core/constant'
 import * as nps from 'path'
-import {
-  default as normalize,
-  NormalizedTemplateConfig
-} from './core/plugins/normalize'
+import { default as normalize, NormalizedTemplateConfig } from './core/plugins/normalize'
 import plugins, { Plugin } from './core/plugins'
 import getTemplateConfig from './lib/getTemplateConfig'
 import * as pReduce from 'p-reduce'
@@ -36,6 +33,8 @@ import { get } from './core/storePrompts'
 import mockPrompts from './mockPrompts'
 import fileSystem from './lib/fileSystem'
 import { yarnInstall } from './lib'
+
+export { defineConfig, UserTemplateConfig } from './types/TemplateConfig'
 
 const inquirer = require('./core/inquirer')
 const tildify = require('tildify')
@@ -109,10 +108,7 @@ export class Edam extends AwaitEventEmitter {
     return this.config
   }
 
-  public use(
-    plugin: Plugin | Plugin[0],
-    options = { force: false, removeExisted: true }
-  ): Edam {
+  public use(plugin: Plugin | Plugin[0], options = { force: false, removeExisted: true }): Edam {
     if (!Array.isArray(plugin)) {
       plugin = [plugin, {}]
     }
@@ -144,8 +140,7 @@ export class Edam extends AwaitEventEmitter {
     return this
   }
 
-  promptProcess: PromptProcess = require('./core/promptProcessor/cli/index')
-    .default
+  promptProcess: PromptProcess = require('./core/promptProcessor/cli/index').default
 
   public prompt: typeof prompt = prompt
 
@@ -192,9 +187,7 @@ export class Edam extends AwaitEventEmitter {
         this.compiler.variables.setStore(promptValues)
       }
 
-      let respectNpm5 = this.config.pull
-        ? this.config.pull.npmClient === 'npm'
-        : true
+      let respectNpm5 = this.config.pull ? this.config.pull.npmClient === 'npm' : true
       this.compiler.variables.merge({
         _: {
           ..._,
@@ -223,9 +216,7 @@ export class Edam extends AwaitEventEmitter {
       }
       const pullMethod = this.sourcePullMethods[source.type]
       if (typeof pullMethod !== 'function') {
-        throw new EdamError(
-          `source pull method is not found of type: ${source.type}`
-        )
+        throw new EdamError(`source pull method is not found of type: ${source.type}`)
       }
 
       await this.emit('pull:before', source)
@@ -234,10 +225,7 @@ export class Edam extends AwaitEventEmitter {
         this.config.cacheDir || this.constants.DEFAULT_CACHE_DIR,
         this.config
       ])
-      templateConfigPath = this.templateConfigPath = resolveEdamTemplate(
-        templateConfigPath,
-        { safe: false }
-      )
+      templateConfigPath = this.templateConfigPath = resolveEdamTemplate(templateConfigPath, { safe: false })
 
       await this.emit('pull:after', templateConfigPath)
     } catch (err) {
@@ -259,18 +247,12 @@ export class Edam extends AwaitEventEmitter {
     }
 
     if (typeof normalized.output !== 'string') {
-      throw new EdamError(
-        '`config.output` requires dir path, but ' + typeof normalized.output
-      )
+      throw new EdamError('`config.output` requires dir path, but ' + typeof normalized.output)
     }
 
     normalized.output = nps.resolve(this.options.cwd, normalized.output)
     if (fileSystem.isFile(normalized.output)) {
-      throw new EdamError(
-        '`config.output` requires dir path, but "' +
-          tildify(normalized.output) +
-          '" is a file now'
-      )
+      throw new EdamError('`config.output` requires dir path, but "' + tildify(normalized.output) + '" is a file now')
     }
 
     // if (!['npm', 'yarn'].includes(normalized.pull.npmClient)) {
@@ -315,31 +297,20 @@ export class Edam extends AwaitEventEmitter {
     }
   }
 
-  public async process(
-    templateConfigPath = this.templateConfigPath
-  ): Promise<FileProcessor> {
+  public async process(templateConfigPath = this.templateConfigPath): Promise<FileProcessor> {
     // preset plugins only do something about template
     await this.registerPlugins(plugins)
-    this.templateConfigPath = templateConfigPath = resolveEdamTemplate(
-      templateConfigPath
-    )
+    this.templateConfigPath = templateConfigPath = resolveEdamTemplate(templateConfigPath)
     debug('templatePath: %s', templateConfigPath)
 
-    let templateConfig =
-      (await getTemplateConfig.apply(
-        this,
-        [require(templateConfigPath), [this, this]]
-      )) || {}
+    let templateConfig = (await getTemplateConfig.apply(this, [require(templateConfigPath), [this, this]])) || {}
     debug('templateConfig: \n%O', templateConfig)
     // The below process would update templateConfig
     // So we requires clone
     templateConfig = _.cloneDeep(templateConfig)
 
     await this._promptPrivate(templateConfig.prompts)
-    this.templateConfig = await normalize.apply(this, [
-      templateConfig,
-      templateConfigPath
-    ])
+    this.templateConfig = await normalize.apply(this, [templateConfig, templateConfigPath])
 
     let tree
     try {
