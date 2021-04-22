@@ -17,7 +17,7 @@ order: 3
 ```
 用于定义 loader 集合，预设两种 `hbs`, `module`.
 
-hbs 为模板替换 Loader，在文本中书写 `{{{ name }}}` 将会被替换。
+hbs 为模板替换 Loader，为 [handlebars](https://handlebarsjs.com/) 在文本中书写 `{{{ name }}}` 将会被替换。
 
 而 `module` Loader 较为特殊，不是模板引擎替换，而是以 commonjs 的规范处理输出 JSON 数据，所以非常适合于json文本的处理。
 
@@ -53,12 +53,24 @@ module Loader 将会输出为 `JSON.stringify(pkg, null, indent)`.
 
 * `mappers` 形如
 
-```text
+```javascript
 [
   {
     // glob
     test: '*.ts',
     loader: 'hbs?query'
+  }
+]
+```
+
+```javascript
+// 覆盖默认 mappers 配置，允许 __templates / __template，同时为文本类型的资源
+// 不通过 hbs loader，直接原样输出
+[
+  {
+    test: ['**/!__template/**', '**/!__templates/**'],
+    mimeTest: 'text/*',
+    loader: ['hbs']
   }
 ]
 ```

@@ -27,9 +27,20 @@ order: 2
 
 **注意：在 edam 模板项目 `package.json` 中，匹配 fields 优先顺序为 `edam:main` > `main` (>=3.1)**
 
+官方模板可见：[edam-vendor](https://github.com/imcuttle/edam-vendor)
+
 ## 配置项
 
 允许直接 exports 配置，或者 `module.exports = edam => ({ /*config*/ })`
+
+### 类型提醒
+
+```javascript
+const { defineConfig } = require('edam')
+module.exports = defineConfig({
+  
+})
+```
 
 ### prompts
 
