@@ -7,7 +7,7 @@
   },
   "main": "completer.js",
   "scripts": {
-    "install": "tabtab install --name edam --completer edam-gh-completer",
+    "install": "npx is-ci || tabtab install --name edam --completer edam-gh-completer",
     "uninstall": "tabtab uninstall --name edam --auto",
     "test": "npm link"
   },

@@ -10,7 +10,7 @@
   "bin": "completer.js",
   "main": "completer.js",
   "scripts": {
-    "install": "tabtab install --name edam --completer edam-completer --auto",
+    "install": "npx is-ci || tabtab install --name edam --completer edam-completer --auto",
     "uninstall": "tabtab uninstall --name edam --auto",
     "test": "npm link"
   },
