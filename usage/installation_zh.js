@@ -1,0 +1,2 @@
+webpackJsonp([7,25],{712:function(a,e){a.exports={content:'<pre><code class="hljs language-bash"data-query={} data-lang=bash>npm install -g edam-cli\n<span class=hljs-comment># edam [source] -o [output]</span>\n<span class=hljs-comment># edam --help</span>\n\nnpm install -g edam-completer</code></pre>',extra:{"_image-loader_":[]}}}});
+//# sourceMappingURL=installation_zh.js.map

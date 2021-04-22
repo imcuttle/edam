@@ -1,0 +1,2 @@
+webpackJsonp([22,25],{692:function(p,e){p.exports={content:"<p>有没有这样一种痛楚：</p><ul><li><p>我们开发项目的时候，其实都是安装大体一致的规范去开发，甚至是一致的文件目录结构。每当我们需要开发一个新页面的时候，需要将上一个雷同的页面 copy&amppaste，同时需要对里面的名字变量<strong>修修改改</strong></p></li><li><p>在频繁地造轮子的过程中，需要频繁地书写一致的配置文件到的</p></li></ul><p>类似于 <code>create-react-app</code> 这些脚手架 生成工具，edam 提供一个通用的脚手架生成方案。</p>",extra:{"_image-loader_":[]}}}});
+//# sourceMappingURL=why-needs-edam_zh.js.map
