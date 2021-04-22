@@ -45,15 +45,15 @@ export default class Compiler extends AwaitEventEmitter {
   public addHook(hookName: string, hook: Hook, options: { type?: 'on' | 'once'; silent?: boolean } = {}): Function {
     let cmd = typeof hook === 'string' && hook
     options = Object.assign({ type: 'on', silent: false }, options)
-    hook = hookify(hook, this.hookCwd)
+    const hookFn = hookify(hook, this.hookCwd)
     const wrapped = options.silent
-      ? hook
-      : (function wrapHook(hook, logger) {
+      ? hookFn
+      : (function wrapHook(hookFn, logger) {
           return function() {
             logger.log('Trigger hook:', hookName, cmd ? JSON.stringify(cmd) : '')
-            return hook.apply(this, arguments)
+            return hookFn.apply(this, arguments)
           }
-        })(hook, this.logger)
+        })(hookFn, this.logger)
     this[options.type](hookName, wrapped)
     return <Function>wrapped
   }
