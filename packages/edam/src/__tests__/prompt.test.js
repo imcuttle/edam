@@ -172,7 +172,7 @@ describe('prompt', function() {
     })
   })
 
-  describe('store', () => {
+  describe.skip('store', () => {
     let storePath = nps.join(tmpDir, 'edam-prompts.json')
     beforeEach(() => {
       // remove fail in linux
