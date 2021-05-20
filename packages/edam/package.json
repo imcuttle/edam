@@ -1,6 +1,6 @@
 {
   "name": "edam",
-  "version": "3.4.6",
+  "version": "3.4.7",
   "scripts": {
     "dist": "rimraf dist && tsc",
     "dev": "npm run dist -- -w",
@@ -38,6 +38,7 @@
     "handlebars": "^4.0.11",
     "handlebars-helpers": "^0.10.0",
     "inquirer": "^5.1.0",
+    "is-ci": "^1.2.1",
     "is-online": "^8.5.1",
     "json5": "^1.0.1",
     "line-column-path": "^1.0.0",
@@ -59,8 +60,7 @@
     "update-notifier": "^2.4.0",
     "url-join": "^4.0.0",
     "vfile-location": "^2.0.3",
-    "walli": "^1.1.4",
-    "is-ci": "^1.2.1"
+    "walli": "^1.1.4"
   },
   "devDependencies": {
     "rimraf": "^2.6.2",
