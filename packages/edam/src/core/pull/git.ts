@@ -53,7 +53,7 @@ module.exports = async function gitPull(source: Source, destDir: string, config:
     pull: { git, npmClient },
     offlineFallback
   } = config
-  const logger = this.logge || {}
+  const logger = this.logger || {}
   const log = (this && this.logger && this.logger.log) || console.log
   const errorLog = (this && this.logger && this.logger.warn) || console.error
 
