@@ -33,6 +33,9 @@ export interface Logger {
   success: Function
   warn: Function
   error: Function
+
+  stop?: () => void
+  start?: () => void
 }
 
 export class TreeProcessor {

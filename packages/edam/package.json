@@ -59,10 +59,10 @@
     "update-notifier": "^2.4.0",
     "url-join": "^4.0.0",
     "vfile-location": "^2.0.3",
-    "walli": "^1.1.4"
+    "walli": "^1.1.4",
+    "is-ci": "^1.2.1"
   },
   "devDependencies": {
-    "is-ci": "^1.2.1",
     "rimraf": "^2.6.2",
     "tempy": "^0.2.1",
     "typescript": "^4.2.4"

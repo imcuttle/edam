@@ -38,32 +38,22 @@ function getUrl(source: Source) {
 
   if (protocol === 'https:' || protocol === 'http:') {
     if (hostname === 'github.com') {
-      newUrl = urlJoin(
-        newUrl,
-        'archive',
-        (source.checkout || 'master') + '.zip'
-      )
+      newUrl = urlJoin(newUrl, 'archive', (source.checkout || 'master') + '.zip')
     } else if (hostname.startsWith('gitlab')) {
-      newUrl = urlJoin(
-        newUrl,
-        'repository/archive.zip?ref=' + (source.checkout || 'master')
-      )
+      newUrl = urlJoin(newUrl, 'repository/archive.zip?ref=' + (source.checkout || 'master'))
     }
   }
 
   return newUrl
 }
 
-module.exports = async function gitPull(
-  source: Source,
-  destDir: string,
-  config: EdamConfig
-) {
+module.exports = async function gitPull(source: Source, destDir: string, config: EdamConfig) {
   const {
     cacheDir,
     pull: { git, npmClient },
     offlineFallback
   } = config
+  const logger = this.logger
   const log = (this && this.logger && this.logger.log) || console.log
   const errorLog = (this && this.logger && this.logger.warn) || console.error
 
@@ -94,14 +84,9 @@ module.exports = async function gitPull(
         if (isOffline) {
           return errorLog(msg)
         }
-        throw new EdamError(
-          msg
-        )
+        throw new EdamError(msg)
       }
-      log(
-        'Installed dependencies automatically, depends %s packages.',
-        c.white(Object.keys(dependencies).length)
-      )
+      log('Installed dependencies automatically, depends %s packages.', c.white(Object.keys(dependencies).length))
     }
   }
 
@@ -129,6 +114,7 @@ module.exports = async function gitPull(
     // log('Using cached git assets from %s', c.cyan.bold(tildify(target)))
     return where
   }
+
   async function gitCloneSource() {
     debug('gitCloneSource: target is %s', target)
     if (!cacheDir && !isOffline) {
@@ -136,7 +122,19 @@ module.exports = async function gitPull(
     } else if (fileSystem.existsSync(join(target, '.git'))) {
       // cached
       try {
-        await pullForce(target)
+        try {
+          await pullForce(target, {
+            onDisablePromptError: () => {
+              if (logger.stop) {
+                logger.stop()
+              }
+            }
+          })
+        } finally {
+          if (logger.start) {
+            logger.start()
+          }
+        }
         await checkout(source.checkout || 'master', { targetPath: target })
       } catch (err) {
         const msg = err.message + '\n running in ' + tildify(target)
@@ -150,9 +148,20 @@ module.exports = async function gitPull(
       return target
     }
 
-    await gitClone(source.url, target, {
-      checkout: source.checkout || 'master'
-    })
+    try {
+      await gitClone(source.url, target, {
+        checkout: source.checkout || 'master',
+        onDisablePromptError: () => {
+          if (logger.stop) {
+            logger.stop()
+          }
+        }
+      })
+    } finally {
+      if (logger.start) {
+        logger.start()
+      }
+    }
 
     await installFromPkg(target)
     return target
@@ -165,12 +174,7 @@ module.exports = async function gitPull(
       try {
         return await gitCloneSource()
       } catch (error) {
-        errorLog(
-          'Error occurs when git clone %s: \n%s\n' +
-            'Fallback to use git download.',
-          source.url,
-          error.message
-        )
+        errorLog('Error occurs when git clone %s: \n%s\n' + 'Fallback to use git download.', source.url, error.message)
         return await downloadSource()
       }
     case 'download':
@@ -188,8 +192,6 @@ module.exports = async function gitPull(
       }
 
     default:
-      throw new EdamError(
-        `Git pull type "${git}" is not allowed, please use one of 'clone' | 'download'`
-      )
+      throw new EdamError(`Git pull type "${git}" is not allowed, please use one of 'clone' | 'download'`)
   }
 }

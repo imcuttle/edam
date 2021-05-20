@@ -12,6 +12,12 @@ module.exports = function run(config, flags) {
 
   const format = require('util').format
   Object.assign(em.logger, {
+    start: () => {
+      spinner.start()
+    },
+    stop: () => {
+      spinner.stop()
+    },
     _log() {
       spinner.color = 'cyan'
       spinner.text = format.apply(null, arguments)
