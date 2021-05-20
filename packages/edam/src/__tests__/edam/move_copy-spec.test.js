@@ -13,7 +13,7 @@ async function readdirDeep(dest) {
   const files = await fileSystem.readdirDeep(dest)
   return files.filter(x => fileSystem.isFile(x)).map(x => relative(dest, x))
 }
-describe('functional', function() {
+describe('move_copy', function() {
   const tplPath = join(__dirname, '../fixture/edam')
   const outputRoot = join(__dirname, '../fixture/edam-output')
 
