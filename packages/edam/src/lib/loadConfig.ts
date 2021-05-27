@@ -5,6 +5,7 @@ import EdamError from '../core/EdamError'
 const JSON5 = require('json5')
 const cosmiconfig = require('cosmiconfig')
 const nps = require('path')
+const fs = require('fs')
 const fileSystem = require('./fileSystem').default
 const tildify = require('tildify')
 const explorer = cosmiconfig('edam', { rcStrictJson: true })
@@ -30,9 +31,7 @@ function getMatchJSONErrorFilename(err): string | null {
   }
 }
 
-export async function load(
-  searchPath?: string
-): Promise<{ config: any; filepath: string }> {
+export async function load(searchPath?: string): Promise<{ config: any; filepath: string }> {
   debug('load searchPath: %s', searchPath)
   try {
     const obj = await explorer.load(searchPath)
@@ -43,7 +42,7 @@ export async function load(
     if (filename) {
       return {
         config: await parseJSONFile(filename),
-        filepath: filename
+        filepath: filename,
       }
     }
     throw err
@@ -52,12 +51,19 @@ export async function load(
 
 export async function loadConfig(
   path: string,
-  options: Options & { filename?: boolean } = {
+  options: Options & { filename?: boolean; stopPath?: string } = {
     cwd: process.cwd(),
-    filename: false
+    filename: false,
   }
 ): Promise<any> {
-  const { cwd } = options
+  const { cwd, stopPath } = options
+  const isValidConfigFilename = filename => {
+    if (!stopPath) {
+      return !!filename
+    }
+    return nps.dirname(filename).startsWith(nps.normalize(stopPath))
+  }
+  let isDir = false
   // require npm packages directly
   let resolved = safeRequireResolve(path)
   let filename: string
@@ -65,11 +71,16 @@ export async function loadConfig(
     filename = resolved
   } else {
     filename = nps.resolve(cwd, path)
-    filename = require.resolve(filename)
+    if (fs.existsSync(filename) && fs.statSync(filename).isDirectory()) {
+      isDir = true
+    } else {
+      filename = require.resolve(filename)
+    }
   }
+
   let resultConfig
   try {
-    const { config, filepath } = await explorer.load(null, filename)
+    const { config, filepath } = await (isDir ? explorer.load(filename) : explorer.load(null, filename))
     resultConfig = config
     filename = filepath
   } catch (err) {
@@ -80,5 +91,10 @@ export async function loadConfig(
       throw err
     }
   }
+
+  if (!isValidConfigFilename(filename)) {
+    return options.filename ? { config: null, filename, invalid: true } : null
+  }
+
   return options.filename ? { config: resultConfig, filename } : resultConfig
 }

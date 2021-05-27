@@ -36,14 +36,11 @@ module.exports = function run(config, flags) {
   })
   em.on('pull:before', source => {
     if (source && ['npm', 'git'].includes(source.type)) {
-      !em.config.silent &&
-      spinner.start(`Pulling template from ${source.type}: ${source.url}`)
+      !em.config.silent && spinner.start(`Pulling template from ${source.type}: ${source.url}`)
     }
   })
     .on('pull:after', templateConfigPath => {
-      em.logger.success(
-        `Pull done! template path: "${tildify(templateConfigPath)}"`
-      )
+      em.logger.success(`Pull done! template path: "${tildify(templateConfigPath)}"`)
     })
     .on('install:packages:before', () => {
       spinner.start('Installing packages after generating...')
@@ -58,67 +55,60 @@ module.exports = function run(config, flags) {
 
   em.compiler.once('register:hooks:after', () => {
     em.compiler.once('post', output => {
-      em.logger.success(
-        `Generate done! the output: "${tildify(output)}" is waiting for you`
-      )
+      em.logger.success(`Generate done! the output: "${tildify(output)}" is waiting for you`)
     })
   })
 
-  return em.normalizeConfig().then(() => {
-    if (!em.config.output) {
-      em.config.output = process.cwd()
-    }
-
-    if (
-      !em.config.source ||
-      (em.config.source && em.config.source.url === '-')
-    ) {
-      if (em.config.alias && Object.keys(em.config.alias).length) {
-        let choices = Object.keys(em.config.alias).map(name => {
-          let config = em.config.alias[name]
-          return {
-            name:
-              name +
-              c.gray(config.description ? ' - ' + config.description : ''),
-            value: name
-          }
-        })
-
-        return em.inquirer
-          .prompt([
-            {
-              type: 'list',
-              choices,
-              name: 'source',
-              message: 'Please select your preferable template.'
-            }
-          ])
-          .then(({ source }) => {
-            return run(Object.assign({}, config, { source }), flags)
-          })
+  return em
+    .normalizeConfig()
+    .then(() => {
+      if (!em.config.output) {
+        em.config.output = process.cwd()
       }
-    }
 
-    return Promise.resolve()
-      .then(() => em.registerPlugins())
-      .then(() => em.checkConfig())
-      .then(() => em.pull())
-      .then(() => em.process())
-      .then(function(fp) {
-        const options = {
-          clean: flags.clean,
-          overwrite: flags.overwrite
+      if (!em.config.source || (em.config.source && em.config.source.url === '-')) {
+        if (em.config.alias && Object.keys(em.config.alias).length) {
+          let choices = Object.keys(em.config.alias).map(name => {
+            let config = em.config.alias[name]
+            return {
+              name: name + c.gray(config.description ? ' - ' + config.description : ''),
+              value: name
+            }
+          })
+
+          return em.inquirer
+            .prompt([
+              {
+                type: 'list',
+                choices,
+                name: 'source',
+                message: 'Please select your preferable template.'
+              }
+            ])
+            .then(({ source }) => {
+              return run(Object.assign({}, config, { source }), flags)
+            })
         }
-        debug('writeToFile %o', options)
-        return fp.writeToFile(void 0, options)
-      })
-      .catch(function(err) {
-        if (err && err.id === 'EDAM_ERROR') {
-          spinner.fail(err.message)
-        } else {
-          spinner.fail(err.stack)
-        }
-        throw err
-      })
-  })
+      }
+    })
+    .then(() => em.registerPlugins())
+    .then(() => em.checkConfig())
+    .then(() => em.pull())
+    .then(() => em.process())
+    .then(function(fp) {
+      const options = {
+        clean: flags.clean,
+        overwrite: flags.overwrite
+      }
+      debug('writeToFile %o', options)
+      return fp.writeToFile(void 0, options)
+    })
+    .catch(function(err) {
+      if (err && err.id === 'EDAM_ERROR') {
+        spinner.fail(err.message)
+      } else {
+        spinner.fail(err.stack)
+      }
+      throw err
+    })
 }

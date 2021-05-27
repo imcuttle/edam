@@ -31,7 +31,7 @@ describe('extendsConfig', function() {
 
     const { config, track } = await extendsConfig(
       {
-        extends: ['./fixture/loadConfig/a/.edamrc'],
+        extends: ['./fixture/loadConfig/a'],
         alias: {
           'react-a': 'aa',
           'b.react': 'b.react.origin'
@@ -51,7 +51,7 @@ describe('extendsConfig', function() {
 
     expect(config).toEqual({
       offlineFallback: false,
-      extends: ['./fixture/loadConfig/a/.edamrc', './b/.edamrc', './rc'],
+      extends: ['./fixture/loadConfig/a', './b/.edamrc', './rc'],
       source: {
         type: 'npm',
         url: 'a.edamrc',

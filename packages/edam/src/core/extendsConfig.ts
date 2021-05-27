@@ -13,6 +13,7 @@ import * as _ from 'lodash'
 import * as preduce from 'p-reduce'
 import * as nps from 'path'
 import resolve from '../lib/resolve'
+import * as fs from 'fs'
 
 const untildify = require('untildify')
 const debug = require('debug')('edam:extendsConfig')
@@ -42,11 +43,7 @@ export function normalizePlugins(plugins, options: Options) {
   })
 }
 
-export async function innerExtendsConfig(
-  config: EdamConfig,
-  options: Options,
-  track?: Track
-): Promise<EdamConfig> {
+export async function innerExtendsConfig(config: EdamConfig, options: Options, track?: Track): Promise<EdamConfig> {
   let extendConfig: EdamConfig
   config = _.cloneDeep(config)
   debug('config %O', config)
@@ -70,12 +67,20 @@ export async function innerExtendsConfig(
     const extendsArray = (config.extends = toArray(config.extends))
     const configList = await Promise.all(
       extendsArray.map(source => {
+        const sourcePath = nps.resolve(options.cwd || '', source)
+        if (fs.existsSync(sourcePath) && fs.statSync(sourcePath).isDirectory()) {
+          return loadConfig(untildify(source), { ...options, filename: true, stopPath: sourcePath })
+        }
         return loadConfig(untildify(source), { ...options, filename: true })
       })
     )
     extendConfig = await preduce(
       configList,
-      async (collection, { config: innerConfig, filename }) => {
+      async (collection, { config: innerConfig, invalid, filename }) => {
+        if (invalid) {
+          innerConfig = {}
+        }
+
         let value
         track[filename] = track[filename] || { status: 'first' }
         if (track[filename].status === 'visited') {
