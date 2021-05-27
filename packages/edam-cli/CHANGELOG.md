@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.4.10](https://github.com/imcuttle/edam/compare/v3.4.9...v3.4.10) (2021-05-27)
+
+
+### Bug Fixes
+
+* extends 找不到错误没有 catch ([c1e7357](https://github.com/imcuttle/edam/commit/c1e7357b73129e7e3122640a629e0b98df2c427f))
+
+
+
+
+
 ## [3.4.9](https://github.com/imcuttle/edam/compare/v3.4.8...v3.4.9) (2021-05-20)
 
 **Note:** Version bump only for package edam-cli
