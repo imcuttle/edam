@@ -227,13 +227,14 @@ export default class Compiler extends AwaitEventEmitter {
         return
       }
 
+      const meta = asset.meta
       const input = asset.value
       const loaders = asset.loaders
       const data = { input, loaders }
       let highOrderOptions
 
-      if (_.isString(data.input)) {
-        const { content, meta } = matchMeta(data.input)
+      if (_.isString(data.input) || meta?.mime?.startsWith('text/')) {
+        const { content, meta } = matchMeta(String(data.input))
         data.input = content
         if (meta && meta.loader) {
           debug('matched meta: \n%O \npath: %s', meta, path)
