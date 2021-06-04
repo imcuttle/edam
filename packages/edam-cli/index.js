@@ -59,56 +59,60 @@ module.exports = function run(config, flags) {
     })
   })
 
-  return em
-    .normalizeConfig()
-    .then(() => {
-      if (!em.config.output) {
-        em.config.output = process.cwd()
-      }
-
-      if (!em.config.source || (em.config.source && em.config.source.url === '-')) {
-        if (em.config.alias && Object.keys(em.config.alias).length) {
-          let choices = Object.keys(em.config.alias).map(name => {
-            let config = em.config.alias[name]
-            return {
-              name: name + c.gray(config.description ? ' - ' + config.description : ''),
-              value: name
-            }
-          })
-
-          return em.inquirer
-            .prompt([
-              {
-                type: 'list',
-                choices,
-                name: 'source',
-                message: 'Please select your preferable template.'
-              }
-            ])
-            .then(({ source }) => {
-              return run(Object.assign({}, config, { source }), flags)
-            })
+  const runCore = () => {
+    return em
+      .registerPlugins()
+      .then(() => em.checkConfig())
+      .then(() => em.pull())
+      .then(() => em.process())
+      .then(function(fp) {
+        const options = {
+          clean: flags.clean,
+          overwrite: flags.overwrite
         }
+        debug('writeToFile %o', options)
+        return fp.writeToFile(void 0, options)
+      })
+      .catch(function(err) {
+        if (err && err.id === 'EDAM_ERROR') {
+          spinner.fail(err.message)
+        } else {
+          spinner.fail(err.stack)
+        }
+        throw err
+      })
+  }
+
+  return em.normalizeConfig().then(() => {
+    if (!em.config.output) {
+      em.config.output = process.cwd()
+    }
+
+    if (!em.config.source || (em.config.source && em.config.source.url === '-')) {
+      if (em.config.alias && Object.keys(em.config.alias).length) {
+        let choices = Object.keys(em.config.alias).map(name => {
+          let config = em.config.alias[name]
+          return {
+            name: name + c.gray(config.description ? ' - ' + config.description : ''),
+            value: name
+          }
+        })
+
+        return em.inquirer
+          .prompt([
+            {
+              type: 'list',
+              choices,
+              name: 'source',
+              message: 'Please select your preferable template.'
+            }
+          ])
+          .then(({ source }) => {
+            return run(Object.assign({}, config, { source }), flags)
+          })
       }
-    })
-    .then(() => em.registerPlugins())
-    .then(() => em.checkConfig())
-    .then(() => em.pull())
-    .then(() => em.process())
-    .then(function(fp) {
-      const options = {
-        clean: flags.clean,
-        overwrite: flags.overwrite
-      }
-      debug('writeToFile %o', options)
-      return fp.writeToFile(void 0, options)
-    })
-    .catch(function(err) {
-      if (err && err.id === 'EDAM_ERROR') {
-        spinner.fail(err.message)
-      } else {
-        spinner.fail(err.stack)
-      }
-      throw err
-    })
+      return runCore()
+    }
+    return runCore()
+  })
 }
