@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.4.12](https://github.com/imcuttle/edam/compare/v3.4.11...v3.4.12) (2021-06-04)
+
+
+### Bug Fixes
+
+* edam rerun again ([fdf0aee](https://github.com/imcuttle/edam/commit/fdf0aeeec9ce754b559c9ffab4393126a394fe59))
+
+
+
+
+
 ## [3.4.11](https://github.com/imcuttle/edam/compare/v3.4.10...v3.4.11) (2021-06-03)
 
 **Note:** Version bump only for package edam-cli
