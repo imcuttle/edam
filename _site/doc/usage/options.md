@@ -57,7 +57,7 @@ Which files are excluded.
 
 ### extends
 
-- Type: `string[]`
+- Type: `Array<string | { source: string, pick?: string[], omit?: string[] }>`
 
 Extends external edam configuration files.
 

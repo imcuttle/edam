@@ -56,9 +56,9 @@ title: 选项
 
 ### extends
 
-- Type: `string[]`
+- Type: `Array<string | { source: string, pick?: string[], omit?: string[] }>`
 
-继承额外的 edam 配置文件
+继承额外的 edam 配置文件；`pick` 和 `omit` 是用来过滤一些额外的配置项的，如只需要继承 alias 字段，则需要配置 `pick: ['alias']` 
 
 | default | cli                         |
 | ------- | --------------------------- |

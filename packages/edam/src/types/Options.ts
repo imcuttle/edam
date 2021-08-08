@@ -70,11 +70,17 @@ const source = createVerifiableClass({
 
 const matcher = oneOf([string, arrayOf(string), function_, instanceOf(RegExp)])
 
+const extendRule = oneOf([string, eq({
+  source: string,
+  pick: arrayOf(string).optional,
+  omit: arrayOf(string).optional
+})])
+
 export const rc: Equal = leq({
   source: source().optional,
   // cacheDir: oneOf([boolean, string]).optional,
   alias: objectOf(source()).optional,
-  extends: oneOf([string, arrayOf(string)]).optional,
+  extends: oneOf([extendRule, arrayOf(extendRule)]).optional,
   storePrompts: boolean.optional,
   offlineFallback: boolean.optional,
   updateNotify: boolean.optional,

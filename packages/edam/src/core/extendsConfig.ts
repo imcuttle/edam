@@ -43,6 +43,24 @@ export function normalizePlugins(plugins, options: Options) {
   })
 }
 
+function normalizeExtend(
+  extend: string | { source: string; pick?: string[]; omit?: string[] }
+): { source: string; pick: string[]; omit: string[] } {
+  if (typeof extend === 'string') {
+    return {
+      source: extend,
+      pick: [],
+      omit: [],
+    }
+  }
+
+  return {
+    pick: [],
+    omit: [],
+    ...extend,
+  }
+}
+
 export async function innerExtendsConfig(config: EdamConfig, options: Options, track?: Track): Promise<EdamConfig> {
   let extendConfig: EdamConfig
   config = _.cloneDeep(config)
@@ -66,12 +84,26 @@ export async function innerExtendsConfig(config: EdamConfig, options: Options, t
   if (config.extends) {
     const extendsArray = (config.extends = toArray(config.extends))
     const configList = await Promise.all(
-      extendsArray.map(source => {
-        const sourcePath = nps.resolve(options.cwd || '', source)
+      extendsArray.map(async source => {
+        const extendConfig = normalizeExtend(source)
+        const sourcePath = nps.resolve(options.cwd || '', extendConfig.source)
+        let result: any
         if (fs.existsSync(sourcePath) && fs.statSync(sourcePath).isDirectory()) {
-          return loadConfig(untildify(source), { ...options, filename: true, stopPath: sourcePath })
+          result = await loadConfig(untildify(extendConfig.source), {
+            ...options,
+            filename: true,
+            stopPath: sourcePath,
+          })
+        } else {
+          result = await loadConfig(untildify(extendConfig.source), { ...options, filename: true })
         }
-        return loadConfig(untildify(source), { ...options, filename: true })
+        return {
+          ...result,
+          config: _.omit(
+            !!extendConfig.pick?.length ? _.pick(result.config, extendConfig.pick) : result.config,
+            extendConfig.omit
+          ),
+        }
       })
     )
     extendConfig = await preduce(
@@ -93,13 +125,13 @@ export async function innerExtendsConfig(config: EdamConfig, options: Options, t
             innerConfig,
             {
               ...options,
-              cwd: nps.dirname(filename)
+              cwd: nps.dirname(filename),
             },
             track
           )
           track[filename] = {
             status: 'visited',
-            value
+            value,
           }
         }
 
@@ -121,11 +153,11 @@ export default async function extendsConfig(
 ): Promise<{ config: EdamConfig; track?: Track }> {
   options = {
     track: true,
-    ...options
+    ...options,
   }
   const track = {}
   return {
     config: await innerExtendsConfig(config, options, track),
-    track: options.track ? track : null
+    track: options.track ? track : null,
   }
 }

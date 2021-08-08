@@ -14,16 +14,14 @@ describe('normalizeConfig', function() {
         {
           extends: './fixture/loadConfig/a/.errorrc',
           output: '',
-          userc: false
+          userc: false,
         },
         {
-          cwd: __dirname
+          cwd: __dirname,
         }
       )
     } catch (err) {
-      expect(err.message).toEqual(
-        expect.stringMatching('file requires `source`')
-      )
+      expect(err.message).toEqual(expect.stringMatching('file requires `source`'))
     }
   })
   it('should throw error when syntax is illegal', async () => {
@@ -33,16 +31,14 @@ describe('normalizeConfig', function() {
           extends: './fixture/loadConfig/a/.errorrc',
           source: './a',
           output: '',
-          userc: false
+          userc: false,
         },
         {
-          cwd: __dirname
+          cwd: __dirname,
         }
       )
     } catch (err) {
-      expect(err.message).toEqual(
-        expect.stringMatching('JSON5: invalid character')
-      )
+      expect(err.message).toEqual(expect.stringMatching('JSON5: invalid character'))
     }
   })
 
@@ -54,21 +50,21 @@ describe('normalizeConfig', function() {
           'react-a': 'aa',
           'b.react': 'b.react.origin',
           github: 'github:tele/rele',
-          file: './fixture/source'
+          file: './fixture/source',
         },
         source: 'react',
         userc: false,
-        offlineFallback: true
+        offlineFallback: true,
       },
       {
-        cwd: __dirname
+        cwd: __dirname,
       }
     )
 
     expect(Object.keys(track)).toEqual([
       nps.resolve(__dirname, './fixture/loadConfig/a/.edamrc'),
       nps.resolve(__dirname, './fixture/loadConfig/a', './b/.edamrc'),
-      nps.resolve(__dirname, './fixture/loadConfig/a', './b/rc.json')
+      nps.resolve(__dirname, './fixture/loadConfig/a', './b/rc.json'),
     ])
 
     expect(config).toEqual(
@@ -78,39 +74,39 @@ describe('normalizeConfig', function() {
         extends: ['./fixture/loadConfig/a/.edamrc', './b/.edamrc', './rc'],
         source: {
           type: 'file',
-          url: require.resolve('react')
+          url: require.resolve('react'),
         },
         plugins: [[{}, {}]],
         alias: {
           file: {
             type: 'file',
-            url: nps.join(__dirname, 'fixture/source/package.json')
+            url: nps.join(__dirname, 'fixture/source/package.json'),
           },
           'react-a': {
             type: 'npm',
             url: 'aa',
-            version: ''
+            version: '',
           },
           react: {
             type: 'npm',
             url: 'b.react',
-            version: ''
+            version: '',
           },
           'b.react': {
             type: 'npm',
             url: 'b.react.origin',
-            version: ''
+            version: '',
           },
           json5: {
             type: 'file',
-            url: require.resolve('json5')
+            url: require.resolve('json5'),
           },
           github: {
             type: 'git',
             url: 'https://github.com/tele/rele.git',
-            checkout: 'master'
-          }
-        }
+            checkout: 'master',
+          },
+        },
       })
     )
   })
@@ -122,14 +118,14 @@ describe('normalizeConfig', function() {
         alias: {
           'react-a': 'aa',
           'b.react': 'b.react.origin',
-          github: 'github:tele/rele'
+          github: 'github:tele/rele',
         },
         source: 'react',
         output: '',
-        userc: true
+        userc: true,
       },
       {
-        cwd: nps.join(__dirname, 'fixture')
+        cwd: nps.join(__dirname, 'fixture'),
       }
     )
 
@@ -138,44 +134,44 @@ describe('normalizeConfig', function() {
         // extends: ['./loadConfig/a/.edamrc', './b/.edamrc', './rc'],
         source: {
           type: 'file',
-          url: require.resolve('react')
+          url: require.resolve('react'),
         },
         alias: expect.objectContaining({
           edam: {
             type: 'npm',
             version: '',
-            url: 'edam'
+            url: 'edam',
           },
           'edam-github': {
             type: 'git',
             url: 'abc.git',
-            checkout: 'master'
+            checkout: 'master',
           },
           'react-a': {
             type: 'npm',
             url: 'aa',
-            version: ''
+            version: '',
           },
           react: {
             type: 'npm',
             url: 'b.react',
-            version: ''
+            version: '',
           },
           'b.react': {
             type: 'npm',
             url: 'b.react.origin',
-            version: ''
+            version: '',
           },
           json5: {
             type: 'file',
-            url: require.resolve('json5')
+            url: require.resolve('json5'),
           },
           github: {
             type: 'git',
             url: 'https://github.com/tele/rele.git',
-            checkout: 'master'
-          }
-        })
+            checkout: 'master',
+          },
+        }),
       })
     )
   })
@@ -188,13 +184,13 @@ describe('normalizeConfig', function() {
         alias: {
           'react-a': 'aa',
           'b.react': 'b.react.origin',
-          github: 'github:tele/rele'
+          github: 'github:tele/rele',
         },
         source: 'github?checkout=dev',
-        userc: true
+        userc: true,
       },
       {
-        cwd: nps.join(__dirname, 'fixture')
+        cwd: nps.join(__dirname, 'fixture'),
       }
     )
 
@@ -206,20 +202,51 @@ describe('normalizeConfig', function() {
           type: 'git',
           url: 'https://github.com/tele/rele.git',
           checkout: 'dev',
-          config: {}
+          config: {},
         },
         alias: expect.objectContaining({
           'edam-github': {
             type: 'git',
             url: 'abc.git',
-            checkout: 'master'
+            checkout: 'master',
           },
           github: {
             type: 'git',
             url: 'https://github.com/tele/rele.git',
-            checkout: 'master'
-          }
-        })
+            checkout: 'master',
+          },
+        }),
+      })
+    )
+  })
+
+  it('should alias works omit', async function() {
+    const { config } = await normalize(
+      {
+        extends: [{ source: './loadConfig/a/.edamrc', omit: ['offlineFallback'] }],
+        alias: {
+          'react-a': 'aa',
+          'b.react': 'b.react.origin',
+          github: 'github:tele/rele',
+        },
+        output: '',
+        source: 'github:tele/abcrele?checkout=dev',
+        userc: true,
+      },
+      {
+        cwd: nps.join(__dirname, 'fixture'),
+      }
+    )
+
+    expect(config).toEqual(
+      expect.objectContaining({
+        offlineFallback: true,
+        // extends: ['./loadConfig/a/.edamrc', './b/.edamrc', './rc'],
+        source: {
+          type: 'git',
+          url: 'https://github.com/tele/abcrele.git',
+          checkout: 'dev',
+        },
       })
     )
   })
@@ -227,18 +254,18 @@ describe('normalizeConfig', function() {
   it('should alias works querystring when not matching', async function() {
     const { config } = await normalize(
       {
-        extends: ['./loadConfig/a/.edamrc'],
+        extends: [{ source: './loadConfig/a/.edamrc' }],
         alias: {
           'react-a': 'aa',
           'b.react': 'b.react.origin',
-          github: 'github:tele/rele'
+          github: 'github:tele/rele',
         },
         output: '',
         source: 'github:tele/abcrele?checkout=dev',
-        userc: true
+        userc: true,
       },
       {
-        cwd: nps.join(__dirname, 'fixture')
+        cwd: nps.join(__dirname, 'fixture'),
       }
     )
 
@@ -249,8 +276,8 @@ describe('normalizeConfig', function() {
         source: {
           type: 'git',
           url: 'https://github.com/tele/abcrele.git',
-          checkout: 'dev'
-        }
+          checkout: 'dev',
+        },
       })
     )
   })
@@ -261,18 +288,18 @@ describe('normalizeConfig', function() {
         output: '',
         pull: {
           npmClient: 'yarn',
-          git: 'download'
+          git: 'download',
         },
-        userc: false
+        userc: false,
       },
       {
-        cwd: nps.join(__dirname, 'fixture')
+        cwd: nps.join(__dirname, 'fixture'),
       }
     )
 
     expect(config.pull).toEqual({
       npmClient: 'yarn',
-      git: 'download'
+      git: 'download',
     })
   })
 
@@ -280,62 +307,66 @@ describe('normalizeConfig', function() {
     let { config } = await normalize(
       {
         output: '',
-        userc: true
+        userc: true,
       },
       {
-        cwd: nps.join(__dirname, 'fixture/pull')
+        cwd: nps.join(__dirname, 'fixture/pull'),
       }
     )
 
     expect(config.pull).toEqual({
       npmClient: 'yarn',
-      git: 'download'
+      git: 'download',
     })
 
-    config  = (await normalize(
-      {
-        output: '',
-        userc: true,
-        pull: {}
-      },
-      {
-        cwd: nps.join(__dirname, 'fixture/pull')
-      }
-    )).config
+    config = (
+      await normalize(
+        {
+          output: '',
+          userc: true,
+          pull: {},
+        },
+        {
+          cwd: nps.join(__dirname, 'fixture/pull'),
+        }
+      )
+    ).config
 
     expect(config.pull).toEqual({
       npmClient: 'yarn',
-      git: 'download'
+      git: 'download',
     })
 
-    config  = (await normalize(
-      {
-        output: '',
-        userc: true,
-        pull: {
-          npmClient: 'npm'
+    config = (
+      await normalize(
+        {
+          output: '',
+          userc: true,
+          pull: {
+            npmClient: 'npm',
+          },
+        },
+        {
+          cwd: nps.join(__dirname, 'fixture/pull'),
         }
-      },
-      {
-        cwd: nps.join(__dirname, 'fixture/pull')
-      }
-    )).config
+      )
+    ).config
 
     expect(config.pull).toEqual({
       npmClient: 'npm',
-      git: 'download'
+      git: 'download',
     })
   })
 
-  it('should fallback to default values', async function () {
+  it('should fallback to default values', async function() {
     const { config } = await normalize(
       {
         output: '',
         userc: false,
-        pull: {}
+        pull: {},
       },
       {
-        cwd: __dirname
+        cwd: __dirname,
       }
     )
     // console.error(config)
@@ -343,7 +374,7 @@ describe('normalizeConfig', function() {
       offlineFallback: true,
       updateNotify: true,
       storePrompts: true,
-      pull: { npmClient: 'npm', git: 'clone' }
+      pull: { npmClient: 'npm', git: 'clone' },
     })
   })
 })
