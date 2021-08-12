@@ -19,15 +19,18 @@ import matchMeta from './matchMeta'
 import parseQueryString from '../../lib/parseQueryString'
 import DefaultLogger from '../DefaultLogger'
 import EdamError from '../EdamError'
+import { Stats } from 'fs'
 
 const debug = require('debug')('edam:Compiler')
 
 export type Asset = {
   value: Buffer | string | any
-  meta: Partial<{
-    ext: string,
-    mime: string
-  }>
+  meta: {
+    ext?: string
+    mime?: string
+    lstat: Stats
+    filename: string
+  }
   loaders?: Array<StrictLoader>
 }
 
@@ -63,7 +66,7 @@ export default class Compiler extends AwaitEventEmitter {
     hookCwd,
     root,
     includes,
-    excludes
+    excludes,
   }: {
     excludes?: Matcher
     includes?: Matcher
@@ -108,15 +111,15 @@ export default class Compiler extends AwaitEventEmitter {
     [loaderId: string]: Array<StrictLoader | StrictLoaderWithOption>
   } = {
     module: require('./loaders/module'),
-    hbs: require('./loaders/plopHandlebar')
+    hbs: require('./loaders/plopHandlebar'),
   }
 
   public static defaultMappers: Array<Mapper> = [
     {
       test: '*',
       mimeTest: 'text/*',
-      loader: ['hbs']
-    }
+      loader: ['hbs'],
+    },
   ]
 
   public loaders = { ...Compiler.defaultLoaders }
@@ -133,7 +136,7 @@ export default class Compiler extends AwaitEventEmitter {
       }
       if (mapper.mimeTest) {
         if (!mapper.test || (mapper.test && matchedLoader)) {
-          if (isMatch(asset.meta && asset.meta.mime || 'text/plain', mapper.mimeTest)) {
+          if (isMatch((asset.meta && asset.meta.mime) || 'text/plain', mapper.mimeTest)) {
             matchedLoader = mapper.loader
           } else {
             matchedLoader = null
@@ -181,14 +184,14 @@ export default class Compiler extends AwaitEventEmitter {
               path,
               dirname: nps.dirname(path),
               name: nps.basename(path).replace(/(.+)\.[^.]+?$/, '$1'),
-              ext: nps.extname(path)
-            }
-          }
+              ext: nps.extname(path),
+            },
+          },
         })
         const loaderSelf = {
           compiler: this,
           path,
-          options
+          options,
         }
 
         if (loader.raw === true) {
@@ -230,7 +233,7 @@ export default class Compiler extends AwaitEventEmitter {
       const meta = asset.meta
       const input = asset.value
       const loaders = asset.loaders
-      const data = { input, loaders }
+      const data = { input, loaders, asset }
       let highOrderOptions
 
       if (_.isString(data.input) || meta?.mime?.startsWith('text/')) {
@@ -259,7 +262,7 @@ export default class Compiler extends AwaitEventEmitter {
           return {
             path,
             output: await this.transform(data.input, data.loaders, path, highOrderOptions),
-            ...data
+            ...data,
           }
         } catch (err) {
           this.logger.error('Error occurs when transforming content of file: `' + path + '`\n', err)
@@ -267,14 +270,14 @@ export default class Compiler extends AwaitEventEmitter {
           return {
             path,
             error: err,
-            ...data
+            ...data,
           }
         }
       }
       return {
         path,
         output: data.input,
-        ...data
+        ...data,
       }
     })
 

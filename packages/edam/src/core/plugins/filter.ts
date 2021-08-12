@@ -11,6 +11,7 @@ import * as _ from 'lodash'
 import * as mm from 'micromatch'
 import EdamError from '../EdamError'
 import * as FileType from 'file-type'
+import * as fs from "fs";
 
 const tildify = require('tildify')
 
@@ -40,11 +41,15 @@ export default async function filter(/*options*/) {
     })
 
     debug('assets files: %O', files)
-    files = mm(files.map(f => nps.relative(root, f)), ['*'], {
-      ignore: ignore,
-      dot: true,
-      matchBase: true
-    }).map(f => nps.join(root, f))
+    files = mm(
+      files.map(f => nps.relative(root, f)),
+      ['*'],
+      {
+        ignore: ignore,
+        dot: true,
+        matchBase: true
+      }
+    ).map(f => nps.join(root, f))
 
     // deep read dir and filter
     debug('assets filter files: %O', files)
@@ -52,11 +57,16 @@ export default async function filter(/*options*/) {
       files.map(async function(file) {
         const name = nps.relative(root, file)
         const buffer = await fileSystem.readFile(file)
+
+        const lstat = fileSystem.lstatSync(file)
+
         compiler.assets[name] = {
           value: buffer,
           meta: {
+            filename: file,
+            lstat: lstat,
             mime: 'text/plain',
-            ...(await FileType.fromBuffer(buffer)),
+            ...(await FileType.fromBuffer(buffer))
           }
         }
       })

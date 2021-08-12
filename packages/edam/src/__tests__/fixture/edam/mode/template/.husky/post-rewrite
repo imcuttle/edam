@@ -1,0 +1,4 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+git-notify rewrite "$1" && npx lerna gpm-update && npm run patch

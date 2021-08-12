@@ -11,12 +11,16 @@ const _ = require('lodash')
 const rimraf = require('rimraf')
 const match = require('./match').default
 
+function isSymbolicLink(filename: string): boolean {
+  return fs.lstatSync(filename).isSymbolicLink()
+}
+
 function isFile(filename: string): boolean {
-  return fs.existsSync(filename) && fs.statSync(filename).isFile()
+  return fs.existsSync(filename) && fs.lstatSync(filename).isFile()
 }
 
 function isDirectory(filename: string): boolean {
-  return fs.existsSync(filename) && fs.statSync(filename).isDirectory()
+  return fs.existsSync(filename) && fs.lstatSync(filename).isDirectory()
 }
 
 const readdir = pify(fs.readdir)
@@ -55,6 +59,8 @@ export default {
   ...fs,
   isFile,
   isDirectory,
+  lstatSync: fs.lstatSync,
+  isSymbolicLink,
   readFile: pify(fs.readFile),
   writeFile: pify(fs.writeFile),
   readdir,

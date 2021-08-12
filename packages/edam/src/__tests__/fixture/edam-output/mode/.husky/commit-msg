@@ -1,0 +1,10 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+npx --no-install commitlint -e "$1"
+
+# 全局changeId的继承
+gitdir=$(git rev-parse --git-dir);
+if [ -x "$gitdir/hooks/commit-msg" ]; then
+    . "$gitdir/hooks/commit-msg"
+fi

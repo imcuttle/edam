@@ -1,8 +1,10 @@
 import { Loader, Prompt, Variable } from './TemplateConfig'
 import * as AwaitEventEmitterCore from 'await-event-emitter'
+import { Asset } from '../core/Compiler'
 
 export type State = {
   input: string
+  asset?: Asset
   output?: string
   loaders?: Loader
   error?: Error

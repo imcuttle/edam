@@ -5,13 +5,7 @@
  * @date 2018/3/25
  * @description
  */
-import {
-  TreeProcessor,
-  Tree,
-  State,
-  AwaitEventEmitter,
-  Logger
-} from '../../types/core'
+import { TreeProcessor, Tree, State, AwaitEventEmitter, Logger } from '../../types/core'
 import toArray from '../../lib/toArray'
 import * as mkdirp from 'mkdirp'
 import * as rimraf from 'rimraf'
@@ -22,17 +16,13 @@ import fileSystem from '../../lib/fileSystem'
 import * as mm from 'micromatch'
 import DefaultLogger from '../DefaultLogger'
 import { ParsedPath } from 'path'
-import * as Console from "console";
+import * as Console from 'console'
 const debug = require('debug')('edam:FileProcessor')
 const tildify = require('tildify')
 
 export default class FileProcessor extends TreeProcessor {
   public logger: Logger = new DefaultLogger()
-  constructor(
-    public tree: Tree,
-    public dest?: string,
-    public emitter?: AwaitEventEmitter
-  ) {
+  constructor(public tree: Tree, public dest?: string, public emitter?: AwaitEventEmitter) {
     super(tree)
     this.emitter = emitter || new AwaitEventEmitter()
     this.dest = dest
@@ -41,7 +31,7 @@ export default class FileProcessor extends TreeProcessor {
     filepath: string = this.dest,
     option: { clean?: boolean; overwrite?: boolean } = {
       clean: false,
-      overwrite: false
+      overwrite: false,
     }
   ): Promise<boolean> {
     filepath = nps.resolve(filepath || this.dest || '')
@@ -65,7 +55,16 @@ export default class FileProcessor extends TreeProcessor {
         (async function write() {
           if (!data.error) {
             await pify(mkdirp)(nps.dirname(filename))
-            await fileSystem.writeFile(filename, data.output)
+            const { filename: srcFilename, lstat } = data.asset?.meta || {}
+            if (lstat) {
+              if (lstat.isSymbolicLink() && srcFilename) {
+                const srcPath = fileSystem.readlinkSync(srcFilename)
+                fileSystem.symlinkSync(srcPath, filename)
+                return
+              }
+            }
+
+            await fileSystem.writeFile(filename, data.output, { mode: lstat?.mode })
           }
         })()
       )
@@ -125,11 +124,7 @@ export default class FileProcessor extends TreeProcessor {
     return this._moveOrCopy(m, dest, this._copy.bind(this))
   }
 
-  private _moveOrCopy(
-    m: string | string[],
-    dest: string,
-    action: Function
-  ): FileProcessor {
+  private _moveOrCopy(m: string | string[], dest: string, action: Function): FileProcessor {
     debug('move input: %o, %s', m, dest)
     toArray(m).forEach(eachMatcher => {
       const paths = this.match(<string>eachMatcher)
