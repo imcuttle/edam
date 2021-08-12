@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.4.14](https://github.com/imcuttle/edam/compare/v3.4.13...v3.4.14) (2021-08-12)
+
+
+### Bug Fixes
+
+* symblic file and executable file ([ef75bca](https://github.com/imcuttle/edam/commit/ef75bcad8e1893c3fb91ba53846c53f827805c1b))
+
+
+
+
+
 ## [3.4.13](https://github.com/imcuttle/edam/compare/v3.4.12...v3.4.13) (2021-08-08)
 
 **Note:** Version bump only for package edam-repo
