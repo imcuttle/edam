@@ -1,6 +1,6 @@
 {
   "name": "edam-repo",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "The origin of programing: setup scaffold",
   "main": "index.js",
   "private": true,
