@@ -83,7 +83,7 @@ export default class Compiler extends AwaitEventEmitter {
       this.loaders = loaders
     }
     if (mappers) {
-      this.mappers = mappers
+      this.mappers = _.castArray(mappers).concat(this.mappers || [])
     }
     if (root) {
       this.root = root
