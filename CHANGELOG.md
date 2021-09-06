@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.4.15](https://github.com/imcuttle/edam/compare/v3.4.14...v3.4.15) (2021-09-06)
+
+
+### Bug Fixes
+
+* mapper 默认继承 ([01c5952](https://github.com/imcuttle/edam/commit/01c595294ea8bfe6654e62336ac66d2bcd2071cf))
+
+
+
+
+
 ## [3.4.14](https://github.com/imcuttle/edam/compare/v3.4.13...v3.4.14) (2021-08-12)
 
 
