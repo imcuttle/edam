@@ -261,7 +261,11 @@ ${generateFlagHelp(flags, '      ')}
   }
 
   runEdam(Object.assign(config), flags)
-    .catch(() => {
+    .then(() => {
+      process.exitCode = 0
+    }, () => {
       process.exitCode = 1
+    }).finally(() => {
+      process.exit()
     })
 })()
