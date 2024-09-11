@@ -1,8 +1,8 @@
 {
   "name": "edam-prettier-loader",
-  "version": "3.4.15",
+  "version": "4.0.0",
   "dependencies": {
-    "edam": "^3.4.15",
+    "edam": "^4.0.0",
     "prettier": "^1.11.1"
   },
   "gitHead": "da227b9354cad7f7c4f6292d1c14347a96d8f4da"
