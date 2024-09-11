@@ -89,18 +89,51 @@ function _pullForce(targetPath, outerEnv = env, cb) {
   processAsync(process, "git pull", cb);
 }
 
+function _reset(targetPath, outerEnv = env, cb) {
+  var process = spawn(
+    "git",
+    ["reset", "--hard", "HEAD"],
+    {
+      cwd: targetPath,
+      env: outerEnv
+    }
+  );
+
+  processAsync(process, "git reset", cb);
+}
+
+function _cleanFD(targetPath, outerEnv = env, cb) {
+  var process = spawn(
+    "git",
+    ["clean", "-f", "-d"],
+    {
+      cwd: targetPath,
+      env: outerEnv
+    }
+  );
+
+  processAsync(process, "git clean", cb);
+}
+
+
 const _pullForcePromise = pify(_pullForce);
+const reset = pify(_reset);
+const cleanFD = pify(_cleanFD);
 
 export default clonePromise;
 export const checkout = pify(_checkout);
 export const pullForce = async (targetPath, opts?) => {
   try {
+    await reset(targetPath, env);
+    await cleanFD(targetPath, env);
     await _pullForcePromise(targetPath, env);
   } catch (err) {
     if (opts && opts.onDisablePromptError) {
       await opts.onDisablePromptError(err);
     }
     if (!isCI) {
+      await reset(targetPath, env);
+      await cleanFD(targetPath, env);
       return await _pullForcePromise(targetPath, {
         ...env,
         GIT_TERMINAL_PROMPT: "1"
