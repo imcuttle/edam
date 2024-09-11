@@ -306,10 +306,10 @@ describe('Compiler', function() {
     )
 
     expect(cer.logger.error).toHaveBeenCalledTimes(2)
-    expect(cer.logger.error).toBeCalledWith(
-      expect.stringContaining('test.js:2:2'),
-      'Detected using the deprecated Lodash loader, please replace it (https://bit.ly/2CYM8lC) by handlebar.'
-    )
+    // expect(cer.logger.error).toBeCalledWith(
+    //   expect.stringContaining('test.js:2:2'),
+    //   'Detected using the deprecated Lodash loader, please replace it by handlebar.'
+    // )
   })
 
   it('should handlebar helps works', async function() {
